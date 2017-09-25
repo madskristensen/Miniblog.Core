@@ -7,24 +7,6 @@
 
 @section Scripts {
     <script src="~/js/admin.js" async></script>
-
-    <noscript id="deferred-styles">
-        <link rel="stylesheet" href="~/css/comments.scss" />
-    </noscript>
-    <script>
-        var loadDeferredStyles = function () {
-            var addStylesNode = document.getElementById("deferred-styles");
-            var replacement = document.createElement("div");
-            replacement.innerHTML = addStylesNode.textContent;
-            document.body.appendChild(replacement)
-            addStylesNode.parentElement.removeChild(addStylesNode);
-        };
-        var raf = requestAnimationFrame || mozRequestAnimationFrame ||
-            webkitRequestAnimationFrame || msRequestAnimationFrame;
-        if (raf) raf(function () { window.setTimeout(loadDeferredStyles, 0); });
-        else window.addEventListener('load', loadDeferredStyles);
-    </script>
-
 }
 
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
@@ -40,6 +22,7 @@
         <p>Categories, tags, social network sharing...</p>
     </footer>
 
+    <link rel="stylesheet" href="~/css/comments.scss" />
     <section id="comments">
         <h2>Comments</h2>
         @foreach (var comment in Model.Post.Comments)
