@@ -29,7 +29,10 @@
         {
             <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)">
                 <span>@comment.Author</span>
-                <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">@comment.PubDate.ToString("MMMM d, yyyy")</time>
+                <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
+                    @comment.PubDate.ToString("MMMM d, yyyy")
+                    <a href="#@comment.ID" title="Permalink (#@comment.ID)">#</a>
+                </time>
                 <div>@rs.RenderComment(comment)</div>
 
                 @if (User.Identity.IsAuthenticated)
@@ -40,19 +43,16 @@
         }
 
         <form method="post" asp-page="Post" asp-page-handler="Comment" asp-route-id="@Model.Post.ID">
-            <fieldset>
-                <legend>New comment</legend>
-                <label for="author">Name</label>
-                <input type="text" name="author" id="author" placeholder="Enter your name" required />
+            <label for="author">Name</label>
+            <input type="text" name="author" id="author" placeholder="Enter your name" required />
 
-                <label for="email">E-mail</label>
-                <input type="email" name="email" id="email" placeholder="Example: mary@example.com" required />
+            <label for="email">E-mail</label>
+            <input type="email" name="email" id="email" placeholder="Example: mary@example.com" required />
 
-                <label for="content">Comment <span>(markdown allowed)</span></label>
-                <textarea rows="5" cols="100" name="content" id="content" required></textarea>
+            <label for="content">Comment <span>(markdown allowed)</span></label>
+            <textarea rows="5" cols="100" name="content" id="content" required></textarea>
 
-                <input type="submit" value="Post comment" />
-            </fieldset>
+            <input type="submit" value="Post comment" />
         </form>
     </section>
 </article>

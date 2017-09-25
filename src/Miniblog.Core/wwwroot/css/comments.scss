@@ -1,15 +1,11 @@
 ﻿$bg_color: #dff0f5;
 $bg_color_admin: #f7f7f7;
+$bg_new_comment_color: #ffe44e;
 
 #comments {
 
-    fieldset {
-        padding: 0;
-        border: none;
-    }
-
-    legend {
-        display: none
+    form {
+        margin-top: 2em;
     }
 
     label {
@@ -73,18 +69,14 @@ $bg_color_admin: #f7f7f7;
         margin: 5px 0 0 0;
     }
 
-    form {
-        margin-top: 2em;
-    }
-
-    :target{
+    :target {
         animation: target 3s ease-in-out;
     }
 }
 
-@keyframes target{
-    from{
-        background-color: #ffe44e;
+@keyframes target {
+    from {
+        background-color: $bg_new_comment_color;
     }
 
     to {
