@@ -1,4 +1,7 @@
-﻿#comments {
+﻿$bg_color: #dff0f5;
+$bg_color_admin: #f7f7f7;
+
+#comments {
 
     fieldset {
         padding: 0;
@@ -22,22 +25,29 @@
     input,
     textarea {
         font: inherit;
-        border: 1px solid gray;
+        border: 1px solid #c7c7c7;
         border-radius: 3px;
         padding: 5px 0;
         width: 100%;
-        text-indent: 5px;
     }
 
-    input[type=submit] {
-        width: auto;
-        margin: 1em 0;
-        display: block;
-        padding: 5px 10px;
+    input {
+        max-width: 400px;
+        text-indent: 5px;
+
+        &[type=submit] {
+            width: auto;
+            margin: 1em 0;
+            padding: 5px 10px;
+        }
+    }
+
+    textarea {
+        padding: 5px;
     }
 
     article {
-        background: #dff0f5;
+        background: $bg_color;
         border-radius: 6px;
         padding: 7px 1em;
         margin-bottom: 1em;
@@ -47,7 +57,7 @@
         }
 
         &.admin {
-            background: #f7f7f7;
+            background: $bg_color_admin;
         }
     }
 
@@ -65,5 +75,19 @@
 
     form {
         margin-top: 2em;
+    }
+
+    :target{
+        animation: target 3s ease-in-out;
+    }
+}
+
+@keyframes target{
+    from{
+        background-color: #ffe44e;
+    }
+
+    to {
+        background-color: $bg_color;
     }
 }

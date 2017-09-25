@@ -2,7 +2,7 @@
 @model EditPageModel
 @{
     var post = Model.Post;
-    ViewData["Title"] = post.Title;
+    ViewData["Title"] = "Edit " + (post.Title ?? "new post");
 }
 
 <form method="post" id="edit">

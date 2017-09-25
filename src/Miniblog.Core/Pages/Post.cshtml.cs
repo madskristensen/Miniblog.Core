@@ -51,6 +51,11 @@ namespace Miniblog.Core.Pages
         [Authorize]
         public IActionResult OnGetDeleteComment(string postId, string commentId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
             var post = _storage.GetPostById(postId);
 
             if (post == null)

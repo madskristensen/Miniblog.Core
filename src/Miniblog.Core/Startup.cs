@@ -42,7 +42,12 @@ namespace Miniblog.Core
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie();
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(options =>
+            {
+                options.LoginPath = "/login/";
+                options.LoginPath = "/login/?logout=1";
+            });
 
             services.AddWebOptimizer(pipeline =>
             {
