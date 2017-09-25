@@ -19,13 +19,8 @@
         @RenderBody()
     </main>
 
-    <footer>
+    <footer class="sitefooter">
         <div class="container">
-            <p>
-                Copyright &copy;
-                <span itemprop="copyrightYear">@DateTime.Now.Year</span>
-                - @settings.Value.Owner
-            </p>
             <nav>
                 <ul>
                     <li><a href="~/">Home</a></li>
@@ -35,6 +30,7 @@
 
                         if (User.Identity.IsAuthenticated)
                         {
+                            <li><a href="~/edit/">New post</a></li>
                             <li><a href="~/login/?returnUrl=@path&logout=1" title="Sign out as administrator">Sign out</a></li>
                         }
                         else
@@ -44,6 +40,11 @@
                     }
                 </ul>
             </nav>
+            <p>
+                Copyright &copy;
+                <span itemprop="copyrightYear">@DateTime.Now.Year</span>
+                - @settings.Value.Owner
+            </p>
         </div>
     </footer>
 

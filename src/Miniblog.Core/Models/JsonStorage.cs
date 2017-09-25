@@ -49,7 +49,7 @@ namespace Miniblog.Core
         }
 
         public Post GetPostBySlug(string slug)
-        { 
+        {
             return _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
         }
 

@@ -7,7 +7,7 @@ namespace Miniblog.Core
     public class Post
     {
         [JsonIgnore]
-        public string ID { get; set; }
+        public string ID { get; set; } = DateTime.UtcNow.Ticks.ToString();
 
         public string Title { get; set; }
         public string Slug { get; set; }

@@ -6,7 +6,8 @@ namespace Miniblog.Core
 {
     public class RenderingService
     {
-        private MarkdownPipeline _pipeline;
+        private MarkdownPipeline _pipelinePost;
+        private MarkdownPipeline _pipelineComment;
 
         public RenderingService(IOptions<BlogSettings> options)
         {
@@ -15,7 +16,14 @@ namespace Miniblog.Core
 
         public HtmlString RenderMarkdown(Post post)
         {
-            string html = Markdown.ToHtml(post.Content, _pipeline);
+            string html = Markdown.ToHtml(post.Content, _pipelinePost);
+
+            return new HtmlString(html);
+        }
+
+        public HtmlString RenderComment(Comment comment)
+        {
+            string html = Markdown.ToHtml(comment.Content, _pipelineComment);
 
             return new HtmlString(html);
         }
@@ -32,7 +40,10 @@ namespace Miniblog.Core
                 builder.DisableHtml();
             }
 
-            _pipeline = builder.Build();
+            _pipelinePost = builder.Build();
+
+            builder.DisableHtml();
+            _pipelineComment = builder.Build();
         }
     }
 }

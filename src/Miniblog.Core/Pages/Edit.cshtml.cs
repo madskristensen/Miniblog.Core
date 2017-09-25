@@ -16,21 +16,30 @@ namespace Miniblog.Core.Pages
 
         public Post Post { get; private set; }
 
-        public IActionResult OnGet(string id)
+        public IActionResult OnGet(string id = null)
         {
-            Post = _storage.GetPostById(id);
+            if (string.IsNullOrEmpty(id))
+            {
+                Post = new Post();
+            }
+            else
+            {
+                Post = _storage.GetPostById(id);
+            }
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(Post post)
         {
-            var model = _storage.GetPostById(post.ID);
-            model.Title = post.Title.Trim();
-            model.Slug = post.Slug.Trim();
-            model.IsPublished = post.IsPublished;
-            model.Content = post.Content.Trim();
+            var existing = _storage.GetPostById(post.ID) ?? post;
 
-            await _storage.Save(model);
+            existing.Title = post.Title.Trim();
+            existing.Slug = post.Slug.Trim();
+            existing.IsPublished = post.IsPublished;
+            existing.Content = post.Content.Trim();
+
+            await _storage.Save(existing);
 
             return Redirect(post.GetLink());
         }

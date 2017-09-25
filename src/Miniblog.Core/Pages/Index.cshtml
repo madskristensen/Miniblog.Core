@@ -3,9 +3,19 @@
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData["Title"] = settings.Value.Name;
-
-    foreach (var post in Model.Posts)
-    {
-        await Html.RenderPartialAsync("_Post", post);
-    }
 }
+
+<h2>Latest blog posts</h2>
+
+<ul class="list">
+    @{
+        foreach (var post in Model.Posts)
+        {
+            <li>
+                <a href="@post.GetLink()">@post.Title</a>
+                <time datetime="@post.PubDate.ToString("s")" itemprop="datePublished">@post.PubDate.ToString("MMMM d, yyyy")</time>
+                <span>@post.Comments.Count comments</span>
+            </li>
+        }
+    }
+</ul>
