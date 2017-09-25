@@ -1,0 +1,52 @@
+﻿@inject IOptionsSnapshot<BlogSettings> settings
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.scss" />
+    @RenderSection("Head", required: false)
+</head>
+<body itemscope itemtype="http://schema.org/Blog">
+
+    <header class="siteheader container">
+        <h1 itemprop="name"><a href="~/">@settings.Value.Name</a></h1>
+        <span>By @settings.Value.Owner</span>
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                Copyright &copy;
+                <span itemprop="copyrightYear">@DateTime.Now.Year</span>
+                - @settings.Value.Owner
+            </p>
+            <nav>
+                <ul>
+                    <li><a href="~/">Home</a></li>
+                    <li><a href="~/about/">About</a></li>
+                    @{
+                        string path = Context.Request.Path;
+
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            <li><a href="~/login/?returnUrl=@path&logout=1" title="Sign out as administrator">Sign out</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="~/login/" title="Sign in as administrator">Sign in</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
+        </div>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

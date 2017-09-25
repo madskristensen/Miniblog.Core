@@ -1,0 +1,11 @@
+﻿@page
+@model IndexPageModel
+@inject IOptionsSnapshot<BlogSettings> settings
+@{
+    ViewData["Title"] = settings.Value.Name;
+
+    foreach (var post in Model.Posts)
+    {
+        await Html.RenderPartialAsync("_Post", post);
+    }
+}

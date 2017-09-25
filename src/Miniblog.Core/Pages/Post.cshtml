@@ -1,0 +1,9 @@
+﻿@page "{slug}"
+@model PostPageModel
+@{
+    ViewData["Title"] = Model.Post.Title;
+
+    await Html.RenderPartialAsync("_Post", Model.Post);
+}
+
+<a href="~/edit/@Model.Post.ID">Edit</a>

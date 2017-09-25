@@ -1,0 +1,37 @@
+﻿@page "{id}"
+@model EditPageModel
+@{
+    var post = Model.Post;
+    ViewData["Title"] = post.Title;
+}
+
+<form method="post" id="edit">
+    <input type="hidden" name="id" value="@post.ID" />
+
+    <label for="title" class="label">Title</label>
+    <input type="text" name="title" id="title" value="@post.Title" required placeholder="Title of blog post" />
+    <br />
+
+    <label for="slug" class="label">Slug</label>
+    <input type="text" name="slug" id="slug" value="@post.Slug" required placeholder="Slug" />
+    <br /><br />
+
+    <textarea type="text" name="content" id="content" aria-label="Content" required>@post.Content</textarea>
+
+    <input type="submit" value="Save" />
+
+    <input type="checkbox" name="isPublished" id="isPublished" checked="@(post.IsPublished ? "checked" : null)" />
+    <label for="isPublished">Is published</label>
+</form>
+
+@section Scripts {
+    <script src="~/js/admin.js" async></script>
+    <link rel="stylesheet" href="~/css/admin.scss">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+    <script>
+        var simplemde = new SimpleMDE();
+    </script>
+}

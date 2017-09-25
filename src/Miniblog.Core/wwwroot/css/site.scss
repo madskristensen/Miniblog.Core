@@ -1,0 +1,136 @@
+﻿$footer_height: 250px;
+$link_color: #c74848;
+$text_color: #222;
+
+* {
+    /*margin: 0;*/
+}
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body {
+    font: lighter 20px "Segoe UI", Calibri, "Helvetica Neue", "Trebuchet MS", Arial, sans-serif;
+    padding: 0;
+    margin: 0 0 50px + $footer_height 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1em;
+}
+
+.siteheader {
+    text-align: right;
+    margin: 2em auto;
+
+    h1 {
+        margin: 0;
+    }
+
+    a {
+        color: $text_color;
+    }
+}
+
+
+a {
+    color: $link_color;
+}
+
+header a {
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.post {
+    margin-bottom: 3em;
+    display: inline-block;
+
+    header {
+        h2 {
+            font-size: 4em;
+            line-height: 1.1;
+            margin: 0;
+            font-variant: small-caps;
+        }
+
+        time {
+            font-weight: bold;
+            margin-right: .8em;
+        }
+    }
+
+    > div {
+        text-align: justify;
+        line-height: 1.6;
+    }
+
+    p {
+        margin: 1.1em 0;
+    }
+
+    blockquote {
+        border-top: 1px dotted lighten($text_color, 50%);
+        border-bottom: 1px dotted lighten($text_color, 50%);
+        color: lighten($text_color, 30%);
+        font-size: 1.2em;
+        width: 80%;
+        margin: 60px auto;
+        font-style: italic;
+
+        p {
+            margin: 1em;
+        }
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: $text_color;
+    color: white;
+    height: $footer_height;
+    font-size: .9em;
+
+    .container {
+        margin: 1em auto;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          display: inline-block;
+          padding-right: 10px;
+
+          &:last-child{
+              float: right;
+              padding: 0;
+          }
+        }
+    }
+
+    a {
+        color: white;
+    }
+
+    p {
+        position: absolute;
+        bottom: 1em;
+        left: 0;
+        text-align: center;
+        width: 100%;
+    }
+}

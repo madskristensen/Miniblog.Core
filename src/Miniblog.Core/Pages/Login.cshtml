@@ -1,0 +1,27 @@
+﻿@page "{mode?}"
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+    ViewData["Description"] = $"Sign in to the website";
+    ViewData["Image"] = "";
+    var referrer = Request.Headers["Referer"];
+}
+
+@section head {
+    <link rel="stylesheet" href="/css/login.scss" />
+}
+
+<form method="post" id="login" aria-labelledby="legend">
+    <fieldset>
+        <legend id="legend">Sign in</legend>
+
+        <input type="text" name="username" id="username" aria-label="Username" autofocus required placeholder="Username" />
+        <input type="password" name="password" id="password" aria-label="Password" required placeholder="Password" />
+
+        <input type="checkbox" name="remember" id="remember" />
+        <label for="remember">Remember me</label>
+
+        <input type="submit" value="Sign in" />
+        <input type="hidden" name="referrer" value="@referrer" />
+    </fieldset>
+</form>

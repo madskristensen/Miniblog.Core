@@ -1,0 +1,12 @@
+﻿@model Post
+@inject RenderingService rs
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <header>
+        <h2 itemprop="name"><a href="@Model.GetLink()" itemprop="url">@Model.Title</a></h2>
+        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMM d, yyyy")</time>
+        <a href="@Model.GetLink()#comments">@Model.Comments.Count comments</a>
+    </header>
+
+    <div itemprop="articleBody">@rs.RenderMarkdown(Model)</div>
+</article>
