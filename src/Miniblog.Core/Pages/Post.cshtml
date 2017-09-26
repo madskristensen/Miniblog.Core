@@ -1,19 +1,17 @@
 ﻿@page "{slug}"
 @model PostPageModel
 @inject RenderingService rs
+@inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData["Title"] = Model.Post.Title;
-}
-
-@section Scripts {
-    <script src="~/js/admin.js" async></script>
+    ViewData["Description"] = Model.Post.Excerpt;
 }
 
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
         <h2 itemprop="name">@Model.Post.Title</h2>
         <time datetime="@Model.Post.PubDate.ToString("s")" itemprop="datePublished">@Model.Post.PubDate.ToString("MMMM d, yyyy")</time>
-        <a href="@Model.Post.GetLink()#comments" title="Go to the comments section">@Model.Post.Comments.Count comments</a>
+        <a href="@Model.Post.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">@Model.Post.Comments.Count comments</a>
     </header>
 
     <div itemprop="articleBody">@rs.RenderMarkdown(Model.Post)</div>
@@ -27,13 +25,13 @@
         <h2>Comments</h2>
         @foreach (var comment in Model.Post.Comments)
         {
-            <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)">
-                <span>@comment.Author</span>
+            <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
+                <span itemprop="name">@comment.Author</span>
                 <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
                     @comment.PubDate.ToString("MMMM d, yyyy")
                     <a href="#@comment.ID" title="Permalink (#@comment.ID)">#</a>
                 </time>
-                <div>@rs.RenderComment(comment)</div>
+                <div itemprop="text">@rs.RenderComment(comment)</div>
 
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -43,21 +41,29 @@
         }
 
         <form method="post" asp-page="Post" asp-page-handler="Comment" asp-route-id="@Model.Post.ID">
-            <label for="author">Name</label>
-            <input type="text" name="author" id="author" placeholder="Enter your name" required />
+            <label asp-for="@Model.Comment.Author">Name</label>
+            <input asp-for="@Model.Comment.Author" placeholder="Enter your name" required />
 
-            <label for="email">E-mail</label>
-            <input type="email" name="email" id="email" placeholder="Example: mary@example.com" required />
+            <label asp-for="@Model.Comment.Email">E-mail</label>
+            <input asp-for="@Model.Comment.Email" placeholder="Example: mary@example.com" required />
 
-            <label for="content">Comment <span>(markdown allowed)</span></label>
-            <textarea rows="5" cols="100" name="content" id="content" required></textarea>
+            <label asp-for="@Model.Comment.Content">Comment <span>(markdown allowed)</span></label>
+            <textarea asp-for="@Model.Comment.Content" rows="5" cols="100" required></textarea>
 
             <input type="submit" value="Post comment" />
         </form>
     </section>
+
+    <meta itemprop="author" content="@settings.Value.Owner" />
+    <meta itemprop="headline" content="@Model.Post.Excerpt" />
+    <meta itemprop="dateModified" content="@Model.Post.LastModified.ToString("s")" />
 </article>
 
 @if (User.Identity.IsAuthenticated)
 {
     <a href="~/edit/@Model.Post.ID/" title="Edit the post">Edit post</a>
+
+    @section Scripts {
+        <script src="~/js/admin.js" async></script>
+    }
 }

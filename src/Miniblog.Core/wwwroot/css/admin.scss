@@ -17,4 +17,28 @@
             max-width: 300px;
         }
     }
+
+    textarea {
+        font: inherit;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        border-radius: 3px;
+        border: 1px solid #bbb;
+        padding: 5px;
+        width: 100%;
+    }
+}
+
+.validation-summary-errors{
+    background: #ffe6e6;
+    color: darkred;
+    padding: 5px;
+    border-radius: 5px;
+
+    ul{
+        /*list-style: none;*/
+        /*padding: 0;*/
+        margin: 0;
+    }
 }

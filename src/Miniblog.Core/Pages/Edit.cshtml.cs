@@ -16,7 +16,8 @@ namespace Miniblog.Core.Pages
             _storage = storage;
         }
 
-        public Post Post { get; private set; }
+        [BindProperty]
+        public Post Post { get;  set; }
 
         public IActionResult OnGet(string id = null)
         {
@@ -32,18 +33,24 @@ namespace Miniblog.Core.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(Post post)
+        public async Task<IActionResult> OnPostAsync()
         {
-            var existing = _storage.GetPostById(post.ID) ?? post;
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-            existing.Title = post.Title.Trim();
-            existing.Slug = post.Slug.Trim();
-            existing.IsPublished = post.IsPublished;
-            existing.Content = post.Content.Trim();
+            var existing = _storage.GetPostById(Post.ID) ?? Post;
+
+            existing.Title = Post.Title.Trim();
+            existing.Slug = Post.Slug.Trim();
+            existing.IsPublished = Post.IsPublished;
+            existing.Content = Post.Content.Trim();
+            existing.Excerpt = Post.Excerpt.Trim();
 
             await _storage.Save(existing);
 
-            return Redirect(post.GetLink());
+            return Redirect(Post.GetLink());
         }
     }
 }

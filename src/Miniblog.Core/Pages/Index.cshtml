@@ -13,7 +13,7 @@
         {
             <li>
                 <a href="@post.GetLink()">@post.Title</a>
-                <time datetime="@post.PubDate.ToString("s")" itemprop="datePublished">@post.PubDate.ToString("MMMM d, yyyy")</time>
+                <time datetime="@post.PubDate.ToString("s")">@post.PubDate.ToString("MMMM d, yyyy")</time>
                 <span>@post.Comments.Count comments</span>
             </li>
         }

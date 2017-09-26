@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Miniblog.Core;
 using System;
 using System.Linq;
 
@@ -18,6 +16,9 @@ namespace Miniblog.Core.Pages
 
         public Post Post { get; private set; }
 
+        [BindProperty]
+        public Comment Comment { get; set; }
+
         public IActionResult OnGet(string slug)
         {
             Post = _storage.GetPostBySlug(slug);
@@ -30,8 +31,13 @@ namespace Miniblog.Core.Pages
             return Page();
         }
 
-        public IActionResult OnPostComment(string id, [FromForm] Comment comment)
+        public IActionResult OnPostComment(string id)
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var post = _storage.GetPostById(id);
 
             if (post == null)
@@ -39,16 +45,15 @@ namespace Miniblog.Core.Pages
                 return NotFound();
             }
 
-            comment.IsAdmin = User.Identity.IsAuthenticated;
-            comment.Content = comment.Content.Trim();
+            Comment.IsAdmin = User.Identity.IsAuthenticated;
+            Comment.Content = Comment.Content.Trim();
 
-            post.Comments.Add(comment);
+            post.Comments.Add(Comment);
             _storage.Save(post);
 
-            return Redirect(post.GetLink() + "#" + comment.ID);
+            return Redirect(post.GetLink() + "#" + Comment.ID);
         }
 
-        [Authorize]
         public IActionResult OnGetDeleteComment(string postId, string commentId)
         {
             if (!User.Identity.IsAuthenticated)

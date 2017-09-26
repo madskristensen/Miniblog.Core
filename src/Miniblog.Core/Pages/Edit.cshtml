@@ -1,37 +1,37 @@
 ﻿@page "{id?}"
 @model EditPageModel
 @{
-    var post = Model.Post;
-    ViewData["Title"] = "Edit " + (post.Title ?? "new post");
+    ViewData["Title"] = "Edit " + (Model.Post.Title ?? "new post");
 }
 
-<form method="post" id="edit">
-    <input type="hidden" name="id" value="@post.ID" />
+<link rel="stylesheet" href="~/css/admin.scss" />
+<link rel="stylesheet" href="~/lib/simplemde.min.css" />
+<div asp-validation-summary="All"></div>
 
-    <label for="title" class="label">Title</label>
-    <input type="text" name="title" id="title" value="@post.Title" required placeholder="Title of blog post" />
+<form method="post" id="edit">
+    <input type="hidden" asp-for="@Model.Post.ID" />
+
+    <label asp-for="@Model.Post.Title" class="label">Title</label>
+    <input asp-for="@Model.Post.Title" required placeholder="Title of blog post" />
     <br />
 
-    <label for="slug" class="label">Slug</label>
-    <input type="text" name="slug" id="slug" value="@post.Slug" required placeholder="The URL name" />
+    <label asp-for="@Model.Post.Slug" class="label">Slug</label>
+    <input asp-for="@Model.Post.Slug" required placeholder="The URL name" />
+    <br />
+
+    <label asp-for="@Model.Post.Excerpt" class="label">Excerpt</label>
+    <textarea asp-for="@Model.Post.Excerpt" rows="3" required placeholder="Short description of blog post">@Model.Post.Excerpt</textarea>
     <br /><br />
 
-    <textarea type="text" name="content" id="content" aria-label="Content">@post.Content</textarea>
+    <textarea asp-for="@Model.Post.Content" aria-label="Content">@Model.Post.Content</textarea>
 
     <input type="submit" value="Save" />
 
-    <input type="checkbox" name="isPublished" id="isPublished" checked="@(post.IsPublished ? "checked" : null)" />
-    <label for="isPublished">Is published</label>
+    <input asp-for="@Model.Post.IsPublished" />
+    <label asp-for="@Model.Post.IsPublished">Is published</label>
 </form>
 
 @section Scripts {
+    <script src="~/lib/simplemde.min.js"></script>
     <script src="~/js/admin.js" async></script>
-    <link rel="stylesheet" href="~/css/admin.scss">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-
-    <script>
-        var simplemde = new SimpleMDE();
-    </script>
 }
