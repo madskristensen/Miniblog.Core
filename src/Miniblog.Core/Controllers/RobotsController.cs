@@ -1,5 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.SyndicationFeed;
+using Microsoft.SyndicationFeed.Atom;
+using Microsoft.SyndicationFeed.Rss;
+using System;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Miniblog.Core
@@ -7,10 +13,14 @@ namespace Miniblog.Core
     public class RobotsController : Controller
     {
         private IBlogStorage _storage;
+        private IOptionsSnapshot<BlogSettings> _settings;
+        private RenderingService _rs;
 
-        public RobotsController(IBlogStorage storage)
+        public RobotsController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings, RenderingService rs)
         {
             _storage = storage;
+            _settings = settings;
+            _rs = rs;
         }
 
         [Route("/robots.txt")]
@@ -82,6 +92,55 @@ namespace Miniblog.Core
                 xml.WriteEndElement(); // service
                 xml.WriteEndElement(); // rsd
             }
+        }
+
+        [Route("/feed/{type}")]
+        public async Task Rss(string type)
+        {
+            Response.ContentType = "application/xml";
+            string host = Request.Scheme + "://" + Request.Host;
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
+            {
+                var writer = await GetWriter(type, xmlWriter);
+                var posts = _storage.GetPosts(10);
+
+                foreach (Post post in posts)
+                {
+                    var item = new SyndicationItem
+                    {
+                        Title = post.Title,
+                        Description = _rs.RenderMarkdown(post).Value,
+                        Id = post.ID,
+                        Published = post.PubDate,
+                        LastUpdated = post.LastModified
+                    };
+
+                    foreach (string category in post.Categories)
+                    {
+                        item.AddCategory(new SyndicationCategory(category));
+                    }
+
+                    item.AddContributor(new SyndicationPerson(_settings.Value.Owner, "test@example.com"));
+                    item.AddLink(new SyndicationLink(new Uri(host + post.GetLink())));
+
+                    await writer.Write(item);
+                }
+            }
+        }
+
+        private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter)
+        {
+            if (type.Equals("rss", StringComparison.OrdinalIgnoreCase))
+            {
+                var rss = new RssFeedWriter(xmlWriter);
+                await rss.WriteTitle(_settings.Value.Name);
+                return rss;
+            }
+
+            var atom = new AtomFeedWriter(xmlWriter);
+            await atom.WriteTitle(_settings.Value.Name);
+            return atom;
         }
     }
 }
