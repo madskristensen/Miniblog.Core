@@ -7,18 +7,16 @@
     ViewData["Description"] = Model.Post.Excerpt;
 }
 
-<article class="post" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<article class="post">
     <header>
         <h2 itemprop="name">@Model.Post.Title</h2>
         <time datetime="@Model.Post.PubDate.ToString("s")" itemprop="datePublished">@Model.Post.PubDate.ToString("MMMM d, yyyy")</time>
-        <a href="@Model.Post.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">@Model.Post.Comments.Count comments</a>
+        <a href="@Model.Post.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
+            <span itemprop="commentCount">@Model.Post.Comments.Count</span> comments
+        </a>
     </header>
 
-    <div itemprop="articleBody">@rs.RenderMarkdown(Model.Post)</div>
-
-    <footer>
-        <p>Categories, tags, social network sharing...</p>
-    </footer>
+    <div itemprop="text">@rs.RenderMarkdown(Model.Post)</div>
 
     <link rel="stylesheet" href="~/css/comments.scss" />
     <section id="comments">
@@ -53,10 +51,6 @@
             <input type="submit" value="Post comment" />
         </form>
     </section>
-
-    <meta itemprop="author" content="@settings.Value.Owner" />
-    <meta itemprop="headline" content="@Model.Post.Excerpt" />
-    <meta itemprop="dateModified" content="@Model.Post.LastModified.ToString("s")" />
 </article>
 
 @if (User.Identity.IsAuthenticated)

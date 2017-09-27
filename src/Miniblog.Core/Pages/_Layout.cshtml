@@ -1,6 +1,6 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
 <!DOCTYPE html>
-<html lang="en" itemscope itemtype="http://schema.org/Blog">
+<html lang="en">
 <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
@@ -17,10 +17,10 @@
     <link rel="shortcut icon" href="~/img/icon16x16.png" />
     <link rel="apple-touch-icon" href="~/img/icon180x180.png" sizes="180x180" />
 </head>
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
 
     <header class="siteheader container">
-        <h1 itemprop="name"><a href="~/">@settings.Value.Name</a></h1>
+        <h1><a href="~/">@settings.Value.Name</a></h1>
         <span>By @settings.Value.Owner</span>
     </header>
 
@@ -52,7 +52,9 @@
             <p>
                 Copyright &copy;
                 <span itemprop="copyrightYear">@DateTime.Now.Year</span>
-                - @settings.Value.Owner
+                <span itemscope itemtype="http://schema.org/Person" itemprop="author copyrightHolder">
+                    - <span itemprop="name">@settings.Value.Owner</span>
+                </span>
             </p>
         </div>
     </footer>

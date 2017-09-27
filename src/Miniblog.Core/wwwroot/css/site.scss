@@ -8,15 +8,18 @@ html {
 }
 
 body {
-    font: lighter 20px "Segoe UI", Calibri, "Helvetica Neue", "Trebuchet MS", Arial, sans-serif;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 20px;
+    /*font-weight: 300;*/
     padding: 0;
     margin: 0 0 50px + $footer_height 0;
+    color: $text_color;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 0 1em;
+    padding: 0 1.5em;
 }
 
 .siteheader {
@@ -52,7 +55,7 @@ time {
     margin-right: .8em;
 }
 
-ul.list {
+.list {
     list-style: none;
     padding: 0;
 
@@ -74,7 +77,7 @@ ul.list {
 
     header {
         h2 {
-            font-size: 3em;
+            font-size: 2.5em;
             line-height: 1.1;
             margin: 0;
             font-variant: small-caps;
@@ -84,6 +87,11 @@ ul.list {
     > div {
         text-align: justify;
         line-height: 1.6;
+        word-wrap: break-word;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        hyphens: auto;
     }
 
     p {
@@ -95,12 +103,12 @@ ul.list {
         border-bottom: 1px dotted lighten($text_color, 50%);
         color: lighten($text_color, 30%);
         font-size: 1.2em;
-        width: 80%;
+        width: 90%;
         margin: 60px auto;
         font-style: italic;
 
         p {
-            margin: 1em;
+            margin: 1em .5em;
         }
     }
 }
@@ -123,17 +131,17 @@ ul.list {
         list-style: none;
         padding: 0;
         margin: 0;
+    }
 
-        li {
-            display: inline-block;
+    li {
+        display: inline-block;
 
-            &:not(:last-child):not(:first-child):before {
-                content: "\00A0| \00A0"
-            }
+        &:not(:last-child):not(:first-child):before {
+            content: "\00A0| \00A0"
+        }
 
-            &:last-child {
-                float: right;
-            }
+        &:last-child {
+            float: right;
         }
     }
 
