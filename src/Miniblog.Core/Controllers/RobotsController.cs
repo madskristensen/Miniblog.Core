@@ -111,7 +111,7 @@ namespace Miniblog.Core
                     {
                         Title = post.Title,
                         Description = _rs.RenderMarkdown(post).Value,
-                        Id = post.ID,
+                        Id = host + post.GetLink(),
                         Published = post.PubDate,
                         LastUpdated = post.LastModified
                     };
@@ -122,7 +122,7 @@ namespace Miniblog.Core
                     }
 
                     item.AddContributor(new SyndicationPerson(_settings.Value.Owner, "test@example.com"));
-                    item.AddLink(new SyndicationLink(new Uri(host + post.GetLink())));
+                    item.AddLink(new SyndicationLink(new Uri(item.Id), "self"));
 
                     await writer.Write(item);
                 }
@@ -131,15 +131,20 @@ namespace Miniblog.Core
 
         private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter)
         {
+            string host = Request.Scheme + "://" + Request.Host + "/";
+
             if (type.Equals("rss", StringComparison.OrdinalIgnoreCase))
             {
                 var rss = new RssFeedWriter(xmlWriter);
                 await rss.WriteTitle(_settings.Value.Name);
+                await rss.WriteDescription(_settings.Value.Description);
+                await rss.WriteGenerator("Miniblog.Core");
                 return rss;
             }
 
             var atom = new AtomFeedWriter(xmlWriter);
             await atom.WriteTitle(_settings.Value.Name);
+            await atom.WriteId(host);
             return atom;
         }
     }
