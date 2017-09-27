@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Linq;
 using WilderMinds.MetaWeblog;
 
@@ -19,11 +20,6 @@ namespace Miniblog.Core
             _context = context;
         }
 
-        public int AddCategory(string key, string username, string password, NewCategory category)
-        {
-            throw new NotImplementedException();
-        }
-
         public string AddPost(string blogid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
         {
             ValidateUser(username, password);
@@ -37,7 +33,7 @@ namespace Miniblog.Core
                 Categories = post.categories
             };
 
-            _storage.Save(newPost);
+            _storage.SavePost(newPost);
 
             return newPost.ID;
         }
@@ -50,7 +46,7 @@ namespace Miniblog.Core
 
             if (post != null)
             {
-                _storage.Delete(post);
+                _storage.DeletePost(post);
                 return true;
             }
 
@@ -71,7 +67,7 @@ namespace Miniblog.Core
                 existing.IsPublished = publish;
                 existing.Categories = post.categories;
 
-                _storage.Save(existing);
+                _storage.SavePost(existing);
 
                 return true;
             }
@@ -81,7 +77,16 @@ namespace Miniblog.Core
 
         public CategoryInfo[] GetCategories(string blogid, string username, string password)
         {
-            throw new NotImplementedException();
+            ValidateUser(username, password);
+
+            return _storage.GetCategories()
+                           .Select(cat =>
+                               new CategoryInfo
+                               {
+                                   categoryid = cat,
+                                   title = cat
+                               })
+                           .ToArray();
         }
 
         public WilderMinds.MetaWeblog.Post GetPost(string postid, string username, string password)
@@ -105,11 +110,6 @@ namespace Miniblog.Core
             return _storage.GetPosts(numberOfPosts).Select(p => ToMetaWebLogPost(p)).ToArray();
         }
 
-        public UserInfo GetUserInfo(string key, string username, string password)
-        {
-            throw new NotImplementedException();
-        }
-
         public BlogInfo[] GetUsersBlogs(string key, string username, string password)
         {
             ValidateUser(username, password);
@@ -126,6 +126,22 @@ namespace Miniblog.Core
 
         public MediaObjectInfo NewMediaObject(string blogid, string username, string password, MediaObject mediaObject)
         {
+            ValidateUser(username, password);
+
+            string path = _storage.SaveFile(mediaObject.bits, Path.GetExtension(mediaObject.name));
+
+            return new MediaObjectInfo { url = path };
+        }
+
+        public UserInfo GetUserInfo(string key, string username, string password)
+        {
+            ValidateUser(username, password);
+            throw new NotImplementedException();
+        }
+
+        public int AddCategory(string key, string username, string password, NewCategory category)
+        {
+            ValidateUser(username, password);
             throw new NotImplementedException();
         }
 

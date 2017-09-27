@@ -28,7 +28,7 @@ namespace Miniblog.Core
             Initialize();
         }
 
-        public void Delete(Post post)
+        public void DeletePost(Post post)
         {
             string filePath = GetFilePath(post);
 
@@ -58,7 +58,14 @@ namespace Miniblog.Core
             return _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task Save(Post post)
+        public IEnumerable<string> GetCategories()
+        {
+            return _cache.SelectMany(post => post.Categories)
+                         .Select(cat => cat.ToLowerInvariant())
+                         .Distinct();
+        }
+
+        public async Task SavePost(Post post)
         {
             post.LastModified = DateTime.UtcNow;
 
@@ -98,6 +105,26 @@ namespace Miniblog.Core
             }
 
             _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+        }
+
+        public string SaveFile(string bits, string extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                extension = ".bin";
+            }
+
+            string relative = $"/files/{ Guid.NewGuid()}{extension}";
+            string absolute = _env.WebRootFileProvider.GetFileInfo(relative).PhysicalPath;
+            string dir = Path.GetDirectoryName(absolute);
+
+            Directory.CreateDirectory(dir);
+
+            byte[] bytes = Convert.FromBase64String(bits);
+
+            File.WriteAllBytes(absolute, bytes);
+
+            return relative;
         }
     }
 }

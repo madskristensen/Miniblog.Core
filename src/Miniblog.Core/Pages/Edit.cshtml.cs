@@ -48,7 +48,7 @@ namespace Miniblog.Core.Pages
             existing.Content = Post.Content.Trim();
             existing.Excerpt = Post.Excerpt.Trim();
 
-            await _storage.Save(existing);
+            await _storage.SavePost(existing);
 
             return Redirect(Post.GetLink());
         }

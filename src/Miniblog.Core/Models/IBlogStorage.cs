@@ -11,8 +11,12 @@ namespace Miniblog.Core
 
         Post GetPostById(string id);
 
-        Task Save(Post post);
+        IEnumerable<string> GetCategories();
 
-        void Delete(Post post);
+        Task SavePost(Post post);
+
+        void DeletePost(Post post);
+
+        string SaveFile(string bits, string fileExtension);
     }
 }

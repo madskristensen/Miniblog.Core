@@ -49,7 +49,7 @@ namespace Miniblog.Core.Pages
             Comment.Content = Comment.Content.Trim();
 
             post.Comments.Add(Comment);
-            _storage.Save(post);
+            _storage.SavePost(post);
 
             return Redirect(post.GetLink() + "#" + Comment.ID);
         }
@@ -76,7 +76,7 @@ namespace Miniblog.Core.Pages
             }
 
             post.Comments.Remove(comment);
-            _storage.Save(post);
+            _storage.SavePost(post);
 
             return Redirect(post.GetLink() + "#comments");
         }
