@@ -32,7 +32,7 @@ namespace Miniblog.Core.Pages
 
         public async Task OnPost(string username, string password, string remember)
         {
-            if (username == _config["user:username"] && VerifyHashedPassword(password))
+            if (username == _config["user:username"] && VerifyHashedPassword(password, _config))
             {
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name, _config["user:username"]));
@@ -64,9 +64,9 @@ namespace Miniblog.Core.Pages
             }
         }
 
-        private bool VerifyHashedPassword(string password)
+        public static bool VerifyHashedPassword(string password, IConfiguration config)
         {
-            byte[] saltBytes = Encoding.UTF8.GetBytes(_config["user:salt"]);
+            byte[] saltBytes = Encoding.UTF8.GetBytes(config["user:salt"]);
 
             byte[] hashBytes = KeyDerivation.Pbkdf2(
                 password: password,
@@ -77,7 +77,7 @@ namespace Miniblog.Core.Pages
             );
 
             string hashText = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
-            return hashText == _config["user:password"];
+            return hashText == config["user:password"];
         }
     }
 }

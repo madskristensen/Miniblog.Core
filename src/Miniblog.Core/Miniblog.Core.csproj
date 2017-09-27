@@ -9,6 +9,7 @@
     <PackageReference Include="LigerShark.WebOptimizer.Sass" Version="1.0.32-beta" />
     <PackageReference Include="Markdig" Version="0.13.3" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="WilderMinds.MetaWeblog" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

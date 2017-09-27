@@ -16,16 +16,26 @@ namespace Miniblog.Core
 
         public HtmlString RenderMarkdown(Post post)
         {
-            string html = Markdown.ToHtml(post.Content, _pipelinePost);
+            if (!string.IsNullOrWhiteSpace(post.Content))
+            {
+                string html = Markdown.ToHtml(post.Content, _pipelinePost);
 
-            return new HtmlString(html);
+                return new HtmlString(html);
+            }
+
+            return new HtmlString("");
         }
 
         public HtmlString RenderComment(Comment comment)
         {
-            string html = Markdown.ToHtml(comment.Content, _pipelineComment);
+            if (!string.IsNullOrWhiteSpace(comment.Content))
+            {
+                string html = Markdown.ToHtml(comment.Content, _pipelineComment);
 
-            return new HtmlString(html);
+                return new HtmlString(html);
+            }
+
+            return new HtmlString("");
         }
 
         private void BuildPipeline(bool allowHtml)

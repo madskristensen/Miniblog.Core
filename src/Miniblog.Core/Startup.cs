@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System;
+using WilderMinds.MetaWeblog;
 
 namespace Miniblog.Core
 {
@@ -37,6 +38,7 @@ namespace Miniblog.Core
             services.AddSingleton<IBlogStorage, JsonStorage>();
             services.AddSingleton<RenderingService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
+            services.AddMetaWeblog<MetaWeblogService>();
 
             services.AddAuthentication(options =>
             {
@@ -82,6 +84,7 @@ namespace Miniblog.Core
                 app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
             }
 
+            app.UseMetaWeblog("/metaweblog");
             app.UseAuthentication();
 
             app.UseMvc(routes =>

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<manifest xmlns="http://schemas.microsoft.com/wlw/manifest/weblog">
+  <options>
+    <clientType>Metaweblog</clientType>
+    <supportsEmbeds>Yes</supportsEmbeds>
+    <supportsKeywords>No</supportsKeywords>
+    <supportsNewCategories>Yes</supportsNewCategories>
+    <supportsNewCategoriesInline>Yes</supportsNewCategoriesInline>
+    <supportsCommentPolicy>No</supportsCommentPolicy>
+    <supportsSlug>Yes</supportsSlug>
+    <supportsExcerpt>Yes</supportsExcerpt>
+    <supportsPages>No</supportsPages>
+    <supportsPageParent>No</supportsPageParent>
+    <supportsAuthor>No</supportsAuthor>
+    <supportsGetTags>No</supportsGetTags>
+    <requiresHtmlTitles>No</requiresHtmlTitles>
+    <supportsEmptyTitles>No</supportsEmptyTitles>
+    <fileUploadNameFormat>{FileName}</fileUploadNameFormat>
+  </options>
+  <weblog>
+    <ServiceName>MiniBlog.Core</ServiceName>
+    <imageUrl>img/icon16x16.png</imageUrl>
+    <watermarkImageUrl>img/icon16x16.png</watermarkImageUrl>
+    <homepageLinkText>View your blog</homepageLinkText>
+    <adminLinkText>Manage your blog</adminLinkText>
+    <adminUrl><![CDATA[{blog-homepage-url}/login/]]></adminUrl>
+  </weblog>
+</manifest>
