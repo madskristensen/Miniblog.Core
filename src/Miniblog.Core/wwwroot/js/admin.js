@@ -1,5 +1,6 @@
 ﻿(function () {
 
+    // Setup markdown editor
     var editPost = document.querySelector("#Post_Content");
 
     if (editPost) {
@@ -9,6 +10,7 @@
         });
     }
 
+    // Delete comments
     var deleteLinks = document.querySelectorAll("a.delete");
 
     if (deleteLinks) {
@@ -21,6 +23,17 @@
                 }
             });
         }
+    }
+
+    // Delete post
+    var deleteButton = document.querySelector(".delete");
+
+    if (deleteButton) {
+        deleteButton.addEventListener("click", function (e) {
+            if (!confirm("Are you sure you want to delete the post?")) {
+                e.preventDefault();
+            }
+        });
     }
 
 })();

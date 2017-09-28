@@ -4,8 +4,11 @@
     ViewData["Title"] = "Edit " + (Model.Post.Title ?? "new post");
 }
 
-<link rel="stylesheet" href="~/css/admin.scss" />
-<link rel="stylesheet" href="~/lib/simplemde.min.css" />
+@section Head{
+    <link rel="stylesheet" href="~/css/admin.scss" />
+    <link rel="stylesheet" href="~/lib/simplemde.min.css" />
+}
+
 <div asp-validation-summary="All"></div>
 
 <form method="post" id="edit">
@@ -25,7 +28,12 @@
 
     <textarea asp-for="@Model.Post.Content" aria-label="Content">@Model.Post.Content</textarea>
 
-    <input type="submit" value="Save" />
+    <input type="submit" value="Save" title="Save the post" />
+
+    @if (!Model.IsNew)
+    {
+        <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-page-handler="Delete" />
+    }
 
     <input asp-for="@Model.Post.IsPublished" />
     <label asp-for="@Model.Post.IsPublished">Is published</label>

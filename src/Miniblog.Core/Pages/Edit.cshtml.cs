@@ -17,13 +17,16 @@ namespace Miniblog.Core.Pages
         }
 
         [BindProperty]
-        public Post Post { get;  set; }
+        public Post Post { get; set; }
+
+        public bool IsNew { get; private set; }
 
         public IActionResult OnGet(string id = null)
         {
             if (string.IsNullOrEmpty(id))
             {
                 Post = new Post();
+                IsNew = true;
             }
             else
             {
@@ -51,6 +54,19 @@ namespace Miniblog.Core.Pages
             await _storage.SavePost(existing);
 
             return Redirect(Post.GetLink());
+        }
+
+        public IActionResult OnPostDelete()
+        {
+            var existing = _storage.GetPostById(Post.ID);
+
+            if (existing != null)
+            {
+                _storage.DeletePost(existing);
+                return Redirect("/");
+            }
+
+            return NotFound();
         }
     }
 }

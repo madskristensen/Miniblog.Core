@@ -28,6 +28,14 @@
         padding: 5px;
         width: 100%;
     }
+
+    .delete{
+        float: right;
+        color: crimson;
+        border: 0;
+        background: none;
+        cursor: pointer;
+    }
 }
 
 .validation-summary-errors{
