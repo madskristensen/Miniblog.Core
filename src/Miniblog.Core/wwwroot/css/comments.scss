@@ -1,8 +1,16 @@
-﻿$bg_color: #dff0f5;
-$bg_color_admin: #f7f7f7;
+﻿$bg_color: #f1f1f1;
+$border-color: #bbb;
+$border-color_admin: #0078cb;
 $bg_new_comment_color: #ffe44e;
 
 #comments {
+    background: #f7f7f7;
+    padding: 1.3em 0;
+
+    h2{
+        padding: 0;
+        margin-top: 0;
+    }
 
     form {
         margin-top: 2em;
@@ -21,8 +29,7 @@ $bg_new_comment_color: #ffe44e;
     input,
     textarea {
         font: inherit;
-        border: 1px solid #c7c7c7;
-        border-radius: 3px;
+        border: 1px solid $border-color;
         padding: 5px 0;
         width: 100%;
     }
@@ -44,7 +51,7 @@ $bg_new_comment_color: #ffe44e;
 
     article {
         background: $bg_color;
-        border-radius: 6px;
+        border: 1px solid $border-color;
         padding: 7px 1em;
         margin-bottom: 1em;
 
@@ -53,7 +60,7 @@ $bg_new_comment_color: #ffe44e;
         }
 
         &.admin {
-            background: $bg_color_admin;
+            border: 1px solid $border-color_admin;
         }
     }
 

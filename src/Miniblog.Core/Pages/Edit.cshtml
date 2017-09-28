@@ -15,20 +15,24 @@
     <input type="hidden" asp-for="@Model.Post.ID" />
 
     <label asp-for="@Model.Post.Title" class="label">Title</label>
-    <input asp-for="@Model.Post.Title" required placeholder="Title of blog post" />
+    <input asp-for="@Model.Post.Title" required placeholder="Title of blog post" aria-describedby="desc_title" />
+    <span class="desc" id="desc_title">The title as it appears on the website</span>
     <br />
 
     <label asp-for="@Model.Post.Slug" class="label">Slug</label>
-    <input asp-for="@Model.Post.Slug" required placeholder="The URL name" />
+    <input asp-for="@Model.Post.Slug" required placeholder="The URL name" aria-="desc_slug" />
+    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
     <br />
 
     <label for="categories" class="label">Tags</label>
-    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Post.Categories)" />
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Post.Categories)" aria-describedby="desc_categories" />
+    <span class="desc" id="desc_categories">A comma separated list of keywords</span>
     <br />
 
     <label asp-for="@Model.Post.Excerpt" class="label">Excerpt</label>
-    <textarea asp-for="@Model.Post.Excerpt" rows="3" required placeholder="Short description of blog post">@Model.Post.Excerpt</textarea>
-    <br /><br />
+    <textarea asp-for="@Model.Post.Excerpt" rows="3" required placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.Post.Excerpt</textarea>
+    <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+    <br />
 
     <textarea asp-for="@Model.Post.Content" aria-label="Content">@Model.Post.Content</textarea>
 

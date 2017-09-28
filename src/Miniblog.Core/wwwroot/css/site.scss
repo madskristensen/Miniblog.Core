@@ -1,6 +1,7 @@
 ﻿$footer_height: 150px;
-$link_color: #b23636;
+$link_color: #0078cb;
 $text_color: #222;
+$header_color: indianred;
 
 html {
     min-height: 100%;
@@ -10,9 +11,8 @@ html {
 body {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-size: 20px;
-    /*font-weight: 300;*/
     padding: 0;
-    margin: 0 0 50px + $footer_height 0;
+    margin: 0 0 $footer_height 0;
     color: $text_color;
 }
 
@@ -73,14 +73,17 @@ time {
 }
 
 .post {
-    display: inline-block;
+    display: block;
 
     header {
+        margin-bottom: 1em;
+
         h2 {
             font-size: 2.5em;
+            font-variant: small-caps;
             line-height: 1.1;
             margin: 0;
-            font-variant: small-caps;
+            color: $header_color;
         }
     }
 
@@ -92,23 +95,27 @@ time {
         -ms-hyphens: auto;
         -moz-hyphens: auto;
         hyphens: auto;
-    }
 
-    p {
-        margin: 1.1em 0;
-    }
-
-    blockquote {
-        border-top: 1px dotted lighten($text_color, 50%);
-        border-bottom: 1px dotted lighten($text_color, 50%);
-        color: lighten($text_color, 30%);
-        font-size: 1.2em;
-        width: 90%;
-        margin: 60px auto;
-        font-style: italic;
+        h2, h3, h4 {
+            color: $header_color;
+        }
 
         p {
-            margin: 1em .5em;
+            margin: 1.1em 0 0 0;
+        }
+
+        blockquote {
+            border-top: 1px dotted lighten($text_color, 50%);
+            border-bottom: 1px dotted lighten($text_color, 50%);
+            color: lighten($text_color, 30%);
+            font-size: 1.2em;
+            width: 90%;
+            margin: 60px auto;
+            font-style: italic;
+
+            p {
+                margin: 1em .5em;
+            }
         }
     }
 }

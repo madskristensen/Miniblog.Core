@@ -1,7 +1,6 @@
 ﻿#edit {
     .label {
         display: inline-block;
-        margin-top: 1em;
         margin-right: .3em;
         font-weight: bold;
         min-width: 50px;
@@ -19,6 +18,13 @@
         }
     }
 
+    input + span,
+    textarea + span{
+        display: block;
+        font-size: .9em,;
+        color: #888;
+    }
+
     textarea {
         font: inherit;
         -moz-box-sizing: border-box;
@@ -30,7 +36,7 @@
         width: 100%;
     }
 
-    .delete{
+    .delete {
         float: right;
         color: crimson;
         border: 0;
