@@ -5,6 +5,11 @@ VisualStudioVersion = 15.0.26914.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miniblog.Core", "src\Miniblog.Core\Miniblog.Core.csproj", "{8CE1A353-8B0D-43F1-B681-6057BAC241BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E78285B4-DA3B-430D-8E6E-EA02C0FCB8F9}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
