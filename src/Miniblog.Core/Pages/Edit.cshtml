@@ -22,6 +22,10 @@
     <input asp-for="@Model.Post.Slug" required placeholder="The URL name" />
     <br />
 
+    <label for="categories" class="label">Tags</label>
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Post.Categories)" />
+    <br />
+
     <label asp-for="@Model.Post.Excerpt" class="label">Excerpt</label>
     <textarea asp-for="@Model.Post.Excerpt" rows="3" required placeholder="Short description of blog post">@Model.Post.Excerpt</textarea>
     <br /><br />

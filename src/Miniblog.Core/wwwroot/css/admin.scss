@@ -2,8 +2,9 @@
     .label {
         display: inline-block;
         margin-top: 1em;
+        margin-right: .3em;
         font-weight: bold;
-        width: 50px;
+        min-width: 50px;
     }
 
     input {

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Miniblog.Core;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Miniblog.Core.Pages
@@ -44,7 +46,9 @@ namespace Miniblog.Core.Pages
             }
 
             var existing = _storage.GetPostById(Post.ID) ?? Post;
+            string categories = Request.Form["categories"];
 
+            existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
             existing.Title = Post.Title.Trim();
             existing.Slug = Post.Slug.Trim();
             existing.IsPublished = Post.IsPublished;
