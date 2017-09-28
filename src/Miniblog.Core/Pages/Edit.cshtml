@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="~/lib/simplemde.min.css" />
 }
 
-<div asp-validation-summary="All"></div>
 
-<form method="post" id="edit">
+<form method="post" id="edit" class="container">
+    <div asp-validation-summary="All"></div>
     <input type="hidden" asp-for="@Model.Post.ID" />
 
     <label asp-for="@Model.Post.Title" class="label">Title</label>
@@ -20,7 +20,7 @@
     <br />
 
     <label asp-for="@Model.Post.Slug" class="label">Slug</label>
-    <input asp-for="@Model.Post.Slug" required placeholder="The URL name" aria-="desc_slug" />
+    <input asp-for="@Model.Post.Slug" required placeholder="The URL name" aria-describedby="desc_slug" />
     <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
     <br />
 

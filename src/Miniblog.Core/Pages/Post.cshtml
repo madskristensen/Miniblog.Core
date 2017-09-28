@@ -60,12 +60,15 @@
             <form method="post" asp-page="Post" asp-page-handler="Comment" asp-route-id="@Model.Post.ID">
                 <h3>Post a comment</h3>
                 <label asp-for="@Model.Comment.Author">Name</label>
-                <input asp-for="@Model.Comment.Author" placeholder="Enter your name" required />
+                <input asp-for="@Model.Comment.Author" placeholder="Your name" required />
 
                 <label asp-for="@Model.Comment.Email">E-mail</label>
                 <input asp-for="@Model.Comment.Email" placeholder="Example: mary@example.com" required />
 
-                <label asp-for="@Model.Comment.Content">Comment <span>(markdown allowed)</span></label>
+                <label asp-for="@Model.Comment.Content">
+                    Comment
+                    <span>(<a href="https://simplemde.com/markdown-guide" target="_blank" rel="noreferrer noopener">markdown</a> allowed)</span>
+                </label>
                 <textarea asp-for="@Model.Comment.Content" rows="5" cols="100" required></textarea>
 
                 <input type="submit" value="Post comment" />
