@@ -82,29 +82,8 @@ namespace Miniblog.Core
             {
                 post.ID = Path.GetFileNameWithoutExtension(filePath);
                 _cache.Add(post);
-                _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+                SortCache();
             }
-        }
-
-        private string GetFilePath(Post post)
-        {
-            return Path.Combine(_folder, post.ID + ".json");
-        }
-
-        private void Initialize()
-        {
-            _cache = new List<Post>();
-
-            foreach (string file in Directory.EnumerateFiles(_folder, "*.json", SearchOption.TopDirectoryOnly))
-            {
-                string json = File.ReadAllText(file);
-                var post = JsonConvert.DeserializeObject<Post>(json);
-                post.ID = Path.GetFileNameWithoutExtension(file);
-
-                _cache.Add(post);
-            }
-
-            _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
         }
 
         public string SaveFile(string bits, string extension)
@@ -125,6 +104,32 @@ namespace Miniblog.Core
             File.WriteAllBytes(absolute, bytes);
 
             return relative;
+        }
+
+        private void SortCache()
+        {
+            _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+        }
+
+        private string GetFilePath(Post post)
+        {
+            return Path.Combine(_folder, post.ID + ".json");
+        }
+
+        private void Initialize()
+        {
+            _cache = new List<Post>();
+
+            foreach (string file in Directory.EnumerateFiles(_folder, "*.json", SearchOption.TopDirectoryOnly))
+            {
+                string json = File.ReadAllText(file);
+                var post = JsonConvert.DeserializeObject<Post>(json);
+                post.ID = Path.GetFileNameWithoutExtension(file);
+
+                _cache.Add(post);
+            }
+
+            SortCache();
         }
     }
 }

@@ -18,10 +18,9 @@
 
     <div itemprop="text" class="container">
         @rs.RenderMarkdown(Model.Post)
-
+        <br />
         @if (User.Identity.IsAuthenticated)
         {
-            <br />
             <a href="~/edit/@Model.Post.ID/" title="Edit the post">Edit post</a>
             <br /><br />
 
