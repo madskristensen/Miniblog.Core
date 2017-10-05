@@ -6,20 +6,21 @@ $header_color: indianred;
 html {
     min-height: 100%;
     position: relative;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 }
 
 body {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-    font-size: 20px;
+    font: 20px -apple-system, system, sans-serif;
     padding: 0;
     margin: 0 0 $footer_height 0;
     color: $text_color;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 0 1.5em;
+    padding: 0 1.5rem;
 }
 
 .siteheader {
@@ -51,7 +52,6 @@ img {
 }
 
 time {
-    font-weight: bold;
     margin-right: .8em;
 }
 
@@ -79,10 +79,8 @@ time {
         margin-bottom: 1em;
 
         h2 {
-            font-size: 2.5em;
-            font-variant: small-caps;
-            line-height: 1.1;
-            margin: 0;
+            font-size: 2em;
+            margin: 0 0 .3em 0;
             color: $header_color;
         }
     }

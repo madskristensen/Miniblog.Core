@@ -108,14 +108,20 @@ namespace Miniblog.Core
 
                 foreach (Post post in posts)
                 {
-                    var item = new SyndicationItem
+                    var item = new AtomEntry
                     {
                         Title = post.Title,
                         Description = _rs.RenderMarkdown(post).Value,
                         Id = host + post.GetLink(),
                         Published = post.PubDate,
-                        LastUpdated = post.LastModified
+                        LastUpdated = post.LastModified,
+                        ContentType = "html",
                     };
+
+                    if (!string.IsNullOrEmpty(post.Excerpt))
+                    {
+                        item.Summary = post.Excerpt;
+                    }
 
                     foreach (string category in post.Categories)
                     {
@@ -147,6 +153,7 @@ namespace Miniblog.Core
             var atom = new AtomFeedWriter(xmlWriter);
             await atom.WriteTitle(_settings.Value.Name);
             await atom.WriteId(host);
+            await atom.WriteGenerator("Miniblog.Core", "https://github.com/madskristensen/Miniblog.Core", "1.0");
             await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             return atom;
         }
