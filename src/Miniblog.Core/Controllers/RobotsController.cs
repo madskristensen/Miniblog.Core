@@ -4,6 +4,7 @@ using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -102,8 +103,8 @@ namespace Miniblog.Core
 
             using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
             {
-                var writer = await GetWriter(type, xmlWriter);
                 var posts = _storage.GetPosts(10);
+                var writer = await GetWriter(type, xmlWriter, posts.Max(p => p.PubDate));
 
                 foreach (Post post in posts)
                 {
@@ -122,14 +123,14 @@ namespace Miniblog.Core
                     }
 
                     item.AddContributor(new SyndicationPerson(_settings.Value.Owner, "test@example.com"));
-                    item.AddLink(new SyndicationLink(new Uri(item.Id), "self"));
+                    item.AddLink(new SyndicationLink(new Uri(item.Id)));
 
                     await writer.Write(item);
                 }
             }
         }
 
-        private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter)
+        private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter, DateTime updated)
         {
             string host = Request.Scheme + "://" + Request.Host + "/";
 
@@ -139,12 +140,14 @@ namespace Miniblog.Core
                 await rss.WriteTitle(_settings.Value.Name);
                 await rss.WriteDescription(_settings.Value.Description);
                 await rss.WriteGenerator("Miniblog.Core");
+                await rss.WriteValue("link", host);
                 return rss;
             }
 
             var atom = new AtomFeedWriter(xmlWriter);
             await atom.WriteTitle(_settings.Value.Name);
             await atom.WriteId(host);
+            await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             return atom;
         }
     }

@@ -19,11 +19,12 @@ A simple yet powerful blog engine built on ASP.NET Core 2.0.
 - High performance. Gets 100/100 points on Google PageSpeed Insights 
   - [Run PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
 - Speed Index < 1000
-  - [See WebPageTest](http://www.webpagetest.org/result/170928_KA_99d23c70ef717df8ffe32f6e43ad9b18/) 
+  - [See WebPageTest](http://www.webpagetest.org/result/170928_1R_cf91bb2d800cc389821c5cfa7e353f0d/) 
 - Meets highest accessibility standards 
   - [Run accessibility validator](http://wave.webaim.org/report#/https://miniblogcore.azurewebsites.net/)
-- W3C standards compliant HTML and CSS 
+- W3C standards compliant 
   - [Run HTML validator](https://html5.validator.nu/?doc=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
+  - [Run RSS validator](https://validator.w3.org/feed/check.cgi?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2Ffeed%2Frss%2F)
 - Automatic thumbnail generation
 - Responsive web design
   - [See mobile emulators](https://www.responsinator.com/?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
