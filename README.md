@@ -10,7 +10,7 @@ A simple yet powerful blog engine built on ASP.NET Core 2.0.
 - User comments
 - Windows/Open Live Writer support
 - Search Engine optimized
-- All major browsers fully supported (IE 10+)
+- All major browsers fully supported (IE 9+)
 - Social media integration (Facebook, Twitter, Pinterest)
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59cd65b60cf235afa2921e9e)

@@ -1,7 +1,6 @@
 ﻿$footer_height: 150px;
 $link_color: #0078cb;
 $text_color: #222;
-$header_color: indianred;
 
 html {
     min-height: 100%;
@@ -11,7 +10,7 @@ html {
 }
 
 body {
-    font: 20px -apple-system, system, sans-serif;
+    font: 18px "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0 0 $footer_height 0;
     color: $text_color;
@@ -41,7 +40,7 @@ a {
     color: $link_color;
 
     &:hover,
-    &:focus{
+    &:focus {
         text-decoration: none;
     }
 }
@@ -52,6 +51,7 @@ img {
 }
 
 time {
+    font-weight: bold;
     margin-right: .8em;
 }
 
@@ -74,6 +74,10 @@ time {
 
 .post {
     display: block;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
 
     header {
         margin-bottom: 1em;
@@ -81,22 +85,12 @@ time {
         h2 {
             font-size: 2em;
             margin: 0 0 .3em 0;
-            color: $header_color;
         }
     }
 
     > div {
         text-align: justify;
         line-height: 1.6;
-        word-wrap: break-word;
-        -webkit-hyphens: auto;
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        hyphens: auto;
-
-        h2, h3, h4 {
-            color: $header_color;
-        }
 
         p {
             margin: 1.1em 0 0 0;
