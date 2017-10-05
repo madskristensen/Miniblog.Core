@@ -1,0 +1,51 @@
+﻿@model Post
+@{
+    ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
+}
+
+@section Head{
+    <link rel="stylesheet" href="~/css/admin.scss" />
+    <link rel="stylesheet" href="~/lib/simplemde.min.css" />
+}
+
+<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
+    <div asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="@Model.ID" />
+
+    <label asp-for="@Model.Title" class="label">Title</label>
+    <input asp-for="@Model.Title" required placeholder="Title of blog post" aria-describedby="desc_title" />
+    <span class="desc" id="desc_title">The title as it appears on the website</span>
+    <br />
+
+    <label asp-for="@Model.Slug" class="label">Slug</label>
+    <input asp-for="@Model.Slug" required placeholder="The URL name" aria-describedby="desc_slug" />
+    <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
+    <br />
+
+    <label for="categories" class="label">Tags</label>
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" aria-describedby="desc_categories" />
+    <span class="desc" id="desc_categories">A comma separated list of keywords</span>
+    <br />
+
+    <label asp-for="@Model.Excerpt" class="label">Excerpt</label>
+    <textarea asp-for="@Model.Excerpt" rows="3" required placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
+    <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+    <br />
+
+    <textarea asp-for="@Model.Content" aria-label="Content">@Model.Content</textarea>
+
+    <input type="submit" value="Save" title="Save the post" />
+
+    @if (Model != null)
+    {
+        <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" />
+    }
+
+    <input asp-for="@Model.IsPublished" />
+    <label asp-for="@Model.IsPublished">Is published</label>
+</form>
+
+@section Scripts {
+    <script src="~/lib/simplemde.min.js"></script>
+    <script src="~/js/admin.js" async></script>
+}

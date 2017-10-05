@@ -1,7 +1,7 @@
 ﻿(function () {
 
     // Setup markdown editor
-    var editPost = document.querySelector("#Post_Content");
+    var editPost = document.querySelector("#Content");
 
     if (editPost) {
         var simplemde = new SimpleMDE({
