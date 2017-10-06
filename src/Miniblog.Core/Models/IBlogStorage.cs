@@ -5,7 +5,7 @@ namespace Miniblog.Core
 {
     public interface IBlogStorage
     {
-        IEnumerable<Post> GetPosts(int count);
+        IEnumerable<Post> GetPosts(int count, int skip = 0);
 
         IEnumerable<Post> GetPostsByCategory(string category);
 

@@ -1,9 +1,9 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
 <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8" />
-    <title>@ViewData["Title"]</title>
+    <title itemprop="name">@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@ViewData["Description"]" />
     <link rel="stylesheet" href="~/css/site.scss" inline />
@@ -53,11 +53,7 @@
                 </ul>
             </nav>
             <p>
-                Copyright &copy;
-                <span itemprop="copyrightYear">@DateTime.Now.Year</span>
-                <span itemscope itemtype="http://schema.org/Person" itemprop="author copyrightHolder">
-                    - <span itemprop="name">@settings.Value.Owner</span>
-                </span>
+               Powered by <a href="https://github.com/madskristensen/Miniblog.Core" rel="noopener noreferrer" target="_blank">Miniblog.Core</a>
             </p>
         </div>
     </footer>

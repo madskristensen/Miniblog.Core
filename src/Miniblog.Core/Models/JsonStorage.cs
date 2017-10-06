@@ -28,24 +28,9 @@ namespace Miniblog.Core
             Initialize();
         }
 
-        public void DeletePost(Post post)
+        public IEnumerable<Post> GetPosts(int count, int skip = 0)
         {
-            string filePath = GetFilePath(post);
-
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            if (_cache.Contains(post))
-            {
-                _cache.Remove(post);
-            }
-        }
-
-        public IEnumerable<Post> GetPosts(int count)
-        {
-            return _cache.Take(count);
+            return _cache.Skip(skip).Take(count);
         }
 
         public IEnumerable<Post> GetPostsByCategory(string category)
@@ -88,6 +73,21 @@ namespace Miniblog.Core
                 post.ID = Path.GetFileNameWithoutExtension(filePath);
                 _cache.Add(post);
                 SortCache();
+            }
+        }
+
+        public void DeletePost(Post post)
+        {
+            string filePath = GetFilePath(post);
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            if (_cache.Contains(post))
+            {
+                _cache.Remove(post);
             }
         }
 

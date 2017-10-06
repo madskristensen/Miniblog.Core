@@ -1,6 +1,4 @@
-﻿$footer_height: 150px;
-$link_color: #0078cb;
-$text_color: #222;
+﻿@import "variables";
 
 html {
     min-height: 100%;
@@ -10,7 +8,7 @@ html {
 }
 
 body {
-    font: 18px "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
+    font: 18px/1.6 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0 0 $footer_height 0;
     color: $text_color;
@@ -73,26 +71,27 @@ time {
 }
 
 .post {
-    display: block;
     word-wrap: break-word;
-    -webkit-hyphens: auto;
-    -ms-hyphens: auto;
     -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
     margin-top: 2em;
 
     header {
-        margin-bottom: 1em;
-        padding: .5em 1.5em;
-
         h2 {
             font-size: 2em;
-            margin: 0 0 .3em 0;
+            margin: 0;
+
+            a{
+                color: $text_color;
+                text-decoration: none;
+            }
         }
     }
 
     > div {
         text-align: justify;
-        line-height: 1.6;
 
         p {
             margin: 1.1em 0 0 0;
@@ -112,23 +111,40 @@ time {
             }
         }
     }
+
+    .categories {
+        list-style: none;
+        padding: 0 0 1.5em 0;
+        margin: 0;
+
+        li {
+            display: inline-block;
+            margin-right: .3em;
+
+            &:first-child {
+                font-weight: bold;
+            }
+
+            &:not(:first-child):not(:last-child):after {
+                content: ", ";
+            }
+        }
+    }
 }
 
-.categories {
-    list-style: none;
-    padding: 0 0 1.5em 0;
-    margin: 0;
+.pagination {
+    padding-bottom: 2em;
+    margin-top: 1em;
 
-    li {
+    a {
+        border: 1px solid #ddd;
+        border-radius: 20px;
         display: inline-block;
-        margin-right: .5em;
+        padding: 4px 15px;
+        text-decoration: none;
 
-        &:first-child{
-            font-weight: bold;
-        }
-
-        &:not(:first-child):not(:last-child):after {
-            content: ", ";
+        &[rel=next] {
+            float: right;
         }
     }
 }

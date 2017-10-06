@@ -1,12 +1,24 @@
 ﻿@model IEnumerable<Post>
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
-    ViewData["Title"] = settings.Value.Name;
+    int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
 }
 
-@{
-    foreach (var post in Model)
-    {
-        await Html.RenderPartialAsync("post", post);
-    }
+@foreach (var post in Model)
+{
+    await Html.RenderPartialAsync("post.cshtml", post);
 }
+
+<nav class="pagination container" arial-label="Pagination">
+    @if (Model.Any())
+    {
+        <a rel="prev" href="@ViewData["prev"]" title="Older posts">← Older</a>
+    }
+
+    @if (currentPage > 0)
+    {
+        <a rel="next" href="@ViewData["next"]" title="Newer posts">Newer →</a>
+    }
+
+    <br /><br />
+</nav>

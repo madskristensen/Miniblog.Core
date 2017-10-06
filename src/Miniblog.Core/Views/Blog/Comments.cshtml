@@ -1,5 +1,6 @@
 ﻿@model Post
 @inject RenderingService rs
+
 <link rel="stylesheet" href="~/css/comments.scss" />
 <section id="comments">
     <div class="container">
@@ -10,7 +11,7 @@
                 <span itemprop="name">@comment.Author</span>
                 <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
                     @comment.PubDate.ToString("MMMM d, yyyy")
-                    <a href="#@comment.ID" title="Permalink (#@comment.ID)">#</a>
+                    <a href="#@comment.ID" title="Permalink (#@comment.ID)" class="permalink">#</a>
                 </time>
                 <div itemprop="text">@rs.RenderComment(comment)</div>
 
@@ -22,7 +23,7 @@
         }
 
         @if (Model.Comments.Count == 0)
-            {
+        {
             <p>Be the first to post a comment</p>
         }
 

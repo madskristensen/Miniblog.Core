@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -21,18 +20,26 @@ namespace Miniblog.Core
             _rs = rs;
         }
 
-        [Route("/")]
-        public IActionResult Index()
+        [Route("/{page:int?}")]
+        public IActionResult Index([FromRoute]int page = 0)
         {
-            var posts = _storage.GetPosts(5);
-            return View(posts);
+            var posts = _storage.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            ViewData["Title"] = _settings.Value.Name;
+            ViewData["Description"] = _settings.Value.Description;
+            ViewData["prev"] = $"/{page + 1}/";
+            ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
+            return View("views/blog/index.cshtml", posts);
         }
 
-        [Route("/category/{category}")]
-        public IActionResult Category(string category)
+        [Route("/category/{category}/{page:int?}")]
+        public IActionResult Category(string category, int page = 0)
         {
-            var posts = _storage.GetPostsByCategory(category);
-            return View("Index", posts);
+            var posts = _storage.GetPostsByCategory(category).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            ViewData["Title"] = category;
+            ViewData["Description"] = $"Articles posted in the {category} category";
+            ViewData["prev"] = $"/category/{category}/{page + 1}/";
+            ViewData["next"] = $"/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
+            return View("views/blog/index.cshtml", posts);
         }
 
         [Route("/post/{slug?}")]

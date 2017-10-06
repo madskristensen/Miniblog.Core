@@ -1,7 +1,4 @@
-﻿$bg_color: #f1f1f1;
-$border-color: #bbb;
-$border-color_admin: #0078cb;
-$bg_new_comment_color: #ffe44e;
+﻿@import "variables";
 
 #comments {
     background: #f7f7f7;
@@ -33,7 +30,7 @@ $bg_new_comment_color: #ffe44e;
     input,
     textarea {
         font: inherit;
-        border: 1px solid $border-color;
+        border: 1px solid $comments_border-color;
         padding: 5px 0;
         width: 100%;
     }
@@ -54,8 +51,8 @@ $bg_new_comment_color: #ffe44e;
     }
 
     article {
-        background: $bg_color;
-        border: 1px solid $border-color;
+        background: $comments_bg_color;
+        border: 1px solid $comments_border-color;
         padding: 7px 1em;
         margin-bottom: 1em;
 
@@ -64,7 +61,7 @@ $bg_new_comment_color: #ffe44e;
         }
 
         &.admin {
-            border: 1px solid $border-color_admin;
+            border: 1px solid $link_color;
         }
     }
 
@@ -75,7 +72,7 @@ $bg_new_comment_color: #ffe44e;
 
     time {
         float: right;
-        font-size: .7em;
+        font-size: .8em;
         font-weight: normal;
         margin: 5px 0 0 0;
     }
@@ -83,14 +80,18 @@ $bg_new_comment_color: #ffe44e;
     :target {
         animation: target 3s ease-in-out;
     }
+
+    .permalink {
+        color: $text_color;
+    }
 }
 
 @keyframes target {
     from {
-        background-color: $bg_new_comment_color;
+        background-color: $comments_highlight_color;
     }
 
     to {
-        background-color: $bg_color;
+        background-color: $comments_bg_color;
     }
 }
