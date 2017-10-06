@@ -16,12 +16,10 @@ namespace Miniblog.Core.Controllers
     public class AccountController : Controller
     {
         private IConfiguration _config;
-        private SignInManager<IdentityUser> _signInManager;
 
-        public AccountController(IConfiguration config, SignInManager<IdentityUser> signInManager)
+        public AccountController(IConfiguration config)
         {
             _config = config;
-            _signInManager = signInManager;
         }
 
 

@@ -1,48 +1,51 @@
 ﻿@model Post
 @inject RenderingService rs
+@inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.Excerpt;
     bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
 }
 
-<article class="post">
-    <header class="container">
+<article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <header>
         @if (showFullPost)
         {
-            <h2 itemprop="name">@Model.Title</h2>
+            <h2 itemprop="name headline">@Model.Title</h2>
         }
-        else {
-            <h2 itemprop="name"><a href="@Model.GetLink()" rel="canonical">@Model.Title</a></h2>
+        else
+        {
+            <h2 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h2>
         }
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
         <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
             <span itemprop="commentCount">@Model.Comments.Count</span> comments
         </a>
+
+        <meta itemprop="author" content="@settings.Value.Owner" />
+        <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
     </header>
 
-    <div itemprop="text" class="container">
-        @rs.RenderMarkdown(Model)
-        <br />
+    <div itemprop="articleBody text mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
+    <br />
 
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
             <br /><br />
 
             @section Scripts {
                 <script src="~/js/admin.js" async></script>
             }
-        }
+    }
 
-        <ul class="categories">
-            <li>Posted in:</li>
-            @foreach (string cat in Model.Categories)
+    <ul class="categories">
+        <li>Posted in:</li>
+        @foreach (string cat in Model.Categories)
             {
-                <li><a href="~/category/@cat">@cat</a></li>
-            }
-        </ul>
-    </div>
+            <li itemprop="articleSection"><a href="~/category/@cat">@cat</a></li>
+        }
+    </ul>
 </article>
 
 @{
