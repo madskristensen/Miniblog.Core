@@ -1,14 +1,20 @@
 ﻿@model Post
 @inject RenderingService rs
-@inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.Excerpt;
+    bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
 }
 
 <article class="post">
     <header class="container">
-        <h2 itemprop="name">@Model.Title</h2>
+        @if (showFullPost)
+        {
+            <h2 itemprop="name">@Model.Title</h2>
+        }
+        else {
+            <h2 itemprop="name"><a href="@Model.GetLink()" rel="canonical">@Model.Title</a></h2>
+        }
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
         <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
             <span itemprop="commentCount">@Model.Comments.Count</span> comments
@@ -18,6 +24,7 @@
     <div itemprop="text" class="container">
         @rs.RenderMarkdown(Model)
         <br />
+
         @if (User.Identity.IsAuthenticated)
         {
             <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
@@ -27,7 +34,20 @@
                 <script src="~/js/admin.js" async></script>
             }
         }
+
+        <ul class="categories">
+            <li>Posted in:</li>
+            @foreach (string cat in Model.Categories)
+            {
+                <li><a href="~/category/@cat">@cat</a></li>
+            }
+        </ul>
     </div>
 </article>
 
-@{await Html.RenderPartialAsync("comments");}
+@{
+    if (showFullPost)
+    {
+        await Html.RenderPartialAsync("comments");
+    }
+}

@@ -4,19 +4,9 @@
     ViewData["Title"] = settings.Value.Name;
 }
 
-<div class="container">
-    <h2>Latest blog posts</h2>
-
-    <ul class="list">
-        @{
-            foreach (var post in Model)
-            {
-                <li>
-                    <a href="@post.GetLink()">@post.Title</a>
-                    <time datetime="@post.PubDate.ToString("s")">@post.PubDate.ToString("MMMM d, yyyy")</time>
-                    <span>@post.Comments.Count comments</span>
-                </li>
-            }
-        }
-    </ul>
-</div>
+@{
+    foreach (var post in Model)
+    {
+        await Html.RenderPartialAsync("post", post);
+    }
+}

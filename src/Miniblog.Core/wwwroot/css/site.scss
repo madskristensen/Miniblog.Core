@@ -19,7 +19,7 @@ body {
 .container {
     max-width: 750px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.5em;
 }
 
 .siteheader {
@@ -78,9 +78,11 @@ time {
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     -moz-hyphens: auto;
+    margin-top: 2em;
 
     header {
         margin-bottom: 1em;
+        padding: .5em 1.5em;
 
         h2 {
             font-size: 2em;
@@ -108,6 +110,25 @@ time {
             p {
                 margin: 1em .5em;
             }
+        }
+    }
+}
+
+.categories {
+    list-style: none;
+    padding: 0 0 1.5em 0;
+    margin: 0;
+
+    li {
+        display: inline-block;
+        margin-right: .5em;
+
+        &:first-child{
+            font-weight: bold;
+        }
+
+        &:not(:first-child):not(:last-child):after {
+            content: ", ";
         }
     }
 }

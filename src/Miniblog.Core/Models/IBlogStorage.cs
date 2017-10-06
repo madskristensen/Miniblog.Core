@@ -7,6 +7,8 @@ namespace Miniblog.Core
     {
         IEnumerable<Post> GetPosts(int count);
 
+        IEnumerable<Post> GetPostsByCategory(string category);
+
         Post GetPostBySlug(string slug);
 
         Post GetPostById(string id);

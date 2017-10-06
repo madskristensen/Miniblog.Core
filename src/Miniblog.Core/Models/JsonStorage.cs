@@ -48,6 +48,11 @@ namespace Miniblog.Core
             return _cache.Take(count);
         }
 
+        public IEnumerable<Post> GetPostsByCategory(string category)
+        {
+            return _cache.Where(p => p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase));
+        }
+
         public Post GetPostBySlug(string slug)
         {
             return _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));

@@ -28,9 +28,16 @@ namespace Miniblog.Core
             return View(posts);
         }
 
+        [Route("/category/{category}")]
+        public IActionResult Category(string category)
+        {
+            var posts = _storage.GetPostsByCategory(category);
+            return View("Index", posts);
+        }
+
         [Route("/post/{slug?}")]
         [HttpGet]
-        public async Task<IActionResult> Post(string slug, [FromQuery] bool edit)
+        public IActionResult Post(string slug, [FromQuery] bool edit)
         {
             var post = _storage.GetPostBySlug(slug);
 
