@@ -26,4 +26,13 @@
         display: block;
         font: inherit;
     }
+
+    .validation-summary-errors {
+        color: crimson;
+
+        ul {
+            list-style: none;
+            padding: 0 10px;
+        }
+    }
 }

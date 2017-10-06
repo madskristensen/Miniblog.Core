@@ -43,11 +43,11 @@
                         if (User.Identity.IsAuthenticated)
                         {
                             <li><a href="~/post/?edit=true">New post</a></li>
-                            <li><a href="~/login/?returnUrl=@path&logout=1" title="Sign out as administrator">Sign out</a></li>
+                            <li><a href="~/logout/?returnUrl=@path" title="Sign out as administrator">Sign out</a></li>
                         }
                         else
                         {
-                            <li><a href="~/login/" title="Sign in as administrator">Sign in</a></li>
+                            <li><a href="~/login/?returnUrl=@path" title="Sign in as administrator">Sign in</a></li>
                         }
                     }
                 </ul>

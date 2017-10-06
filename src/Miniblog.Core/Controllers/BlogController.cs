@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -29,7 +30,7 @@ namespace Miniblog.Core
 
         [Route("/post/{slug?}")]
         [HttpGet]
-        public IActionResult Post(string slug, [FromQuery] bool edit)
+        public async Task<IActionResult> Post(string slug, [FromQuery] bool edit)
         {
             var post = _storage.GetPostBySlug(slug);
 

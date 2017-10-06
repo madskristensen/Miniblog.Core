@@ -54,7 +54,7 @@ namespace Miniblog.Core
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login/";
-                    options.LoginPath = "/login/?logout=1";
+                    options.LoginPath = "/logout/";
                 });
 
             services.AddWebOptimizer(pipeline =>

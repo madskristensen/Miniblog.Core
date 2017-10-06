@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Miniblog.Core.Controllers;
 using System;
 using System.IO;
 using System.Linq;
@@ -147,7 +148,7 @@ namespace Miniblog.Core
 
         private void ValidateUser(string username, string password)
         {
-            if (username != _config["user:username"] || !Pages.LoginModel.VerifyHashedPassword(password, _config))
+            if (username != _config["user:username"] || !AccountController.VerifyHashedPassword(password, _config))
             {
                 throw new MetaWeblogException("Unauthorized");
             }
