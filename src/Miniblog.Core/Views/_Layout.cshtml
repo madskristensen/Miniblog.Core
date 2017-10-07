@@ -1,10 +1,13 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
+@{
+    var host = Context.Request.Scheme + "://" + Context.Request.Host;
+}
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
     <meta name="description" content="@ViewData["Description"]" />
     <link rel="stylesheet" href="~/css/site.scss" inline />
     @RenderSection("Head", required: false)
@@ -12,9 +15,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@ViewData["Title"]" />
     <meta property="og:description" content="@ViewData["Description"]" />
-    <meta property="og:url" content="@(Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)" />
-    <meta property="og:image" content="~/img/icon180x180.png" />
-    <link rel="shortcut icon" href="~/img/icon16x16.png" />
+    <meta property="og:url" content="@(host + Context.Request.Path)" />
+    <meta property="og:image" content="@host/img/icon180x180.png" />
+    <link rel="shortcut icon" href="/img/icon16x16.png" />
     <link rel="apple-touch-icon" href="~/img/icon180x180.png" sizes="180x180" />
     <link rel="edituri" type="application/rsd+xml" title="RSD" href="~/rsd.xml" />
     <link rel="alternate" type="application/rss+xml" href="~/feed/rss/" />
@@ -24,7 +27,7 @@
 
     <header class="siteheader container">
         <h1 itemprop="name"><a href="~/">@settings.Value.Name</a></h1>
-        <span itemprop="headline">By @settings.Value.Owner</span>
+        By <span itemprop="author">@settings.Value.Owner</span>
     </header>
 
     <main itemprop="mainEntityOfPage" itemscope itemtype="http://schema.org/Blog">

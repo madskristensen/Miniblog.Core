@@ -9,7 +9,7 @@
     await Html.RenderPartialAsync("post.cshtml", post);
 }
 
-<nav class="pagination container" arial-label="Pagination">
+<nav class="pagination container" aria-label="Pagination">
     @if (Model.Any())
     {
         <a rel="prev" href="@ViewData["prev"]" title="Older posts">← Older</a>

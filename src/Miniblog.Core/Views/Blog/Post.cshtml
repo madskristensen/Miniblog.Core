@@ -5,6 +5,11 @@
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.Excerpt;
     bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
+    string host = Context.Request.Scheme + "://" + Context.Request.Host;
+}
+
+@section Head {
+    <link rel="canonical" href="@(host + Model.GetLink())" />
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
@@ -21,12 +26,9 @@
         <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
             <span itemprop="commentCount">@Model.Comments.Count</span> comments
         </a>
-
-        <meta itemprop="author" content="@settings.Value.Owner" />
-        <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
     </header>
 
-    <div itemprop="articleBody text mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
+    <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
     <br />
 
     @if (User.Identity.IsAuthenticated)
@@ -46,6 +48,9 @@
             <li itemprop="articleSection"><a href="~/category/@cat">@cat</a></li>
         }
     </ul>
+
+    <meta itemprop="author" content="@settings.Value.Owner" />
+    <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
 </article>
 
 @{
