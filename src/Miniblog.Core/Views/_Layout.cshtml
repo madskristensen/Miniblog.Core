@@ -39,7 +39,6 @@
             <nav>
                 <ul>
                     <li><a href="~/">Home</a></li>
-                    <li><a href="~/about/">About</a></li>
                     @{
                         string path = Context.Request.Path;
 
@@ -50,7 +49,7 @@
                         }
                         else
                         {
-                            <li><a href="~/login/?returnUrl=@path" title="Sign in as administrator">Sign in</a></li>
+                            <li><a href="~/login/?returnUrl=@path" rel="nofollow" title="Sign in as administrator">Sign in</a></li>
                         }
                     }
                 </ul>
