@@ -48,11 +48,6 @@ img {
     height: auto;
 }
 
-time {
-    font-weight: bold;
-    margin-right: .8em;
-}
-
 .list {
     list-style: none;
     padding: 0;
@@ -77,13 +72,18 @@ time {
     -webkit-hyphens: auto;
     hyphens: auto;
     margin-top: 2em;
+    padding-bottom: 2em;
 
     header {
+        time {
+            color: lighten($text_color, 33%);
+        }
+
         h2 {
             font-size: 2em;
             margin: 0;
 
-            a{
+            a {
                 color: $text_color;
                 text-decoration: none;
             }
@@ -114,18 +114,13 @@ time {
 
     .categories {
         list-style: none;
-        padding: 0 0 1.5em 0;
-        margin: 0;
+        display: inline;
+        padding: 0;
 
         li {
             display: inline-block;
-            margin-right: .3em;
 
-            &:first-child {
-                font-weight: bold;
-            }
-
-            &:not(:first-child):not(:last-child):after {
+            &:not(:last-child):after {
                 content: ", ";
             }
         }

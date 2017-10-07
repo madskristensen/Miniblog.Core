@@ -14,40 +14,42 @@
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
-        @if (showFullPost)
-        {
-            <h2 itemprop="name headline">@Model.Title</h2>
-        }
-        else
-        {
-            <h2 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h2>
-        }
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
-        <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
-            <span itemprop="commentCount">@Model.Comments.Count</span> comments
-        </a>
+         <h2 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h2>
     </header>
 
+    @if (Model.Categories.Any())
+    {
+        <span> Posted in</span>
+        <ul class="categories">
+            @foreach (string cat in Model.Categories)
+            {
+                <li><a href="~/category/@cat" itemprop="articleSection">@cat</a></li>
+            }
+        </ul>
+    }
+
     <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
-    <br />
 
     @if (User.Identity.IsAuthenticated)
     {
-        <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
-            <br /><br />
+        <p>
+            <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
+        </p>
 
-            @section Scripts {
-                <script src="~/js/admin.js" async></script>
-            }
+        @section Scripts {
+            <script src="~/js/admin.js" async></script>
+        }
     }
 
-    <ul class="categories">
-        <li>Posted in:</li>
-        @foreach (string cat in Model.Categories)
-            {
-            <li itemprop="articleSection"><a href="~/category/@cat">@cat</a></li>
-        }
-    </ul>
+    @if (!showFullPost && Model.Comments.Count > 0)
+    {
+        <p>
+            <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
+                <span itemprop="commentCount">@Model.Comments.Count</span> comments
+            </a>
+        </p>
+    }
 
     <meta itemprop="author" content="@settings.Value.Owner" />
     <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
