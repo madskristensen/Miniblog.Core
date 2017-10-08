@@ -70,7 +70,6 @@ namespace Miniblog.Core
 
             if (!_cache.Contains(post))
             {
-                post.ID = Path.GetFileNameWithoutExtension(filePath);
                 _cache.Add(post);
                 SortCache();
             }
@@ -91,21 +90,18 @@ namespace Miniblog.Core
             }
         }
 
-        public string SaveFile(string bits, string extension)
+        public string SaveFile(byte[] bytes, string extension)
         {
             if (string.IsNullOrWhiteSpace(extension))
             {
                 extension = ".bin";
             }
 
-            string relative = $"/files/{ Guid.NewGuid()}{extension}";
+            string relative = $"/files/{DateTime.Now.Ticks}{extension}";
             string absolute = _env.WebRootFileProvider.GetFileInfo(relative).PhysicalPath;
             string dir = Path.GetDirectoryName(absolute);
 
             Directory.CreateDirectory(dir);
-
-            byte[] bytes = Convert.FromBase64String(bits);
-
             File.WriteAllBytes(absolute, bytes);
 
             return relative;

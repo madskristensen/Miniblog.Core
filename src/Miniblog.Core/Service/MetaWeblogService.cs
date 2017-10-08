@@ -128,8 +128,8 @@ namespace Miniblog.Core
         public MediaObjectInfo NewMediaObject(string blogid, string username, string password, MediaObject mediaObject)
         {
             ValidateUser(username, password);
-
-            string path = _storage.SaveFile(mediaObject.bits, Path.GetExtension(mediaObject.name));
+            byte[] bytes = Convert.FromBase64String(mediaObject.bits);
+            string path = _storage.SaveFile(bytes, Path.GetExtension(mediaObject.name));
 
             return new MediaObjectInfo { url = path };
         }

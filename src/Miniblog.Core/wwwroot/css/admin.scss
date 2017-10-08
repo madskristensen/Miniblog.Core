@@ -18,10 +18,14 @@
             width: 100%;
             max-width: 300px;
         }
+
+        &[type=submit] {
+            padding: 0 10px;
+        }
     }
 
     input + span,
-    textarea + span{
+    textarea + span {
         display: block;
         font-size: .9em,;
         color: #888;
@@ -52,10 +56,4 @@
     color: darkred;
     padding: 5px;
     border-radius: 5px;
-
-    ul{
-        /*list-style: none;*/
-        /*padding: 0;*/
-        margin: 0;
-    }
 }

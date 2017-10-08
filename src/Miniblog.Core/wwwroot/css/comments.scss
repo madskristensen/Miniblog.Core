@@ -8,11 +8,6 @@
     -ms-hyphens: auto;
     -moz-hyphens: auto;
 
-    h2 {
-        padding: 0;
-        margin-top: 0;
-    }
-
     form {
         margin-top: 2em;
     }
@@ -51,10 +46,19 @@
     }
 
     article {
+        min-height: 120px;
+        margin-top: 1em;
+    }
+
+    .gravatar {
+        float: left;
+    }
+
+    .content {
+        margin-left: calc(60px + 1em);
         background: $comments_bg_color;
         border: 1px solid $comments_border-color;
         padding: 7px 1em;
-        margin-bottom: 1em;
 
         p {
             margin: 9px 0;
@@ -83,6 +87,10 @@
 
     .permalink {
         color: $text_color;
+    }
+
+    ul, ol {
+        padding-left: 2em;
     }
 }
 

@@ -19,6 +19,6 @@ namespace Miniblog.Core
 
         void DeletePost(Post post);
 
-        string SaveFile(string bits, string fileExtension);
+        string SaveFile(byte[] bytes, string fileExtension);
     }
 }

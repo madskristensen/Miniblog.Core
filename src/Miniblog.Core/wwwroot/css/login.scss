@@ -23,6 +23,7 @@
 
     input[type=submit] {
         margin-top: 10px;
+        padding: 0 10px;
         display: block;
         font: inherit;
     }
@@ -32,7 +33,7 @@
 
         ul {
             list-style: none;
-            padding: 0 10px;
+            padding: 0;
         }
     }
 }

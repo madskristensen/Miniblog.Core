@@ -1,5 +1,13 @@
 ﻿@import "variables";
 
+* {
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 html {
     min-height: 100%;
     position: relative;
@@ -8,8 +16,7 @@ html {
 }
 
 body {
-    font: 18px/1.6 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
-    padding: 0;
+    font: 18px/1.5 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
     margin: 0 0 $footer_height 0;
     color: $text_color;
 }
@@ -20,17 +27,23 @@ body {
     padding: 0 1.5em;
 }
 
+ul, ol {
+    padding-left: 2em;
+}
+
 .siteheader {
     text-align: right;
     margin: 2em auto;
 
-    h1 {
-        margin: 0;
-    }
-
     a {
         color: $text_color;
         text-decoration: none;
+        font-weight: normal;
+    }
+
+    p {
+        font-size: 2.5em;
+        font-weight: bold;
     }
 }
 
@@ -50,7 +63,6 @@ img {
 
 .list {
     list-style: none;
-    padding: 0;
 
     li {
         margin: .8em 0;
@@ -79,9 +91,11 @@ img {
             color: lighten($text_color, 33%);
         }
 
-        h2 {
-            font-size: 2em;
-            margin: 0;
+        h1 {
+            margin: .2em 0;
+            line-height: 1;
+            font-size: 2.5em;
+            font-weight: lighter;
 
             a {
                 color: $text_color;
@@ -94,21 +108,39 @@ img {
         text-align: justify;
 
         p {
-            margin: 1.1em 0 0 0;
+            margin: 1em 0;
         }
 
         blockquote {
             border-top: 1px dotted lighten($text_color, 50%);
             border-bottom: 1px dotted lighten($text_color, 50%);
             color: lighten($text_color, 30%);
-            font-size: 1.2em;
+            font-size: 1.3em;
             width: 90%;
             margin: 60px auto;
             font-style: italic;
+            font-weight: lighter;
 
             p {
                 margin: 1em .5em;
             }
+        }
+
+        h2, h3, h4, h5, h6 {
+            margin: 1em 0 -.5em 0;
+        }
+
+        h2 {
+            font-weight: normal;
+            font-size: 1.6em;
+        }
+
+        h3 {
+            font-size: 1.3em;
+        }
+
+        img {
+            padding: .5em;
         }
     }
 
@@ -160,8 +192,6 @@ img {
 
     ul {
         list-style: none;
-        padding: 0;
-        margin: 0;
     }
 
     li {

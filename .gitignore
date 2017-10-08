@@ -7,7 +7,7 @@
 *.userosscache
 *.sln.docstates
 *.pubxml
-Posts/
+[Pp]osts/
 launchSettings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)

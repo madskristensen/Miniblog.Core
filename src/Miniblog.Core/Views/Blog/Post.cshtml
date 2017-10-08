@@ -15,7 +15,7 @@
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
-         <h2 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h2>
+         <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
     </header>
 
     @if (Model.Categories.Any())

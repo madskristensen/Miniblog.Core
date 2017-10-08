@@ -8,17 +8,21 @@
         @foreach (var comment in Model.Comments)
             {
             <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
-                <span itemprop="name">@comment.Author</span>
-                <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
-                    @comment.PubDate.ToString("MMMM d, yyyy")
-                    <a href="#@comment.ID" title="Permalink (#@comment.ID)" class="permalink">#</a>
-                </time>
-                <div itemprop="text">@rs.RenderComment(comment)</div>
+                <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
 
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a class="delete" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID">Delete</a>
-                }
+                <div class="content">
+                    <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
+                        @comment.PubDate.ToString("MMMM d, yyyy")
+                        <a href="#@comment.ID" title="Permalink (#@comment.ID)" class="permalink">#</a>
+                    </time>
+                    <span itemprop="name">@comment.Author</span>
+                    <div itemprop="text">@rs.RenderComment(comment)</div>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="delete" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID">Delete</a>
+                    }
+                </div>
             </article>
         }
 
