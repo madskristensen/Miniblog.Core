@@ -86,8 +86,6 @@ namespace Miniblog.Core
 
             foreach (var formFile in files.Where(f => f.Length > 0))
             {
-                string ext = Path.GetExtension(formFile.FileName);
-
                 using (var ms = new MemoryStream())
                 {
                     await formFile.CopyToAsync(ms);

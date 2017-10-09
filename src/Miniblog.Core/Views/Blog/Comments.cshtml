@@ -33,7 +33,7 @@
                 <p>Be the first to post a comment</p>
             }
 
-            <form method="post" asp-controller="Blog" asp-action="Comment" asp-route-postid="@Model.ID">
+            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
                 <h3>Post a comment</h3>
                 <label for="author">Name</label>
                 <input id="author" name="author" placeholder="Your name" required />
