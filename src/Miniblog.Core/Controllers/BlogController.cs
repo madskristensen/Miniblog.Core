@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,7 +65,7 @@ namespace Miniblog.Core
 
         [Route("/post/{slug?}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> UpdatePost(Post post)
+        public async Task<IActionResult> UpdatePost(Post post, List<IFormFile> files)
         {
             if (!ModelState.IsValid)
             {
@@ -80,6 +83,18 @@ namespace Miniblog.Core
             existing.Excerpt = post.Excerpt.Trim();
 
             await _storage.SavePost(existing);
+
+            foreach (var formFile in files.Where(f => f.Length > 0))
+            {
+                string ext = Path.GetExtension(formFile.FileName);
+
+                using (var ms = new MemoryStream())
+                {
+                    await formFile.CopyToAsync(ms);
+                    var bytes = ms.ToArray();
+                    _storage.SaveFile(bytes, formFile.FileName, existing.ID);
+                }
+            }
 
             return Redirect(post.GetLink());
         }

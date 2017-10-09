@@ -116,19 +116,18 @@ namespace Miniblog.Core
             }
         }
 
-        public string SaveFile(byte[] bytes, string extension)
+        public string SaveFile(byte[] bytes, string fileName, string suffix = null)
         {
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                extension = ".bin";
-            }
+            suffix = suffix ?? DateTime.UtcNow.Ticks.ToString();
 
-            string relative = $"/files/{DateTime.Now.Ticks}{extension}";
-            string absolute = _env.WebRootFileProvider.GetFileInfo(relative).PhysicalPath;
+            string ext = Path.GetExtension(fileName);
+            string name = Path.GetFileNameWithoutExtension(fileName);
+
+            string relative = $"/files/{name}_{suffix}.{ext}";
+            string absolute = Path.Combine(_folder, relative);
             string dir = Path.GetDirectoryName(absolute);
 
             Directory.CreateDirectory(dir);
-
             File.WriteAllBytes(absolute, bytes);
 
             return relative;

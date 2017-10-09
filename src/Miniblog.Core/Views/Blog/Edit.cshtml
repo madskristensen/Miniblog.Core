@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/lib/simplemde.min.css" />
 }
 
-<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
+<form method="post" id="edit" enctype="multipart/form-data" class="container" asp-controller="Blog" asp-action="UpdatePost">
     <div asp-validation-summary="All"></div>
     <input type="hidden" asp-for="@Model.ID" />
 
@@ -33,6 +33,10 @@
     <br />
 
     <textarea asp-for="@Model.Content" aria-label="Content">@Model.Content</textarea>
+
+    <label for="files">Upload files</label>
+    <input type="file" id="files" name="files" />
+    <br /><br />
 
     <input type="submit" value="Save" title="Save the post" />
 

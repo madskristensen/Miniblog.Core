@@ -1,12 +1,15 @@
 ﻿(function () {
 
+    var simplemde;
+
     // Setup markdown editor
     var editPost = document.querySelector("#Content");
 
     if (editPost) {
-        var simplemde = new SimpleMDE({
+        simplemde = new SimpleMDE({
             element: editPost,
-            showIcons: [ "clean-block", "table", "code", "strikethrough" ]
+            showIcons: ["clean-block", "table", "code", "strikethrough"],
+            spellChecker: false
         });
     }
 
@@ -32,6 +35,21 @@
         deleteButton.addEventListener("click", function (e) {
             if (!confirm("Are you sure you want to delete the post?")) {
                 e.preventDefault();
+            }
+        });
+    }
+
+    // File upload
+    var fileUpload = document.getElementById("files");
+    var postId = document.querySelector("input#ID");
+
+    if (simplemde && fileUpload) {
+        fileUpload.addEventListener("change", function (e) {
+            for (var i = 0; i < fileUpload.files.length; i++) {
+                var file = fileUpload.files[i];
+                var name = file.name.substr(0, file.name.lastIndexOf("."));
+                var ext = file.name.substr(name.length);
+                simplemde.value(simplemde.value() + "\n\n![" + name + "](/files/" + name + "_" + postId.value + ext + ")");
             }
         });
     }
