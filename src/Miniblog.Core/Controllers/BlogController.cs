@@ -14,13 +14,11 @@ namespace Miniblog.Core
     {
         private IBlogStorage _storage;
         private IOptionsSnapshot<BlogSettings> _settings;
-        private RenderingService _rs;
 
-        public BlogController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings, RenderingService rs)
+        public BlogController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings)
         {
             _storage = storage;
             _settings = settings;
-            _rs = rs;
         }
 
         [Route("/{page:int?}")]

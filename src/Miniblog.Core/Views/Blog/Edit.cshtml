@@ -1,5 +1,6 @@
 ﻿@model Post
 @{
+    bool isNew = string.IsNullOrEmpty(Model.Title);
     ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
 }
 
@@ -40,10 +41,7 @@
 
     <input type="submit" value="Save" title="Save the post" />
 
-    @if (Model != null)
-    {
-        <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" />
-    }
+    <input asp-if="!isNew" type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" />
 
     <input asp-for="@Model.IsPublished" />
     <label asp-for="@Model.IsPublished">Is published</label>

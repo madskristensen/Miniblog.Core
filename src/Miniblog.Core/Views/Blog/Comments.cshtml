@@ -1,5 +1,4 @@
 ﻿@model Post
-@inject RenderingService rs
 @inject IOptionsSnapshot<BlogSettings> settings
 
 <section id="comments">
@@ -15,7 +14,9 @@
                 <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
-                    <div itemprop="text">@rs.RenderComment(comment)</div>
+                    <div itemprop="text">
+                        <markdown allow-html="false">@comment.Content</markdown>
+                    </div>
                     <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)
@@ -28,10 +29,7 @@
 
         @if (Model.PubDate.AddDays(settings.Value.CommentsCloseAfterDays) >= DateTime.UtcNow)
         {
-            @if (Model.Comments.Count == 0)
-            {
-                <p>Be the first to post a comment</p>
-            }
+            <p asp-if="Model.Comments.Count == 0">Be the first to post a comment</p>
 
             <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
                 <h3>Post a comment</h3>

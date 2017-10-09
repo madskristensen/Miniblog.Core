@@ -12,7 +12,6 @@
     <link rel="preload" href="~/css/belowthefold.scss" as="style"/>
     <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
     @RenderSection("Head", required: false)
-    <meta name="application-name" content="@ViewData["Title"]" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@ViewData["Title"]" />
     <meta property="og:description" content="@ViewData["Description"]" />
@@ -20,6 +19,7 @@
     <meta property="og:image" content="@host/img/icon180x180.png" />
     <link rel="shortcut icon" href="/img/icon16x16.png" />
     <link rel="apple-touch-icon" href="~/img/icon180x180.png" sizes="180x180" />
+    <meta name="msapplication-square150x150logo" content="/img/icon180x180.png" />
     <link rel="edituri" type="application/rsd+xml" title="RSD" href="~/rsd.xml" />
     <link rel="alternate" type="application/rss+xml" href="~/feed/rss/" />
     <link rel="alternate" type="application/atom+xml" href="~/feed/atom/" />

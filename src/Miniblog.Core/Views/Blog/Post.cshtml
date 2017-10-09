@@ -1,5 +1,4 @@
 ﻿@model Post
-@inject RenderingService rs
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData["Title"] = Model.Title;
@@ -10,10 +9,7 @@
 
 @section Head {
     <link rel="canonical" href="@(host + Model.GetLink())" />
-    @if (showFullPost)
-    {
-        <link rel="preload" href="~/css/comments.scss" as="style" />
-    }
+    <link asp-if="showFullPost" rel="preload" href="~/css/comments.scss" as="style" />
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
@@ -22,39 +18,31 @@
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
     </header>
 
-    <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
+    <div itemprop="articleBody mainEntityOfPage">
+        <markdown>@Model.Content</markdown>
+    </div>
 
     <footer>
-        @if (Model.Categories.Any())
-        {
-            <span> Posted in</span>
-            <ul class="categories">
-                @foreach (string cat in Model.Categories)
-                {
-                    <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
-                }
-            </ul>
-        }
+        <ul asp-if="Model.Categories.Any()" class="categories">
+            <li> Posted in</li>
+            @foreach (string cat in Model.Categories)
+            {
+                <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
+            }
+        </ul>
+
         @if (!showFullPost && Model.Comments.Count > 0)
         {
-            if (Model.Categories.Any())
-            {
-                <text>and has</text>
-            }
+            <span asp-if="Model.Categories.Any()">and has</span>
             <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
                 <span itemprop="commentCount">@Model.Comments.Count</span> comments
             </a>
         }
-        @if (User.Identity.IsAuthenticated)
-        {
-            <p>
-                <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
-            </p>
 
-            @section Scripts {
-                <script src="~/js/admin.js" async></script>
-            }
-        }
+        <p asp-if="User.Identity.IsAuthenticated">
+            <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
+        </p>
+
         <meta itemprop="author" content="@settings.Value.Owner" />
         <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
         <meta itemprop="mainEntityOfPage" content="@(host + Model.GetLink())" />
@@ -66,4 +54,8 @@
     await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     <link rel="stylesheet" href="~/css/comments.scss" />
     await Html.RenderPartialAsync("comments");
+}
+
+@section Scripts {
+    <script asp-if="User.Identity.IsAuthenticated" src="~/js/admin.js" async></script>
 }

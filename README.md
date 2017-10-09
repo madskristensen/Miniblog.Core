@@ -1,17 +1,18 @@
 # Blog engine for ASP.NET Core 2.0
 
-A simple yet powerful blog engine built on ASP.NET Core 2.0.
+A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
 **Demo website**: <https://miniblogcore.azurewebsites.net/>
 
 ## Features
 
+- Write blog posts in markdown
+- Windows/Open Live Writer support
 - RSS and ATOM feeds
 - User comments
-- Windows/Open Live Writer support
 - Search Engine optimized
 - All major browsers fully supported (IE 9+)
-- Social media integration (Facebook, Twitter, Pinterest)
+- Social media integration (Facebook, Twitter, Google+)
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59dbe3d80cf2993c4257ddd0)
 

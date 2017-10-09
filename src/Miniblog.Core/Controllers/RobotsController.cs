@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Markdig;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
@@ -15,13 +16,11 @@ namespace Miniblog.Core
     {
         private IBlogStorage _storage;
         private IOptionsSnapshot<BlogSettings> _settings;
-        private RenderingService _rs;
 
-        public RobotsController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings, RenderingService rs)
+        public RobotsController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings)
         {
             _storage = storage;
             _settings = settings;
-            _rs = rs;
         }
 
         [Route("/robots.txt")]
@@ -101,6 +100,11 @@ namespace Miniblog.Core
             Response.ContentType = "application/xml";
             string host = Request.Scheme + "://" + Request.Host;
 
+            var pipeline = new MarkdownPipelineBuilder()
+            .UseDiagrams()
+            .UseAdvancedExtensions()
+            .Build();
+
             using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
             {
                 var posts = _storage.GetPosts(10);
@@ -111,17 +115,12 @@ namespace Miniblog.Core
                     var item = new AtomEntry
                     {
                         Title = post.Title,
-                        Description = _rs.RenderMarkdown(post).Value,
+                        Description = Markdown.ToHtml(post.Content, pipeline),
                         Id = host + post.GetLink(),
                         Published = post.PubDate,
                         LastUpdated = post.LastModified,
                         ContentType = "html",
                     };
-
-                    if (!string.IsNullOrEmpty(post.Excerpt))
-                    {
-                        item.Summary = post.Excerpt;
-                    }
 
                     foreach (string category in post.Categories)
                     {

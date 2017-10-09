@@ -10,15 +10,14 @@
 }
 
 <nav class="pagination container" aria-label="Pagination">
-    @if (Model.Any())
-    {
-        <a rel="prev" href="@ViewData["prev"]" title="Older posts">← Older</a>
-    }
-
-    @if (currentPage > 0)
-    {
-        <a rel="next" href="@ViewData["next"]" title="Newer posts">Newer →</a>
-    }
-
+    <a asp-if="Model.Any()" rel="prev" href="@ViewData["prev"]" title="Older posts">← Older</a>
+    <a asp-if="currentPage > 0" rel="next" href="@ViewData["next"]" title="Newer posts">Newer →</a>
     <br /><br />
+
+    @section Head {
+        <link asp-if="Model.Any()" rel="prev" href="@ViewData["prev"]" />
+        <link asp-if="currentPage > 0" rel="next" href="@ViewData["next"]" />
+    }
 </nav>
+
+@{await Html.RenderPartialAsync("_SocialSharing", ViewData["Title"]);}
