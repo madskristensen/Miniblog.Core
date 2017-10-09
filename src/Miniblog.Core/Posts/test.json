@@ -12,28 +12,20 @@
   ],
   "comments": [
     {
-      "id": "fb8b3cde-846d-4390-8321-736f208d8f1b",
-      "author": "Mads Kristensen",
-      "email": "ost@hat.com",
-      "content": "test\r\n\r\n1. Because\r\n2. This\r\n3. Is great!!\r\n\r\n> Perhaps",
-      "pubDate": "2017-09-25T16:51:44.0083939Z",
-      "isAdmin": true
-    },
-    {
       "id": "d4f08f14-6c50-4611-ae40-f1c3b580c25e",
-      "author": "TEst",
-      "email": "ost@hat.com",
-      "content": "adsf",
+      "author": "John Doe",
+      "email": "john@example.com",
+      "content": "This is a comment made by a visitor",
       "pubDate": "2017-09-25T16:52:13.0754095Z",
       "isAdmin": false
     },
     {
-      "id": "172554d3-7928-42de-a07d-871fcb7754bc",
-      "author": "test",
-      "email": "test@test.test",
-      "content": "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-      "pubDate": "2017-10-05T19:54:29.261118Z",
-      "isAdmin": false
+      "id": "fb8b3cde-846d-4390-8321-736f208d8f1b",
+      "author": "Mads Kristensen",
+      "email": "post@madskristensen.net",
+      "content": "This is a comment made by the owner of the blog while logged in.\r\n\r\nIt looks slightly different to make it clear that this is a response from the owner.",
+      "pubDate": "2017-09-25T16:53:44.0083939Z",
+      "isAdmin": true
     }
   ]
 }

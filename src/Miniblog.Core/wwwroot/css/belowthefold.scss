@@ -1,5 +1,23 @@
 ﻿@import "variables";
 
+.socialsharing {
+    text-align: center;
+    a {
+        display: inline-block;
+        padding: 0 .5em 2em .5em;
+        opacity: .5;
+
+        &:hover{
+            opacity: 1;
+        }
+    }
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
 .pagination {
     padding-bottom: 2em;
     margin-top: 1em;
