@@ -77,6 +77,10 @@ img {
     }
 }
 
+h1, h2, h3, h4{
+    font-weight: normal;
+}
+
 .post {
     word-wrap: break-word;
     -moz-hyphens: auto;
@@ -131,7 +135,6 @@ img {
         }
 
         h2 {
-            font-weight: normal;
             font-size: 1.6em;
         }
 

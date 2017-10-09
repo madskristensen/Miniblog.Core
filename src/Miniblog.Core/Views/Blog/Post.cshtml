@@ -24,7 +24,7 @@
         <ul class="categories">
             @foreach (string cat in Model.Categories)
             {
-                <li itemprop="articleSection"><a href="~/category/@cat">@cat</a></li>
+                <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
             }
         </ul>
     }

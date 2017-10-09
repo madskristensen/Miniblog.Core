@@ -35,7 +35,7 @@ namespace Miniblog.Core
         public IActionResult Category(string category, int page = 0)
         {
             var posts = _storage.GetPostsByCategory(category).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
-            ViewData["Title"] = category;
+            ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/category/{category}/{page + 1}/";
             ViewData["next"] = $"/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";

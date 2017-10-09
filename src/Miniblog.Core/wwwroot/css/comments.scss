@@ -14,7 +14,6 @@
 
     label {
         display: block;
-        font-weight: bold;
         margin-top: 1em;
 
         span {
@@ -46,8 +45,11 @@
     }
 
     article {
-        min-height: 120px;
         margin-top: 1em;
+
+        &.admin .content {
+            border-color: silver;
+        }
     }
 
     .gravatar {
@@ -58,14 +60,10 @@
         margin-left: calc(60px + 1em);
         background: $comments_bg_color;
         border: 1px solid $comments_border-color;
-        padding: 7px 1em;
+        padding: 0 1em 11px 1em;
 
         p {
             margin: 9px 0;
-        }
-
-        &.admin {
-            border: 1px solid $link_color;
         }
     }
 
@@ -75,18 +73,17 @@
     }
 
     time {
-        float: right;
+        text-align: right;
+        display: block;
         font-size: .8em;
-        font-weight: normal;
-        margin: 5px 0 0 0;
+
+        a {
+            text-decoration: none;
+        }
     }
 
-    :target {
+    :target .content {
         animation: target 3s ease-in-out;
-    }
-
-    .permalink {
-        color: $text_color;
     }
 
     ul, ol {

@@ -8,15 +8,15 @@
         @foreach (var comment in Model.Comments)
             {
             <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
+                <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
+                    <a href="#@comment.ID" title="Permalink (#@comment.ID)">@comment.PubDate.ToString("MMMM d, yyyy")</a>
+                </time>
+
                 <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
-                    <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
-                        @comment.PubDate.ToString("MMMM d, yyyy")
-                        <a href="#@comment.ID" title="Permalink (#@comment.ID)" class="permalink">#</a>
-                    </time>
-                    <span itemprop="name">@comment.Author</span>
                     <div itemprop="text">@rs.RenderComment(comment)</div>
+                    <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)
                     {
