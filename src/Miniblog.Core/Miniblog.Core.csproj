@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.ImageOptimizer" Version="1.0.0.38" />
     <PackageReference Include="LigerShark.WebOptimizer.Core" Version="1.0.172-beta" />
     <PackageReference Include="LigerShark.WebOptimizer.Sass" Version="1.0.32-beta" />
     <PackageReference Include="Markdig" Version="0.13.3" />
