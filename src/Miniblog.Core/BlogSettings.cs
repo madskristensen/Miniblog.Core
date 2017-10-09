@@ -7,5 +7,6 @@
         public string Owner { get; set; } = "The Owner";
         public bool AllowHtml { get; set; } = false;
         public int PostsPerPage { get; set; } = 2;
+        public int CommentsCloseAfterDays { get; set; } = 10;
     }
 }

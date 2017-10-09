@@ -10,24 +10,29 @@
 
 @section Head {
     <link rel="canonical" href="@(host + Model.GetLink())" />
+    @if (showFullPost)
+    {
+        <link rel="preload" href="~/css/comments.scss" as="style" />
+    }
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
-         <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
-    </header>
+        <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
 
-    @if (Model.Categories.Any())
-    {
-        <span> Posted in</span>
-        <ul class="categories">
-            @foreach (string cat in Model.Categories)
-            {
-                <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
-            }
-        </ul>
-    }
+        @if (Model.Categories.Any())
+        {
+            <span> Posted in</span>
+            <ul class="categories">
+                @foreach (string cat in Model.Categories)
+                {
+                    <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
+                }
+            </ul>
+        }
+
+    </header>
 
     <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
 
@@ -55,9 +60,8 @@
     <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
 </article>
 
-@{
-    if (showFullPost)
-    {
-        await Html.RenderPartialAsync("comments");
-    }
+@if (showFullPost)
+{
+    <link rel="stylesheet" href="~/css/comments.scss" />
+    await Html.RenderPartialAsync("comments");
 }

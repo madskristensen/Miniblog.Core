@@ -1,12 +1,12 @@
 ﻿@model Post
 @inject RenderingService rs
+@inject IOptionsSnapshot<BlogSettings> settings
 
-<link rel="stylesheet" href="~/css/comments.scss" />
 <section id="comments">
     <div class="container">
         <h2>Comments</h2>
         @foreach (var comment in Model.Comments)
-            {
+        {
             <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
                 <time datetime="@comment.PubDate.ToString("s")" itemprop="datePublished">
                     <a href="#@comment.ID" title="Permalink (#@comment.ID)">@comment.PubDate.ToString("MMMM d, yyyy")</a>
@@ -26,26 +26,34 @@
             </article>
         }
 
-        @if (Model.Comments.Count == 0)
+        @if (Model.PubDate.AddDays(settings.Value.CommentsCloseAfterDays) >= DateTime.UtcNow)
         {
-            <p>Be the first to post a comment</p>
+            @if (Model.Comments.Count == 0)
+            {
+                <p>Be the first to post a comment</p>
+            }
+
+            <form method="post" asp-controller="Blog" asp-action="Comment" asp-route-postid="@Model.ID">
+                <h3>Post a comment</h3>
+                <label for="author">Name</label>
+                <input id="author" name="author" placeholder="Your name" required />
+
+                <label for="email">E-mail</label>
+                <input id="email" name="email" placeholder="Example: mary@example.com" required />
+
+                <label for="content">
+                    Comment
+                    <span>(<a href="https://simplemde.com/markdown-guide" target="_blank" rel="noreferrer noopener">markdown</a> allowed)</span>
+                </label>
+                <textarea id="content" name="content" rows="5" cols="100" required></textarea>
+
+                <input type="submit" value="Post comment" />
+            </form>
         }
-
-        <form method="post" asp-controller="Blog" asp-action="Comment" asp-route-postid="@Model.ID">
-            <h3>Post a comment</h3>
-            <label for="author">Name</label>
-            <input id="author" name="author" placeholder="Your name" required />
-
-            <label for="email">E-mail</label>
-            <input id="email" name="email" placeholder="Example: mary@example.com" required />
-
-            <label for="content">
-                Comment
-                <span>(<a href="https://simplemde.com/markdown-guide" target="_blank" rel="noreferrer noopener">markdown</a> allowed)</span>
-            </label>
-            <textarea id="content" name="content" rows="5" cols="100" required></textarea>
-
-            <input type="submit" value="Post comment" />
-        </form>
+        else
+        {
+            <br />
+            <p>Comments are closed</p>
+        }
     </div>
 </section>

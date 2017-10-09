@@ -24,9 +24,11 @@
     input,
     textarea {
         font: inherit;
-        border: 1px solid $comments_border-color;
+        border: 1px solid $comments_input_border-color;
+        border-radius: 0; // Safari adds a radius to input fields
         padding: 5px 0;
         width: 100%;
+        -webkit-appearance: none;
     }
 
     input {
@@ -45,21 +47,24 @@
     }
 
     article {
-        margin-top: 1em;
+        margin-top: 1.5em;
 
-        &.admin .content {
-            border-color: silver;
+        &.admin .content,
+        &.admin .gravatar {
+            box-shadow: 5px 5px 5px darken($comments_border-color, 30%);
         }
     }
 
     .gravatar {
         float: left;
+        box-shadow: 5px 5px 5px $comments_border-color;
     }
 
     .content {
         margin-left: calc(60px + 1em);
         background: $comments_bg_color;
-        border: 1px solid $comments_border-color;
+        border: 1px solid transparent;
+        box-shadow: 5px 5px 5px $comments_border-color;
         padding: 0 1em 11px 1em;
 
         p {

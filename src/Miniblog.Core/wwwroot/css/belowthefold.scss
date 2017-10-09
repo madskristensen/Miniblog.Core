@@ -1,0 +1,63 @@
+﻿@import "variables";
+
+.pagination {
+    padding-bottom: 2em;
+    margin-top: 1em;
+
+    a {
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        display: inline-block;
+        padding: 4px 15px;
+        text-decoration: none;
+
+        &[rel=next] {
+            float: right;
+        }
+    }
+}
+
+.sitefooter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: $text_color;
+    color: white;
+    height: $footer_height;
+    font-size: .9em;
+
+    .container {
+        margin: 1em auto;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+
+        &:not(:last-child):not(:first-child):before {
+            content: "\00A0| \00A0"
+        }
+
+        &:last-child {
+            float: right;
+        }
+    }
+
+    a {
+        color: white;
+    }
+
+    p {
+        position: absolute;
+        bottom: .5em;
+        left: 0;
+        text-align: center;
+        width: 100%;
+        font-size: .9em;
+    }
+}

@@ -27,10 +27,6 @@ body {
     padding: 0 1.5em;
 }
 
-ul, ol {
-    padding-left: 2em;
-}
-
 .siteheader {
     text-align: right;
     margin: 2em auto;
@@ -61,24 +57,12 @@ img {
     height: auto;
 }
 
-.list {
-    list-style: none;
-
-    li {
-        margin: .8em 0;
-    }
-
-    a {
-        display: block;
-    }
-
-    time, span {
-        font-size: .8em;
-    }
-}
-
 h1, h2, h3, h4{
     font-weight: normal;
+}
+
+ul, ol {
+    padding-left: 2em;
 }
 
 .post {
@@ -104,6 +88,20 @@ h1, h2, h3, h4{
             a {
                 color: $text_color;
                 text-decoration: none;
+            }
+        }
+
+        .categories {
+            list-style: none;
+            display: inline;
+            padding: 0;
+
+            li {
+                display: inline-block;
+
+                &:not(:last-child):after {
+                    content: ", ";
+                }
             }
         }
     }
@@ -145,80 +143,5 @@ h1, h2, h3, h4{
         img {
             padding: .5em;
         }
-    }
-
-    .categories {
-        list-style: none;
-        display: inline;
-        padding: 0;
-
-        li {
-            display: inline-block;
-
-            &:not(:last-child):after {
-                content: ", ";
-            }
-        }
-    }
-}
-
-.pagination {
-    padding-bottom: 2em;
-    margin-top: 1em;
-
-    a {
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        display: inline-block;
-        padding: 4px 15px;
-        text-decoration: none;
-
-        &[rel=next] {
-            float: right;
-        }
-    }
-}
-
-.sitefooter {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: $text_color;
-    color: white;
-    height: $footer_height;
-    font-size: .9em;
-
-    .container {
-        margin: 1em auto;
-    }
-
-    ul {
-        list-style: none;
-    }
-
-    li {
-        display: inline-block;
-
-        &:not(:last-child):not(:first-child):before {
-            content: "\00A0| \00A0"
-        }
-
-        &:last-child {
-            float: right;
-        }
-    }
-
-    a {
-        color: white;
-    }
-
-    p {
-        position: absolute;
-        bottom: .5em;
-        left: 0;
-        text-align: center;
-        width: 100%;
-        font-size: .9em;
     }
 }
