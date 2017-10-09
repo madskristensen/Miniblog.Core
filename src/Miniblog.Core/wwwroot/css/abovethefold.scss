@@ -3,8 +3,6 @@
 * {
     margin: 0;
     padding: 0;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
@@ -90,20 +88,6 @@ ul, ol {
                 text-decoration: none;
             }
         }
-
-        .categories {
-            list-style: none;
-            display: inline;
-            padding: 0;
-
-            li {
-                display: inline-block;
-
-                &:not(:last-child):after {
-                    content: ", ";
-                }
-            }
-        }
     }
 
     > div {
@@ -137,11 +121,33 @@ ul, ol {
         }
 
         h3 {
-            font-size: 1.3em;
+            font-size: 1.4em;
+        }
+
+        h4 {
+            font-size: 1.2em;
         }
 
         img {
             padding: .5em;
+        }
+    }
+
+    > footer{
+        font-style: italic;
+    }
+
+    .categories {
+        list-style: none;
+        display: inline;
+        padding: 0;
+
+        li {
+            display: inline-block;
+
+            &:not(:last-child):after {
+                content: ", ";
+            }
         }
     }
 }

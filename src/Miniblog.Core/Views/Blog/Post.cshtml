@@ -18,9 +18,13 @@
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
-        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
         <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
+        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
+    </header>
 
+    <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
+
+    <footer>
         @if (Model.Categories.Any())
         {
             <span> Posted in</span>
@@ -31,33 +35,29 @@
                 }
             </ul>
         }
-
-    </header>
-
-    <div itemprop="articleBody mainEntityOfPage">@rs.RenderMarkdown(Model)</div>
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        <p>
-            <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
-        </p>
-
-        @section Scripts {
-            <script src="~/js/admin.js" async></script>
-        }
-    }
-
-    @if (!showFullPost && Model.Comments.Count > 0)
-    {
-        <p>
+        @if (!showFullPost && Model.Comments.Count > 0)
+        {
+            if (Model.Categories.Any())
+            {
+                <text>and has</text>
+            }
             <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
                 <span itemprop="commentCount">@Model.Comments.Count</span> comments
             </a>
-        </p>
-    }
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>
+                <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
+            </p>
 
-    <meta itemprop="author" content="@settings.Value.Owner" />
-    <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
+            @section Scripts {
+                <script src="~/js/admin.js" async></script>
+            }
+        }
+        <meta itemprop="author" content="@settings.Value.Owner" />
+        <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
+    </footer>
 </article>
 
 @if (showFullPost)
