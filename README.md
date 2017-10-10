@@ -48,3 +48,6 @@ A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 2. Change user settings in `\src\appsettings.json`
 3. Make any modifications you want
 4. Deploy
+
+## Credits
+SVG icons by <https://simpleicons.org/>

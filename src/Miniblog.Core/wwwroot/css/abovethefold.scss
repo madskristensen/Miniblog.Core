@@ -31,18 +31,17 @@ body {
 }
 
 .siteheader {
+    background: linear-gradient(to bottom, $comments_bg_color, #fff);
     text-align: right;
-    margin: 2em auto;
+    padding: .8em 1.5em 2em 1.5em;
+
+    p {
+        font-size: 2em;
+    }
 
     a {
         color: $text_color;
         text-decoration: none;
-        font-weight: normal;
-    }
-
-    p {
-        font-size: 2.5em;
-        font-weight: bold;
     }
 }
 
@@ -60,7 +59,7 @@ img {
     height: auto;
 }
 
-h1, h2, h3, h4{
+h1, h2, h3, h4 {
     font-weight: normal;
 }
 
@@ -74,7 +73,6 @@ ul, ol {
     -ms-hyphens: auto;
     -webkit-hyphens: auto;
     hyphens: auto;
-    margin-top: 2em;
     padding-bottom: 2em;
 
     header {
@@ -108,7 +106,7 @@ ul, ol {
             color: lighten($text_color, 30%);
             font-size: 1.3em;
             width: 90%;
-            margin: 60px auto;
+            margin: 1.5em auto;
             font-style: italic;
             font-weight: lighter;
 
@@ -138,7 +136,7 @@ ul, ol {
         }
     }
 
-    > footer{
+    > footer {
         font-style: italic;
     }
 

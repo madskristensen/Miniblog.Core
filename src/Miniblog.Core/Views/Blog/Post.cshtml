@@ -27,7 +27,7 @@
             <li> Posted in</li>
             @foreach (string cat in Model.Categories)
             {
-                <li itemprop="articleSection"><a href="~/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
+                <li itemprop="articleSection"><a href="~/blog/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
             }
         </ul>
 
@@ -40,7 +40,7 @@
         }
 
         <p asp-if="User.Identity.IsAuthenticated">
-            <a href="~/post/@Model.Slug/?edit=true" title="Edit the post">Edit post</a>
+            <a href="@Model.GetLink()/?edit=true" title="Edit the post">Edit post</a>
         </p>
 
         <meta itemprop="author" content="@settings.Value.Owner" />

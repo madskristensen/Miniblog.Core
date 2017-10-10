@@ -15,7 +15,6 @@ namespace Miniblog.Core
         [Required]
         public string Title { get; set; }
 
-        [Required]
         public string Slug { get; set; }
 
         [Required]
@@ -36,7 +35,7 @@ namespace Miniblog.Core
 
         public string GetLink()
         {
-            return $"/post/{Slug}/";
+            return $"/blog/{Slug}/";
         }
 
         public static string CreateSlug(string title)
@@ -76,6 +75,5 @@ namespace Miniblog.Core
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
-
     }
 }

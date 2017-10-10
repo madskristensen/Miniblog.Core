@@ -32,18 +32,26 @@ namespace Miniblog.Core
             return View("views/blog/index.cshtml", posts);
         }
 
-        [Route("/category/{category}/{page:int?}")]
+        [Route("/blog/category/{category}/{page:int?}")]
         public IActionResult Category(string category, int page = 0)
         {
             var posts = _storage.GetPostsByCategory(category).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
             ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
-            ViewData["prev"] = $"/category/{category}/{page + 1}/";
-            ViewData["next"] = $"/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
+            ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
+            ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
             return View("views/blog/index.cshtml", posts);
         }
 
-        [Route("/post/{slug?}")]
+        // This is for redirecting potential existing URLs from the old Miniblog URL format
+        [Route("/post/{slug}")]
+        [HttpGet]
+        public IActionResult Redirects(string slug)
+        {
+            return RedirectToActionPermanent("Post");
+        }
+
+        [Route("/blog/{slug?}")]
         [HttpGet]
         public IActionResult Post(string slug, [FromQuery] bool edit)
         {
@@ -61,7 +69,7 @@ namespace Miniblog.Core
             return NotFound();
         }
 
-        [Route("/post/{slug?}")]
+        [Route("/blog/{slug?}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> UpdatePost(Post post, List<IFormFile> files)
         {
@@ -76,6 +84,7 @@ namespace Miniblog.Core
             existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
             existing.Title = post.Title.Trim();
             existing.Slug = post.Slug.Trim();
+            existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Core.Post.CreateSlug(post.Title);
             existing.IsPublished = post.IsPublished;
             existing.Content = post.Content.Trim();
             existing.Excerpt = post.Excerpt.Trim();
@@ -95,7 +104,7 @@ namespace Miniblog.Core
             return Redirect(post.GetLink());
         }
 
-        [Route("/deletepost/{slug}")]
+        [Route("/blog/deletepost/{slug}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public IActionResult DeletePost(string id)
         {
@@ -110,7 +119,7 @@ namespace Miniblog.Core
             return NotFound();
         }
 
-        [Route("/comment/{postId}")]
+        [Route("/blog/comment/{postId}")]
         [HttpPost, AutoValidateAntiforgeryToken]
         public IActionResult AddComment(string postId, Comment comment)
         {
@@ -135,7 +144,7 @@ namespace Miniblog.Core
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
 
-        [Route("/comment/{postId}/{commentId}")]
+        [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
         [AutoValidateAntiforgeryToken]
         public IActionResult DeleteComment(string postId, string commentId)
