@@ -8,7 +8,8 @@
             selector: '#Content',
             plugins: 'autosave preview searchreplace visualchars image link media code table hr pagebreak autoresize nonbreaking anchor insertdatetime advlist lists textcolor wordcount imagetools colorpicker',
             menubar: "edit view format insert table",
-            toolbar1: 'formatselect | bold italic forecolor backcolor | imageupload link | alignleft aligncenter alignright  | numlist bullist outdent indent | code',
+            toolbar1: 'formatselect | bold italic blockquote forecolor backcolor | imageupload link | alignleft aligncenter alignright  | numlist bullist outdent indent | code',
+            selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
             autoresize_bottom_margin: 0,
             paste_data_images: true,
             image_advtab: true,
@@ -81,7 +82,7 @@
                         image.setAttribute("width", image.width);
                         image.setAttribute("height", image.height);
                         tinymce.activeEditor.execCommand('mceInsertContent', false, image.outerHTML);
-                    }
+                    };
                     image.src = this.result;
 
                 });

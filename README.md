@@ -9,7 +9,7 @@ A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 - Windows/Open Live Writer support
 - RSS and ATOM feeds
 - User comments
-- Search Engine optimized
+- Search engine optimized
 - All major browsers fully supported (IE 9+)
 - Social media integration (Facebook, Twitter, Google+)
 - Follows best practices for web applications
@@ -29,7 +29,7 @@ A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 - Responsive web design
   - [See mobile emulators](https://www.responsinator.com/?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
 - Mobile friendly
-  - [Run Mobile-Friendly Test](https://search.google.com/test/mobile-friendly?id=_wYVtpbWLJvqeerje7NN0A)
+  - [Run Mobile-Friendly Test](https://search.google.com/test/mobile-friendly?id=i4i-jw3VafvYnjcyHt4jgg)
 - Schema.org support with HTML 5 Microdata 
   - [Run testing tool](https://search.google.com/structured-data/testing-tool#url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
 - OpenGraph support for Facebook, Twitter, Pinterest and more
