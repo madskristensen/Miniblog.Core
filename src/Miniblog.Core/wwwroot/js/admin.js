@@ -34,6 +34,16 @@
         });
     }
 
+    // Write comment
+    var commentText = document.querySelector("#comments textarea")
+
+    if (commentText) {
+        commentText.addEventListener("focus", function (e) {
+            var details = document.querySelector("#comments .details")
+            details.classList.add("show");
+        }, false)
+    }
+
     // Delete comments
     var deleteLinks = document.querySelectorAll("a.delete");
 

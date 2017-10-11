@@ -12,12 +12,27 @@
         margin-top: 2em;
     }
 
+    .details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 800ms 2s ease-in-out;
+        will-change: auto;
+
+        &.show {
+            max-height: 250px;
+        }
+    }
+
     label {
         display: block;
         margin-top: 1em;
 
         span {
             font-weight: normal;
+        }
+
+        &[for=content] {
+            display: none;
         }
     }
 
