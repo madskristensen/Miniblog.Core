@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/lib/simplemde.min.css" />
 }
 
-<form method="post" id="edit" enctype="multipart/form-data" class="container" asp-controller="Blog" asp-action="UpdatePost">
+<form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
     <div asp-validation-summary="All"></div>
     <input type="hidden" asp-for="@Model.ID" />
 
@@ -33,11 +33,8 @@
     <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
     <br />
 
-    <textarea asp-for="@Model.Content" aria-label="Content">@Model.Content</textarea>
-
-    <label for="files">Upload files</label>
-    <input type="file" id="files" name="files" />
-    <br /><br />
+    <textarea asp-for="@Model.Content" rows="20" aria-label="Content">@Model.Content</textarea>
+    <br />
 
     <input type="submit" value="Save" title="Save the post" />
 
@@ -48,6 +45,6 @@
 </form>
 
 @section Scripts {
-    <script src="~/lib/simplemde.min.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
     <script src="~/js/admin.js" async></script>
 }

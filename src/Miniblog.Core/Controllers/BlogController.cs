@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Miniblog.Core
 {
@@ -71,7 +70,7 @@ namespace Miniblog.Core
 
         [Route("/blog/{slug?}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> UpdatePost(Post post, List<IFormFile> files)
+        public async Task<IActionResult> UpdatePost(Post post)
         {
             if (!ModelState.IsValid)
             {
@@ -91,17 +90,45 @@ namespace Miniblog.Core
 
             await _storage.SavePost(existing);
 
-            foreach (var formFile in files.Where(f => f.Length > 0))
-            {
-                using (var ms = new MemoryStream())
-                {
-                    await formFile.CopyToAsync(ms);
-                    var bytes = ms.ToArray();
-                    _storage.SaveFile(bytes, formFile.FileName, existing.ID);
-                }
-            }
+            SaveFilesToDisk(existing);
 
             return Redirect(post.GetLink());
+        }
+
+        private void SaveFilesToDisk(Post post)
+        {
+            var imgRegex = new Regex("<img[^>].+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var base64Regex = new Regex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase);
+
+            foreach (Match match in imgRegex.Matches(post.Content))
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml("<root>" + match.Value + "</root>");
+
+                var img = doc.FirstChild.FirstChild;
+                var srcNode = img.Attributes["src"];
+                var fileNameNode = img.Attributes["data-filename"];
+
+                // The HTML editor creates base64 DataURIs which we'll have to convert to image files on disk
+                if (srcNode != null && fileNameNode != null)
+                {
+                    var base64Match = base64Regex.Match(srcNode.Value);
+                    if (base64Match.Success)
+                    {
+                        byte[] bytes = Convert.FromBase64String(base64Match.Groups["base64"].Value);
+                        srcNode.Value = _storage.SaveFile(bytes, fileNameNode.Value);
+
+                        img.Attributes.Remove(fileNameNode);
+                        post.Content = post.Content.Replace(match.Value, img.OuterXml);
+                    }
+                }
+            }
+        }
+
+        private byte[] ConvertToBytes(string base64)
+        {
+            int index = base64.IndexOf("base64,", StringComparison.Ordinal) + 7;
+            return Convert.FromBase64String(base64.Substring(index));
         }
 
         [Route("/blog/deletepost/{slug}")]

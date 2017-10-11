@@ -1,15 +1,35 @@
 ﻿(function () {
 
-    var simplemde;
-
-    // Setup markdown editor
+    // Setup editor
     var editPost = document.querySelector("#Content");
 
     if (editPost) {
-        simplemde = new SimpleMDE({
-            element: editPost,
-            showIcons: ["clean-block", "table", "code", "strikethrough"],
-            spellChecker: false
+        tinymce.init({
+            selector: '#Content',
+            plugins: 'autosave preview searchreplace visualchars image link media code table hr pagebreak autoresize nonbreaking anchor insertdatetime advlist lists textcolor wordcount imagetools colorpicker',
+            menubar: "edit view format insert table",
+            toolbar1: 'formatselect | bold italic forecolor backcolor | imageupload link | alignleft aligncenter alignright  | numlist bullist outdent indent | code',
+            autoresize_bottom_margin: 0,
+            paste_data_images: true,
+            image_advtab: true,
+            file_picker_types: 'image',
+            relative_urls: false,
+            convert_urls: false,
+            branding: false,
+
+            setup: function (editor) {
+                editor.addButton('imageupload', {
+                    icon: "image",
+                    onclick: function () {
+                        var fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.multiple = true;
+                        fileInput.addEventListener("change", handleFileSelect, false);
+                        fileInput.click();
+                    }
+                });
+
+            }
         });
     }
 
@@ -40,18 +60,38 @@
     }
 
     // File upload
-    var fileUpload = document.getElementById("files");
-    var postId = document.querySelector("input#ID");
+    function handleFileSelect(event) {
+        if (window.File && window.FileList && window.FileReader) {
 
-    if (simplemde && fileUpload) {
-        fileUpload.addEventListener("change", function (e) {
-            for (var i = 0; i < fileUpload.files.length; i++) {
-                var file = fileUpload.files[i];
-                var name = file.name.substr(0, file.name.lastIndexOf("."));
-                var ext = file.name.substr(name.length);
-                simplemde.value(simplemde.value() + "\n\n![" + name + "](/files/" + name + "_" + postId.value + ext + ")");
+            var files = event.target.files;
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                // Only image uploads supported
+                if (!file.type.match('image'))
+                    continue;
+
+                var reader = new FileReader();
+                reader.addEventListener("load", function (event) {
+                    var image = new Image();
+                    image.alt = file.name;
+                    image.onload = function (e) {
+                        image.setAttribute("data-filename", file.name);
+                        image.setAttribute("width", image.width);
+                        image.setAttribute("height", image.height);
+                        tinymce.activeEditor.execCommand('mceInsertContent', false, image.outerHTML);
+                    }
+                    image.src = this.result;
+
+                });
+
+                reader.readAsDataURL(file);
             }
-        });
+        }
+        else {
+            console.log("Your browser does not support File API");
+        }
     }
 
 })();
