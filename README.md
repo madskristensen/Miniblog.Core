@@ -6,7 +6,6 @@ A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
 ## Features
 
-- Write blog posts in markdown
 - Windows/Open Live Writer support
 - RSS and ATOM feeds
 - User comments

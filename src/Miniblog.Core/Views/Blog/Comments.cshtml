@@ -14,9 +14,7 @@
                 <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
-                    <div itemprop="text">
-                        <markdown allow-html="false">@comment.Content</markdown>
-                    </div>
+                    <pre itemprop="text">@comment.Content</pre>
                     <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)
@@ -39,10 +37,7 @@
                 <label for="email">E-mail</label>
                 <input id="email" name="email" placeholder="Example: mary@example.com" required />
 
-                <label for="content">
-                    Comment
-                    <span>(<a href="https://simplemde.com/markdown-guide" target="_blank" rel="noreferrer noopener">markdown</a> allowed)</span>
-                </label>
+                <label for="content">Comment</label>
                 <textarea id="content" name="content" rows="5" cols="100" required></textarea>
 
                 <input type="submit" value="Post comment" />

@@ -1,5 +1,4 @@
-﻿using Markdig;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
@@ -100,11 +99,6 @@ namespace Miniblog.Core
             Response.ContentType = "application/xml";
             string host = Request.Scheme + "://" + Request.Host;
 
-            var pipeline = new MarkdownPipelineBuilder()
-            .UseDiagrams()
-            .UseAdvancedExtensions()
-            .Build();
-
             using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
             {
                 var posts = _storage.GetPosts(10);
@@ -115,7 +109,7 @@ namespace Miniblog.Core
                     var item = new AtomEntry
                     {
                         Title = post.Title,
-                        Description = Markdown.ToHtml(post.Content, pipeline),
+                        Description = post.Content,
                         Id = host + post.GetLink(),
                         Published = post.PubDate,
                         LastUpdated = post.LastModified,
@@ -152,6 +146,7 @@ namespace Miniblog.Core
             var atom = new AtomFeedWriter(xmlWriter);
             await atom.WriteTitle(_settings.Value.Name);
             await atom.WriteId(host);
+            await atom.WriteSubtitle(_settings.Value.Description);
             await atom.WriteGenerator("Miniblog.Core", "https://github.com/madskristensen/Miniblog.Core", "1.0");
             await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             return atom;

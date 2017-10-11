@@ -88,6 +88,8 @@
 
                 reader.readAsDataURL(file);
             }
+
+            document.body.removeChild(event.target);
         }
         else {
             console.log("Your browser does not support File API");
