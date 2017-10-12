@@ -14,7 +14,7 @@
                 <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
-                    <pre itemprop="text">@comment.Content</pre>
+                    <pre itemprop="text">@comment.Content.Replace("<br />", "\r\n")</pre>
                     <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)
@@ -42,9 +42,10 @@
 
                     <label for="email">E-mail</label>
                     <input id="email" name="email" placeholder="Example: mary@example.com" required />
-                </div>
+                    <br />
 
-                <input type="submit" value="Post comment" />
+                    <input type="submit" value="Post comment" />
+                </div>
             </form>
         }
         else

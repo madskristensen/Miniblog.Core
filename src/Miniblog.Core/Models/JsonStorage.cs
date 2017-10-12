@@ -4,16 +4,14 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Miniblog.Core
 {
-    public class JsonStorage : IBlogStorage
+    public class JsonStorage : InMemoryBlogStorage
     {
         private IHostingEnvironment _env;
         private string _folder;
-        private List<Post> _cache;
         private JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -28,34 +26,7 @@ namespace Miniblog.Core
             Initialize();
         }
 
-        public IEnumerable<Post> GetPosts(int count, int skip = 0)
-        {
-            return _cache.Skip(skip).Take(count);
-        }
-
-        public IEnumerable<Post> GetPostsByCategory(string category)
-        {
-            return _cache.Where(p => p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase));
-        }
-
-        public Post GetPostBySlug(string slug)
-        {
-            return _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public Post GetPostById(string id)
-        {
-            return _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public IEnumerable<string> GetCategories()
-        {
-            return _cache.SelectMany(post => post.Categories)
-                         .Select(cat => cat.ToLowerInvariant())
-                         .Distinct();
-        }
-
-        public async Task SavePost(Post post)
+        public override async Task SavePost(Post post)
         {
             post.LastModified = DateTime.UtcNow;
 
@@ -75,7 +46,7 @@ namespace Miniblog.Core
             }
         }
 
-        public void DeletePost(Post post)
+        public override void DeletePost(Post post)
         {
             string filePath = GetFilePath(post);
 
@@ -90,7 +61,7 @@ namespace Miniblog.Core
             }
         }
 
-        public string SaveFile(byte[] bytes, string fileName, string suffix = null)
+        public async override Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
         {
             suffix = suffix ?? DateTime.UtcNow.Ticks.ToString();
 
@@ -102,14 +73,13 @@ namespace Miniblog.Core
             string dir = Path.GetDirectoryName(absolute);
 
             Directory.CreateDirectory(dir);
-            File.WriteAllBytes(absolute, bytes);
+
+            using (var writer = new FileStream(absolute, FileMode.CreateNew))
+            {
+                await writer.WriteAsync(bytes, 0, bytes.Length);
+            }
 
             return relative;
-        }
-
-        private void SortCache()
-        {
-            _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
         }
 
         private string GetFilePath(Post post)

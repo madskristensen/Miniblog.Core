@@ -90,12 +90,12 @@ namespace Miniblog.Core
 
             await _storage.SavePost(existing);
 
-            SaveFilesToDisk(existing);
+            await SaveFilesToDisk(existing);
 
             return Redirect(post.GetLink());
         }
 
-        private void SaveFilesToDisk(Post post)
+        private async Task SaveFilesToDisk(Post post)
         {
             var imgRegex = new Regex("<img[^>].+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             var base64Regex = new Regex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase);
@@ -116,7 +116,7 @@ namespace Miniblog.Core
                     if (base64Match.Success)
                     {
                         byte[] bytes = Convert.FromBase64String(base64Match.Groups["base64"].Value);
-                        srcNode.Value = _storage.SaveFile(bytes, fileNameNode.Value);
+                        srcNode.Value = await _storage.SaveFile(bytes, fileNameNode.Value);
 
                         img.Attributes.Remove(fileNameNode);
                         post.Content = post.Content.Replace(match.Value, img.OuterXml);

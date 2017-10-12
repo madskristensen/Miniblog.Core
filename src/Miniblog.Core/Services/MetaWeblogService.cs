@@ -129,7 +129,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
             byte[] bytes = Convert.FromBase64String(mediaObject.bits);
-            string path = _storage.SaveFile(bytes, mediaObject.name);
+            string path = _storage.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
 
             return new MediaObjectInfo { url = path };
         }
