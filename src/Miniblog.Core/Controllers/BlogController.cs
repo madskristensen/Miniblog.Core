@@ -164,6 +164,8 @@ namespace Miniblog.Core
 
             comment.IsAdmin = User.Identity.IsAuthenticated;
             comment.Content = comment.Content.Trim();
+            comment.Author = comment.Author.Trim();
+            comment.Email = comment.Email.Trim();
 
             post.Comments.Add(comment);
             _storage.SavePost(post);

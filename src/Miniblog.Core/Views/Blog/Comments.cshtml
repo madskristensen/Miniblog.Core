@@ -32,8 +32,9 @@
             <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
                 <h3>Post a comment</h3>
                 <br />
+
                 <label for="content">Comment</label>
-                <textarea id="content" name="content" rows="5" cols="100" onfocus="document.querySelector('.details').className += ' show'" required placeholder="Enter your commen here..."></textarea>
+                <textarea id="content" name="content" rows="5" cols="100" onfocus="" required placeholder="Enter your comment here..."></textarea>
 
                 <div class="details">
                     <label for="author">Name</label>
@@ -53,3 +54,5 @@
         }
     </div>
 </section>
+
+<script src="~/js/comment.js" inline></script>
