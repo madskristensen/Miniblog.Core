@@ -98,7 +98,7 @@ namespace Miniblog.Core
             string ext = Path.GetExtension(fileName);
             string name = Path.GetFileNameWithoutExtension(fileName);
 
-            string relative = $"/files/{name}_{suffix}.{ext}";
+            string relative = $"files/{name}_{suffix}{ext}";
             string absolute = Path.Combine(_folder, relative);
             string dir = Path.GetDirectoryName(absolute);
 
@@ -108,7 +108,7 @@ namespace Miniblog.Core
                 await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
-            return relative;
+            return "/posts/" + relative;
         }
 
         private string GetFilePath(Post post)

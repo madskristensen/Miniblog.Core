@@ -38,7 +38,7 @@ namespace Miniblog.Core
         {
             services.AddMvc();
 
-            services.AddSingleton<IBlogService, JsonBlogService>();
+            services.AddSingleton<IBlogService, XmlBlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();

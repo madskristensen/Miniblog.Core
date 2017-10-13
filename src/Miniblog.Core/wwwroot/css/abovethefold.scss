@@ -20,8 +20,13 @@ html {
 
 body {
     font: 18px/1.5 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
-    margin: 0 0 $footer_height 0;
+    margin-bottom: $footer_height;
     color: $text_color;
+    word-wrap: break-word;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
 
 .container {
@@ -37,6 +42,7 @@ body {
 
     p {
         font-size: 2em;
+        margin: 0;
     }
 
     a {
@@ -68,11 +74,6 @@ ul, ol {
 }
 
 .post {
-    word-wrap: break-word;
-    -moz-hyphens: auto;
-    -ms-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
     padding-bottom: 2em;
 
     header {
@@ -96,10 +97,6 @@ ul, ol {
     > div {
         text-align: justify;
 
-        p {
-            margin: 1em 0;
-        }
-
         blockquote {
             border-top: 1px dotted lighten($text_color, 50%);
             border-bottom: 1px dotted lighten($text_color, 50%);
@@ -121,23 +118,41 @@ ul, ol {
 
         h2 {
             font-size: 1.6em;
+            font-weight: lighter;
         }
 
         h3 {
             font-size: 1.4em;
+            font-weight: lighter;
         }
 
         h4 {
             font-size: 1.2em;
         }
 
+        p {
+            margin: 1em 0;
+        }
+
         img {
             padding: .5em;
+        }
+
+        ul {
+            list-style: none;
+            text-indent: -1em;
+
+            li:before {
+                content: "\0BB \020";
+                opacity: .5;
+                margin-right: .3em;
+            }
         }
     }
 
     > footer {
         font-style: italic;
+        clear: both;
     }
 
     .categories {

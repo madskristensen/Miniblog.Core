@@ -16,6 +16,10 @@
     <header>
         <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="@Model.GetLink()?edit=true" title="Edit the post">Edit post</a>
+        }
     </header>
 
     <div itemprop="articleBody mainEntityOfPage">
@@ -38,10 +42,6 @@
                 <span itemprop="commentCount">@Model.Comments.Count</span> comments
             </a>
         }
-
-        <p asp-if="User.Identity.IsAuthenticated">
-            <a href="@Model.GetLink()?edit=true" title="Edit the post">Edit post</a>
-        </p>
 
         <meta itemprop="author" content="@settings.Value.Owner" />
         <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />

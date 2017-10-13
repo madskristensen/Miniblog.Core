@@ -10,8 +10,8 @@
 }
 
 <nav class="pagination container" aria-label="Pagination">
-    <a asp-if="Model.Any()" rel="prev" href="@ViewData["prev"]" title="Older posts">← Older</a>
-    <a asp-if="currentPage > 0" rel="next" href="@ViewData["next"]" title="Newer posts">Newer →</a>
+    <a asp-if="Model.Any()" rel="prev" href="@ViewData["prev"]" title="Older posts">&laquo; Older</a>
+    <a asp-if="currentPage > 0" rel="next" href="@ViewData["next"]" title="Newer posts">Newer &raquo;</a>
     <br /><br />
 
     @section Head {
