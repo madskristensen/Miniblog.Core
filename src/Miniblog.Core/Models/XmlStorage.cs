@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,8 @@ namespace Miniblog.Core
         private IHostingEnvironment _env;
         private string _folder;
 
-        public XmlStorage(IHostingEnvironment env)
+        public XmlStorage(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+            : base(contextAccessor)
         {
             _env = env;
             _folder = Path.Combine(env.WebRootPath, "Posts");
@@ -62,17 +64,17 @@ namespace Miniblog.Core
 
             using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
             {
-                await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None);
+                await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
             }
 
-            if (!_cache.Contains(post))
+            if (!Cache.Contains(post))
             {
-                _cache.Add(post);
+                Cache.Add(post);
                 SortCache();
             }
         }
 
-        public override void DeletePost(Post post)
+        public override Task DeletePost(Post post)
         {
             string filePath = GetFilePath(post);
 
@@ -81,10 +83,12 @@ namespace Miniblog.Core
                 File.Delete(filePath);
             }
 
-            if (_cache.Contains(post))
+            if (Cache.Contains(post))
             {
-                _cache.Remove(post);
+                Cache.Remove(post);
             }
+
+            return Task.CompletedTask;
         }
 
         public async override Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
@@ -101,7 +105,7 @@ namespace Miniblog.Core
             Directory.CreateDirectory(dir);
             using (var writer = new FileStream(absolute, FileMode.CreateNew))
             {
-                await writer.WriteAsync(bytes, 0, bytes.Length);
+                await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
             return relative;
@@ -114,7 +118,7 @@ namespace Miniblog.Core
 
         private void Initialize()
         {
-            _cache = new List<Post>();
+            Cache = new List<Post>();
 
             LoadPosts();
             SortCache();
@@ -144,7 +148,7 @@ namespace Miniblog.Core
 
                 LoadCategories(post, doc);
                 LoadComments(post, doc);
-                _cache.Add(post);
+                Cache.Add(post);
             }
         }
 

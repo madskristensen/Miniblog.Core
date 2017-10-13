@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -18,7 +19,8 @@ namespace Miniblog.Core
             Formatting = Formatting.Indented,
         };
 
-        public JsonStorage(IHostingEnvironment env)
+        public JsonStorage(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+            : base(contextAccessor)
         {
             _env = env;
             _folder = Path.Combine(env.ContentRootPath, "Posts");
@@ -39,14 +41,14 @@ namespace Miniblog.Core
                 await writer.WriteAsync(json).ConfigureAwait(false);
             }
 
-            if (!_cache.Contains(post))
+            if (!Cache.Contains(post))
             {
-                _cache.Add(post);
+                Cache.Add(post);
                 SortCache();
             }
         }
 
-        public override void DeletePost(Post post)
+        public override Task DeletePost(Post post)
         {
             string filePath = GetFilePath(post);
 
@@ -55,10 +57,12 @@ namespace Miniblog.Core
                 File.Delete(filePath);
             }
 
-            if (_cache.Contains(post))
+            if (Cache.Contains(post))
             {
-                _cache.Remove(post);
+                Cache.Remove(post);
             }
+
+            return Task.CompletedTask;
         }
 
         public async override Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
@@ -76,7 +80,7 @@ namespace Miniblog.Core
 
             using (var writer = new FileStream(absolute, FileMode.CreateNew))
             {
-                await writer.WriteAsync(bytes, 0, bytes.Length);
+                await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
             return relative;
@@ -89,7 +93,7 @@ namespace Miniblog.Core
 
         private void Initialize()
         {
-            _cache = new List<Post>();
+            Cache = new List<Post>();
 
             foreach (string file in Directory.EnumerateFiles(_folder, "*.json", SearchOption.TopDirectoryOnly))
             {
@@ -97,7 +101,7 @@ namespace Miniblog.Core
                 var post = JsonConvert.DeserializeObject<Post>(json);
                 post.ID = Path.GetFileNameWithoutExtension(file);
 
-                _cache.Add(post);
+                Cache.Add(post);
             }
 
             SortCache();

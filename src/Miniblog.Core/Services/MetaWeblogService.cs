@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Controllers;
 using System;
-using System.IO;
 using System.Linq;
 using WilderMinds.MetaWeblog;
 
@@ -34,7 +33,12 @@ namespace Miniblog.Core
                 Categories = post.categories
             };
 
-            _storage.SavePost(newPost);
+            if (post.dateCreated != DateTime.MinValue)
+            {
+                newPost.PubDate = post.dateCreated;
+            }
+
+            _storage.SavePost(newPost).GetAwaiter().GetResult();
 
             return newPost.ID;
         }
@@ -43,11 +47,11 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var post = _storage.GetPostById(postid);
+            var post = _storage.GetPostById(postid).GetAwaiter().GetResult();
 
             if (post != null)
             {
-                _storage.DeletePost(post);
+                _storage.DeletePost(post).GetAwaiter().GetResult();
                 return true;
             }
 
@@ -58,7 +62,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var existing = _storage.GetPostById(postid);
+            var existing = _storage.GetPostById(postid).GetAwaiter().GetResult();
 
             if (existing != null)
             {
@@ -68,7 +72,12 @@ namespace Miniblog.Core
                 existing.IsPublished = publish;
                 existing.Categories = post.categories;
 
-                _storage.SavePost(existing);
+                if (post.dateCreated != DateTime.MinValue)
+                {
+                    existing.PubDate = post.dateCreated;
+                }
+
+                _storage.SavePost(existing).GetAwaiter().GetResult();
 
                 return true;
             }
@@ -80,7 +89,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            return _storage.GetCategories()
+            return _storage.GetCategories().GetAwaiter().GetResult()
                            .Select(cat =>
                                new CategoryInfo
                                {
@@ -94,7 +103,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var post = _storage.GetPostById(postid);
+            var post = _storage.GetPostById(postid).GetAwaiter().GetResult();
 
             if (post != null)
             {
@@ -108,7 +117,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            return _storage.GetPosts(numberOfPosts).Select(p => ToMetaWebLogPost(p)).ToArray();
+            return _storage.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(p => ToMetaWebLogPost(p)).ToArray();
         }
 
         public BlogInfo[] GetUsersBlogs(string key, string username, string password)

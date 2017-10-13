@@ -8,13 +8,15 @@
     <supportsNewCategoriesInline>Yes</supportsNewCategoriesInline>
     <supportsCommentPolicy>No</supportsCommentPolicy>
     <supportsSlug>Yes</supportsSlug>
-    <supportsExcerpt>Yes</supportsExcerpt>
+    <supportsExcerpt>No</supportsExcerpt>
     <supportsPages>No</supportsPages>
     <supportsPageParent>No</supportsPageParent>
     <supportsAuthor>No</supportsAuthor>
     <supportsGetTags>No</supportsGetTags>
     <requiresHtmlTitles>No</requiresHtmlTitles>
     <supportsEmptyTitles>No</supportsEmptyTitles>
+    <requiresXHTML>Yes</requiresXHTML>
+    <supportsFileUPload>Yes</supportsFileUPload>
     <fileUploadNameFormat>{FileName}</fileUploadNameFormat>
   </options>
   <weblog>

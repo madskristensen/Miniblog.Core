@@ -21,9 +21,9 @@ namespace Miniblog.Core
         }
 
         [Route("/{page:int?}")]
-        public IActionResult Index([FromRoute]int page = 0)
+        public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
-            var posts = _storage.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            var posts = await _storage.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
             ViewData["Title"] = _settings.Value.Name;
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
@@ -32,9 +32,9 @@ namespace Miniblog.Core
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
-        public IActionResult Category(string category, int page = 0)
+        public async Task<IActionResult> Category(string category, int page = 0)
         {
-            var posts = _storage.GetPostsByCategory(category).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var posts = (await _storage.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
             ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
@@ -52,9 +52,9 @@ namespace Miniblog.Core
 
         [Route("/blog/{slug?}")]
         [HttpGet]
-        public IActionResult Post(string slug, [FromQuery] bool edit)
+        public async Task<IActionResult> Post(string slug, [FromQuery] bool edit)
         {
-            var post = _storage.GetPostBySlug(slug);
+            var post = await _storage.GetPostBySlug(slug);
 
             if (edit && User.Identity.IsAuthenticated)
             {
@@ -77,7 +77,7 @@ namespace Miniblog.Core
                 return View("Edit", post);
             }
 
-            var existing = _storage.GetPostById(post.ID) ?? post;
+            var existing = await _storage.GetPostById(post.ID) ?? post;
             string categories = Request.Form["categories"];
 
             existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
@@ -133,13 +133,13 @@ namespace Miniblog.Core
 
         [Route("/blog/deletepost/{slug}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
-        public IActionResult DeletePost(string id)
+        public async Task<IActionResult> DeletePost(string id)
         {
-            var existing = _storage.GetPostById(id);
+            var existing = await _storage.GetPostById(id);
 
             if (existing != null)
             {
-                _storage.DeletePost(existing);
+                await _storage.DeletePost(existing);
                 return Redirect("/");
             }
 
@@ -148,14 +148,14 @@ namespace Miniblog.Core
 
         [Route("/blog/comment/{postId}")]
         [HttpPost, AutoValidateAntiforgeryToken]
-        public IActionResult AddComment(string postId, Comment comment)
+        public async  Task<IActionResult> AddComment(string postId, Comment comment)
         {
             if (!ModelState.IsValid)
             {
                 return View("Post");
             }
 
-            var post = _storage.GetPostById(postId);
+            var post = await _storage.GetPostById(postId);
 
             if (post == null)
             {
@@ -168,7 +168,7 @@ namespace Miniblog.Core
             comment.Email = comment.Email.Trim();
 
             post.Comments.Add(comment);
-            _storage.SavePost(post);
+            await _storage.SavePost(post);
 
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
@@ -176,14 +176,14 @@ namespace Miniblog.Core
         [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
         [AutoValidateAntiforgeryToken]
-        public IActionResult DeleteComment(string postId, string commentId)
+        public async Task<IActionResult> DeleteComment(string postId, string commentId)
         {
             if (!User.Identity.IsAuthenticated)
             {
                 return Unauthorized();
             }
 
-            var post = _storage.GetPostById(postId);
+            var post = await _storage.GetPostById(postId);
 
             if (post == null)
             {
@@ -198,7 +198,7 @@ namespace Miniblog.Core
             }
 
             post.Comments.Remove(comment);
-            _storage.SavePost(post);
+            await _storage.SavePost(post);
 
             return Redirect(post.GetLink() + "#comments");
         }

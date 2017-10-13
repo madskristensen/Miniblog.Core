@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,62 +8,111 @@ namespace Miniblog.Core
 {
     public interface IBlogStorage
     {
-        IEnumerable<Post> GetPosts(int count, int skip = 0);
+        Task<IEnumerable<Post>> GetPosts(int count, int skip = 0);
 
-        IEnumerable<Post> GetPostsByCategory(string category);
+        Task<IEnumerable<Post>> GetPostsByCategory(string category);
 
-        Post GetPostBySlug(string slug);
+        Task<Post> GetPostBySlug(string slug);
 
-        Post GetPostById(string id);
+        Task<Post> GetPostById(string id);
 
-        IEnumerable<string> GetCategories();
+        Task<IEnumerable<string>> GetCategories();
 
         Task SavePost(Post post);
 
-        void DeletePost(Post post);
+        Task DeletePost(Post post);
 
         Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
     }
 
     public abstract class InMemoryBlogStorage : IBlogStorage
     {
-        protected List<Post> _cache;
-
-        public IEnumerable<Post> GetPosts(int count, int skip = 0)
+        public InMemoryBlogStorage(IHttpContextAccessor contextAccessor)
         {
-            return _cache.Skip(skip).Take(count);
+            ContextAccessor = contextAccessor;
         }
 
-        public IEnumerable<Post> GetPostsByCategory(string category)
+        protected List<Post> Cache { get; set; }
+        protected IHttpContextAccessor ContextAccessor { get; }
+
+        public virtual Task<IEnumerable<Post>> GetPosts(int count, int skip = 0)
         {
-            return _cache.Where(p => p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase));
+            bool isAdmin = IsAdmin();
+
+            var posts = Cache
+                .Where(p => p.IsPublished || isAdmin)
+                .Skip(skip)
+                .Take(count);
+
+            return Task.FromResult(posts);
         }
 
-        public Post GetPostBySlug(string slug)
+        public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category)
         {
-            return _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+            bool isAdmin = IsAdmin();
+
+            var posts = from post in Cache
+                        where post.IsPublished || isAdmin
+                        where post.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
+                        select post;
+
+            return Task.FromResult(posts);
+
         }
 
-        public Post GetPostById(string id)
+        public virtual Task<Post> GetPostBySlug(string slug)
         {
-            return _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
+            var post = Cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+            bool isAdmin = IsAdmin();
+
+            if (post != null && (post.IsPublished || isAdmin))
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
         }
 
-        public IEnumerable<string> GetCategories()
+        public virtual Task<Post> GetPostById(string id)
         {
-            return _cache.SelectMany(post => post.Categories)
-                         .Select(cat => cat.ToLowerInvariant())
-                         .Distinct();
+            var post = Cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
+            bool isAdmin = IsAdmin();
+
+            if (post != null && (post.IsPublished || isAdmin))
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
+        }
+
+        public virtual Task<IEnumerable<string>> GetCategories()
+        {
+            bool isAdmin = IsAdmin();
+
+            var categories = Cache
+                .Where(p => p.IsPublished || isAdmin)
+                .SelectMany(post => post.Categories)
+                .Select(cat => cat.ToLowerInvariant())
+                .Distinct();
+
+            return Task.FromResult(categories);
         }
 
         protected void SortCache()
         {
-            _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+            Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+        }
+
+        protected bool IsAdmin()
+        {
+            bool? isAdmin = ContextAccessor.HttpContext?.User?.Identity.IsAuthenticated;
+            return isAdmin == true;
         }
 
         public abstract Task SavePost(Post post);
 
-        public abstract void DeletePost(Post post);
+        public abstract Task DeletePost(Post post);
 
         public abstract Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
     }
