@@ -10,12 +10,12 @@ using System.Xml.XPath;
 
 namespace Miniblog.Core
 {
-    public class XmlStorage : InMemoryBlogStorage
+    public class XmlBlogService : InMemoryBlogServiceBase
     {
         private IHostingEnvironment _env;
         private string _folder;
 
-        public XmlStorage(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+        public XmlBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
             : base(contextAccessor)
         {
             _env = env;

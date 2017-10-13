@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Miniblog.Core
 {
-    public class JsonStorage : InMemoryBlogStorage
+    public class JsonBlogService : InMemoryBlogServiceBase
     {
         private IHostingEnvironment _env;
         private string _folder;
@@ -19,7 +19,7 @@ namespace Miniblog.Core
             Formatting = Formatting.Indented,
         };
 
-        public JsonStorage(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+        public JsonBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
             : base(contextAccessor)
         {
             _env = env;

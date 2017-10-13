@@ -9,13 +9,13 @@ namespace Miniblog.Core
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
-        private IBlogStorage _storage;
+        private IBlogService _blog;
         private IConfiguration _config;
         private IHttpContextAccessor _context;
 
-        public MetaWeblogService(IBlogStorage storage, IConfiguration config, IHttpContextAccessor context)
+        public MetaWeblogService(IBlogService blog, IConfiguration config, IHttpContextAccessor context)
         {
-            _storage = storage;
+            _blog = blog;
             _config = config;
             _context = context;
         }
@@ -38,7 +38,7 @@ namespace Miniblog.Core
                 newPost.PubDate = post.dateCreated;
             }
 
-            _storage.SavePost(newPost).GetAwaiter().GetResult();
+            _blog.SavePost(newPost).GetAwaiter().GetResult();
 
             return newPost.ID;
         }
@@ -47,11 +47,11 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var post = _storage.GetPostById(postid).GetAwaiter().GetResult();
+            var post = _blog.GetPostById(postid).GetAwaiter().GetResult();
 
             if (post != null)
             {
-                _storage.DeletePost(post).GetAwaiter().GetResult();
+                _blog.DeletePost(post).GetAwaiter().GetResult();
                 return true;
             }
 
@@ -62,7 +62,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var existing = _storage.GetPostById(postid).GetAwaiter().GetResult();
+            var existing = _blog.GetPostById(postid).GetAwaiter().GetResult();
 
             if (existing != null)
             {
@@ -77,7 +77,7 @@ namespace Miniblog.Core
                     existing.PubDate = post.dateCreated;
                 }
 
-                _storage.SavePost(existing).GetAwaiter().GetResult();
+                _blog.SavePost(existing).GetAwaiter().GetResult();
 
                 return true;
             }
@@ -89,7 +89,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            return _storage.GetCategories().GetAwaiter().GetResult()
+            return _blog.GetCategories().GetAwaiter().GetResult()
                            .Select(cat =>
                                new CategoryInfo
                                {
@@ -103,7 +103,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var post = _storage.GetPostById(postid).GetAwaiter().GetResult();
+            var post = _blog.GetPostById(postid).GetAwaiter().GetResult();
 
             if (post != null)
             {
@@ -117,7 +117,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            return _storage.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(p => ToMetaWebLogPost(p)).ToArray();
+            return _blog.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(p => ToMetaWebLogPost(p)).ToArray();
         }
 
         public BlogInfo[] GetUsersBlogs(string key, string username, string password)
@@ -138,7 +138,7 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
             byte[] bytes = Convert.FromBase64String(mediaObject.bits);
-            string path = _storage.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
+            string path = _blog.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
 
             return new MediaObjectInfo { url = path };
         }

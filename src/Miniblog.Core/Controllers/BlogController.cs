@@ -11,19 +11,19 @@ namespace Miniblog.Core
 {
     public class BlogController : Controller
     {
-        private IBlogStorage _storage;
+        private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
 
-        public BlogController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings)
+        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
         {
-            _storage = storage;
+            _blog = blog;
             _settings = settings;
         }
 
         [Route("/{page:int?}")]
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
-            var posts = await _storage.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
             ViewData["Title"] = _settings.Value.Name;
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
@@ -34,7 +34,7 @@ namespace Miniblog.Core
         [Route("/blog/category/{category}/{page:int?}")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
-            var posts = (await _storage.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
             ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
@@ -54,7 +54,7 @@ namespace Miniblog.Core
         [HttpGet]
         public async Task<IActionResult> Post(string slug, [FromQuery] bool edit)
         {
-            var post = await _storage.GetPostBySlug(slug);
+            var post = await _blog.GetPostBySlug(slug);
 
             if (edit && User.Identity.IsAuthenticated)
             {
@@ -77,7 +77,7 @@ namespace Miniblog.Core
                 return View("Edit", post);
             }
 
-            var existing = await _storage.GetPostById(post.ID) ?? post;
+            var existing = await _blog.GetPostById(post.ID) ?? post;
             string categories = Request.Form["categories"];
 
             existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
@@ -88,7 +88,7 @@ namespace Miniblog.Core
             existing.Content = post.Content.Trim();
             existing.Excerpt = post.Excerpt.Trim();
 
-            await _storage.SavePost(existing);
+            await _blog.SavePost(existing);
 
             await SaveFilesToDisk(existing);
 
@@ -116,7 +116,7 @@ namespace Miniblog.Core
                     if (base64Match.Success)
                     {
                         byte[] bytes = Convert.FromBase64String(base64Match.Groups["base64"].Value);
-                        srcNode.Value = await _storage.SaveFile(bytes, fileNameNode.Value);
+                        srcNode.Value = await _blog.SaveFile(bytes, fileNameNode.Value);
 
                         img.Attributes.Remove(fileNameNode);
                         post.Content = post.Content.Replace(match.Value, img.OuterXml);
@@ -135,11 +135,11 @@ namespace Miniblog.Core
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeletePost(string id)
         {
-            var existing = await _storage.GetPostById(id);
+            var existing = await _blog.GetPostById(id);
 
             if (existing != null)
             {
-                await _storage.DeletePost(existing);
+                await _blog.DeletePost(existing);
                 return Redirect("/");
             }
 
@@ -155,7 +155,7 @@ namespace Miniblog.Core
                 return View("Post");
             }
 
-            var post = await _storage.GetPostById(postId);
+            var post = await _blog.GetPostById(postId);
 
             if (post == null)
             {
@@ -168,7 +168,7 @@ namespace Miniblog.Core
             comment.Email = comment.Email.Trim();
 
             post.Comments.Add(comment);
-            await _storage.SavePost(post);
+            await _blog.SavePost(post);
 
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
@@ -183,7 +183,7 @@ namespace Miniblog.Core
                 return Unauthorized();
             }
 
-            var post = await _storage.GetPostById(postId);
+            var post = await _blog.GetPostById(postId);
 
             if (post == null)
             {
@@ -198,7 +198,7 @@ namespace Miniblog.Core
             }
 
             post.Comments.Remove(comment);
-            await _storage.SavePost(post);
+            await _blog.SavePost(post);
 
             return Redirect(post.GetLink() + "#comments");
         }

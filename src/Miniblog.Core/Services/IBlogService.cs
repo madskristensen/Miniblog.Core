@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Miniblog.Core
 {
-    public interface IBlogStorage
+    public interface IBlogService
     {
         Task<IEnumerable<Post>> GetPosts(int count, int skip = 0);
 
@@ -25,9 +25,9 @@ namespace Miniblog.Core
         Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
     }
 
-    public abstract class InMemoryBlogStorage : IBlogStorage
+    public abstract class InMemoryBlogServiceBase : IBlogService
     {
-        public InMemoryBlogStorage(IHttpContextAccessor contextAccessor)
+        public InMemoryBlogServiceBase(IHttpContextAccessor contextAccessor)
         {
             ContextAccessor = contextAccessor;
         }
@@ -40,7 +40,7 @@ namespace Miniblog.Core
             bool isAdmin = IsAdmin();
 
             var posts = Cache
-                .Where(p => p.IsPublished || isAdmin)
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .Skip(skip)
                 .Take(count);
 
@@ -51,10 +51,10 @@ namespace Miniblog.Core
         {
             bool isAdmin = IsAdmin();
 
-            var posts = from post in Cache
-                        where post.IsPublished || isAdmin
-                        where post.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
-                        select post;
+            var posts = from p in Cache
+                        where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                        where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
+                        select p;
 
             return Task.FromResult(posts);
 
@@ -65,7 +65,7 @@ namespace Miniblog.Core
             var post = Cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
             bool isAdmin = IsAdmin();
 
-            if (post != null && (post.IsPublished || isAdmin))
+            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
             {
                 return Task.FromResult(post);
             }
@@ -78,7 +78,7 @@ namespace Miniblog.Core
             var post = Cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
             bool isAdmin = IsAdmin();
 
-            if (post != null && (post.IsPublished || isAdmin))
+            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
             {
                 return Task.FromResult(post);
             }
@@ -99,6 +99,12 @@ namespace Miniblog.Core
             return Task.FromResult(categories);
         }
 
+        public abstract Task SavePost(Post post);
+
+        public abstract Task DeletePost(Post post);
+
+        public abstract Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
+
         protected void SortCache()
         {
             Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
@@ -106,14 +112,7 @@ namespace Miniblog.Core
 
         protected bool IsAdmin()
         {
-            bool? isAdmin = ContextAccessor.HttpContext?.User?.Identity.IsAuthenticated;
-            return isAdmin == true;
+            return ContextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
         }
-
-        public abstract Task SavePost(Post post);
-
-        public abstract Task DeletePost(Post post);
-
-        public abstract Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
     }
 }

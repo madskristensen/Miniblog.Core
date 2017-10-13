@@ -13,12 +13,12 @@ namespace Miniblog.Core
 {
     public class RobotsController : Controller
     {
-        private IBlogStorage _storage;
+        private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
 
-        public RobotsController(IBlogStorage storage, IOptionsSnapshot<BlogSettings> settings)
+        public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
         {
-            _storage = storage;
+            _blog = blog;
             _settings = settings;
         }
 
@@ -46,7 +46,7 @@ namespace Miniblog.Core
                 xml.WriteStartDocument();
                 xml.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-                var posts = await _storage.GetPosts(int.MaxValue);
+                var posts = await _blog.GetPosts(int.MaxValue);
 
                 foreach (Post post in posts)
                 {
@@ -101,7 +101,7 @@ namespace Miniblog.Core
 
             using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
             {
-                var posts = await _storage.GetPosts(10);
+                var posts = await _blog.GetPosts(10);
                 var writer = await GetWriter(type, xmlWriter, posts.Max(p => p.PubDate));
 
                 foreach (Post post in posts)
