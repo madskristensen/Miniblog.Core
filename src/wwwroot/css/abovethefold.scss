@@ -42,7 +42,6 @@ body {
 
     p {
         font-size: 2em;
-        margin: 0;
     }
 
     a {
@@ -95,11 +94,10 @@ ul, ol {
     }
 
     > div {
-        text-align: justify;
 
         blockquote {
-            border-top: 1px dotted lighten($text_color, 50%);
-            border-bottom: 1px dotted lighten($text_color, 50%);
+            border-top: 1px solid $comments_border-color;
+            border-bottom: 1px solid $comments_border-color;
             color: lighten($text_color, 30%);
             font-size: 1.3em;
             width: 90%;
@@ -114,20 +112,7 @@ ul, ol {
 
         h2, h3, h4, h5, h6 {
             margin: 1em 0 -.5em 0;
-        }
-
-        h2 {
-            font-size: 1.6em;
-            font-weight: lighter;
-        }
-
-        h3 {
-            font-size: 1.4em;
-            font-weight: lighter;
-        }
-
-        h4 {
-            font-size: 1.2em;
+            font-weight: normal;
         }
 
         p {
@@ -151,8 +136,9 @@ ul, ol {
     }
 
     > footer {
-        font-style: italic;
-        clear: both;
+        border-top: 1px solid $comments_border-color;
+        padding-top: .5em;
+        clear: both; // In case there are any floating elements in the post content
     }
 
     .categories {
