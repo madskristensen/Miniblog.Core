@@ -2,10 +2,11 @@
 
 A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
-**Demo website**: <https://miniblogcore.azurewebsites.net/>
+**Live demo**: <https://miniblogcore.azurewebsites.net/>  
+Username: *demo*  
+Password: *demo*
 
 ## Features
-
 - Windows/Open Live Writer support
 - RSS and ATOM feeds
 - User comments
