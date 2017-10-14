@@ -33,7 +33,7 @@
                 @foreach (string cat in Model.Categories)
                 {
                     <li itemprop="articleSection">
-                        <a asp-controller="Blog" asp-action="Category" asp-route-category="@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a>
+                        <a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()">@cat</a>
                     </li>
                 }
             </ul>
