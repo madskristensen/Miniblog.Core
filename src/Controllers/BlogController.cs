@@ -64,9 +64,15 @@ namespace Miniblog.Core
             return NotFound();
         }
 
+        [Route("/blog/edit/{id?}")]
         [HttpGet, Authorize]
         public async Task<IActionResult> Edit(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                return View(new Post());
+            }
+
             var post = await _blog.GetPostById(id);
 
             if (post != null)
