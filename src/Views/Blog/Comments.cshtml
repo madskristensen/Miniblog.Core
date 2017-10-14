@@ -27,7 +27,10 @@
 
         @if (Model.PubDate.AddDays(settings.Value.CommentsCloseAfterDays) >= DateTime.UtcNow)
         {
-            <p asp-if="Model.Comments.Count == 0">Be the first to post a comment</p>
+            if (Model.Comments.Count == 0)
+            {
+                <p>Be the first to post a comment</p>
+            }
 
             <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
                 <h3>Post a comment</h3>

@@ -37,7 +37,10 @@
 
     <input type="submit" value="Save" title="Save the post" />
 
-    <input asp-if="!isNew" type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" />
+    @if (!isNew)
+    {
+        <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" />
+    }
 
     <input asp-for="@Model.IsPublished" />
     <label asp-for="@Model.IsPublished">Is published</label>

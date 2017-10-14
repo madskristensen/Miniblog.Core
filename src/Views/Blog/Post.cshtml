@@ -9,7 +9,6 @@
 
 @section Head {
     <link rel="canonical" href="@(host + Model.GetLink())" />
-    <link asp-if="showFullPost" rel="preload" href="~/css/comments.scss" as="style" />
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
@@ -27,15 +26,20 @@
     </div>
 
     <footer>
-        <ul asp-if="Model.Categories.Any()" class="categories">
-            <li> Posted in</li>
-            @foreach (string cat in Model.Categories)
-            {
-                <li itemprop="articleSection"><a href="~/blog/category/@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a></li>
-            }
-        </ul>
+        @if (Model.Categories.Any())
+        {
+            <ul class="categories">
+                <li> Posted in</li>
+                @foreach (string cat in Model.Categories)
+                {
+                    <li itemprop="articleSection">
+                        <a asp-controller="Blog" asp-action="Category" asp-route-category="@Html.UrlEncoder.Encode(cat).ToLowerInvariant()">@cat</a>
+                    </li>
+                }
+            </ul>
+            <text>and has</text>
+        }
 
-        <span asp-if="Model.Categories.Any()">and has</span>
         <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
             <span itemprop="commentCount">@Model.Comments.Count</span> comments
         </a>
@@ -48,11 +52,14 @@
 
 @if (showFullPost)
 {
-    await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     <link rel="stylesheet" href="~/css/comments.scss" />
+    await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     await Html.RenderPartialAsync("comments");
 }
 
-@section Scripts {
-    <script asp-if="User.Identity.IsAuthenticated" src="~/js/admin.js" async></script>
+@if (User.Identity.IsAuthenticated)
+{
+    @section Scripts {
+        <script src="~/js/admin.js" async></script>
+    }
 }
