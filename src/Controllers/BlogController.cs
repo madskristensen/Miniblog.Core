@@ -52,15 +52,24 @@ namespace Miniblog.Core
 
         [Route("/blog/{slug?}")]
         [HttpGet]
-        public async Task<IActionResult> Post(string slug, [FromQuery] bool edit)
+        public async Task<IActionResult> Post(string slug)
         {
             var post = await _blog.GetPostBySlug(slug);
 
-            if (edit && User.Identity.IsAuthenticated)
+            if (post != null)
             {
-                return View("Edit", post ?? new Post());
+                return View(post);
             }
-            else if (post != null)
+
+            return NotFound();
+        }
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var post = await _blog.GetPostById(id);
+
+            if (post != null)
             {
                 return View(post);
             }
@@ -148,7 +157,7 @@ namespace Miniblog.Core
 
         [Route("/blog/comment/{postId}")]
         [HttpPost, AutoValidateAntiforgeryToken]
-        public async  Task<IActionResult> AddComment(string postId, Comment comment)
+        public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
             if (!ModelState.IsValid)
             {
@@ -174,15 +183,9 @@ namespace Miniblog.Core
         }
 
         [Route("/blog/comment/{postId}/{commentId}")]
-        [Authorize]
-        [AutoValidateAntiforgeryToken]
+        [Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeleteComment(string postId, string commentId)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
-
             var post = await _blog.GetPostById(postId);
 
             if (post == null)

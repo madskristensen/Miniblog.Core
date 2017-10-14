@@ -17,7 +17,7 @@
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@Model.PubDate.ToString("MMMM d, yyyy")</time>
         @if (User.Identity.IsAuthenticated)
         {
-            <a href="@Model.GetLink()?edit=true" title="Edit the post">Edit post</a>
+            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
         }
     </header>
 
