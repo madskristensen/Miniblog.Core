@@ -3,7 +3,7 @@
   <title>Welcome to your new blog</title>
   <slug>welcome</slug>
   <pubDate>2017-10-13 18:59:01</pubDate>
-  <lastModified>2017-10-16 21:21:06</lastModified>
+  <lastModified>2017-10-16 22:27:01</lastModified>
   <excerpt>Congratulations on your new blog</excerpt>
   <content>&lt;p&gt;Congratulations on installing your new blog!&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/madskristensen/Miniblog.Core"&gt;Miniblog.Core&lt;/a&gt; is optimized to give your visiors a fantastic reading experience on all types of devices. It is built to be fast and responsive so your visitors never have to wait for the content to load.&lt;/p&gt;
@@ -40,21 +40,21 @@
 &lt;th&gt;too&lt;/th&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Numbers&lt;/td&gt;
 &lt;td&gt;2&lt;/td&gt;
 &lt;td&gt;3&lt;/td&gt;
 &lt;td&gt;4&lt;/td&gt;
 &lt;td&gt;5&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;a&lt;/td&gt;
+&lt;td&gt;Alphabet&lt;/td&gt;
 &lt;td&gt;b&lt;/td&gt;
 &lt;td&gt;c&lt;/td&gt;
 &lt;td&gt;d&lt;/td&gt;
 &lt;td&gt;e&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;!&lt;/td&gt;
+&lt;td&gt;Symbols&lt;/td&gt;
 &lt;td&gt;?&lt;/td&gt;
 &lt;td&gt;$&lt;/td&gt;
 &lt;td&gt;*&lt;/td&gt;

@@ -19,7 +19,7 @@ namespace Miniblog.Core
 
         public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, "Posts");
+            _folder = Path.Combine(env.WebRootPath, "posts");
             _contextAccessor = contextAccessor;
 
             Initialize();

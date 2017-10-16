@@ -164,11 +164,11 @@ ul, ol {
         padding: 5px 10px;
         -ms-word-wrap: normal;
         word-wrap: normal;
-        background: #f7f7f7;
+        background: $light-bg-color;
     }
 
     code {
-        background: #f7f7f7;
+        background: $light-bg-color;
         font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     }
 
@@ -180,7 +180,7 @@ ul, ol {
     }
 
     tr:nth-child(2n) {
-        background: #f7f7f7;
+        background: $light-bg-color;
     }
 
     th {
