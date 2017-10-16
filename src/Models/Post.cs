@@ -75,5 +75,11 @@ namespace Miniblog.Core
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
+
+        public string RenderContent()
+        {
+            // Set up lazy loading of images
+            return Content.Replace(" src=\"", " src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" data-src=\"");
+        }
     }
 }

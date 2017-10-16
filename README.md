@@ -13,6 +13,7 @@ Password: *demo*
 - Search engine optimized
 - All major browsers fully supported (IE 9+)
 - Social media integration (Facebook, Twitter, Google+)
+- Lazy loads images for better performance
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59dbe3d80cf2993c4257ddd0)
 

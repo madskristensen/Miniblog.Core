@@ -11,7 +11,7 @@
                     <a href="#@comment.ID" title="Permalink (#@comment.ID)">@comment.PubDate.ToString("MMMM d, yyyy")</a>
                 </time>
 
-                <img class="gravatar" alt="@comment.Author" src="@comment.GetGravatar()" width="60" height="60" />
+                <img class="gravatar" alt="@comment.Author" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
                     <pre itemprop="text">@comment.Content.Replace("<br />", "\r\n")</pre>
@@ -58,5 +58,3 @@
         }
     </div>
 </section>
-
-<script src="~/js/comment.js" inline></script>

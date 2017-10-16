@@ -22,7 +22,7 @@
     </header>
 
     <div itemprop="articleBody mainEntityOfPage">
-        @Html.Raw(Model.Content)
+        @Html.Raw(Model.RenderContent())
     </div>
 
     <footer>
@@ -32,9 +32,7 @@
                 <li> Posted in</li>
                 @foreach (string cat in Model.Categories)
                 {
-                    <li itemprop="articleSection">
-                        <a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()">@cat</a>
-                    </li>
+                    <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()">@cat</a></li>
                 }
             </ul>
             <text>and has</text>

@@ -1,5 +1,17 @@
 ﻿@import "variables";
 
+// Lazy loading fade in
+img {
+    &[data-src] {
+        opacity: 0;
+    }
+
+    &:not([data-src]) {
+        opacity: 1;
+        transition: opacity 1s ease-in-out;
+    }
+}
+
 .socialsharing {
     text-align: center;
 
@@ -35,8 +47,8 @@
         }
 
         &:hover,
-        &:focus{
-            background:$comments_border-color;
+        &:focus {
+            background: $comments_border-color;
         }
     }
 }

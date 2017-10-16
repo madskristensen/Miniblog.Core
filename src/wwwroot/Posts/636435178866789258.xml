@@ -3,7 +3,7 @@
   <title>Welcome to your new blog</title>
   <slug>welcome</slug>
   <pubDate>2017-10-13 18:59:01</pubDate>
-  <lastModified>2017-10-14 17:41:23</lastModified>
+  <lastModified>2017-10-16 21:21:06</lastModified>
   <excerpt>Congratulations on your new blog</excerpt>
   <content>&lt;p&gt;Congratulations on installing your new blog!&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/madskristensen/Miniblog.Core"&gt;Miniblog.Core&lt;/a&gt; is optimized to give your visiors a fantastic reading experience on all types of devices. It is built to be fast and responsive so your visitors never have to wait for the content to load.&lt;/p&gt;
@@ -24,7 +24,45 @@
 &lt;li&gt;RSS/ATOM feeds&lt;/li&gt;
 &lt;li&gt;Windows/Open Live Writer/Markdown Monster support&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;You can find more information about Miniblog.Core on the website.&lt;/p&gt;</content>
+&lt;h2&gt;Special formatting&lt;/h2&gt;
+&lt;p&gt;Pre-formatted text such as what is commonly used to display code syntax is styled beautifully.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function code() {
+   var msg = "This is what a code snippet looks like";
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And tables are formatted nicely with headings and alternative background color for rows.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th&gt;And tables&lt;/th&gt;
+&lt;th&gt;look&lt;/th&gt;
+&lt;th&gt;rally&lt;/th&gt;
+&lt;th&gt;nice&lt;/th&gt;
+&lt;th&gt;too&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;a&lt;/td&gt;
+&lt;td&gt;b&lt;/td&gt;
+&lt;td&gt;c&lt;/td&gt;
+&lt;td&gt;d&lt;/td&gt;
+&lt;td&gt;e&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;!&lt;/td&gt;
+&lt;td&gt;?&lt;/td&gt;
+&lt;td&gt;$&lt;/td&gt;
+&lt;td&gt;*&lt;/td&gt;
+&lt;td&gt;%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;</content>
   <ispublished>true</ispublished>
   <categories>
     <category>welcome</category>

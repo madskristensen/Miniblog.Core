@@ -22,11 +22,6 @@ body {
     font: 19px/1.6 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
     margin-bottom: $footer_height;
     color: $text_color;
-    word-wrap: break-word;
-    -moz-hyphens: auto;
-    -ms-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
 }
 
 .container {
@@ -116,6 +111,11 @@ ul, ol {
 
         p {
             margin: 1em 0;
+            word-wrap: break-word;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            -webkit-hyphens: auto;
+            hyphens: auto;
         }
 
         img {
