@@ -172,7 +172,7 @@ namespace Miniblog.Core
 
             var post = await _blog.GetPostById(postId);
 
-            if (post == null)
+            if (post == null || !post.AreCommentsOpen(_settings.Value.CommentsCloseAfterDays))
             {
                 return NotFound();
             }

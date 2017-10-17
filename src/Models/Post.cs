@@ -38,6 +38,11 @@ namespace Miniblog.Core
             return $"/blog/{Slug}/";
         }
 
+        public bool AreCommentsOpen(int commentsCloseAfterDays)
+        {
+            return PubDate.AddDays(commentsCloseAfterDays) >= DateTime.UtcNow;
+        }
+
         public static string CreateSlug(string title)
         {
             title = title.ToLowerInvariant().Replace(" ", "-");
