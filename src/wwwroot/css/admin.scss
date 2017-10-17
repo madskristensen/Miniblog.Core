@@ -1,4 +1,13 @@
-﻿#edit {
+﻿.delete {
+    color: crimson;
+    float: right;
+}
+
+a.noline {
+    text-decoration: none;
+}
+
+#edit {
     padding-bottom: 2em;
 
     .label {
@@ -43,15 +52,13 @@
     }
 
     .delete {
-        float: right;
-        color: crimson;
         border: 0;
         background: none;
         cursor: pointer;
     }
 }
 
-.validation-summary-errors{
+.validation-summary-errors {
     background: #ffe6e6;
     color: darkred;
     padding: 5px;
