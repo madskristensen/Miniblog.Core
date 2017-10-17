@@ -14,14 +14,14 @@
                 <img class="gravatar" alt="@comment.Author" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="@comment.GetGravatar()" width="60" height="60" />
 
                 <div class="content">
-                    <p itemprop="text">@Html.Raw(comment.RenderContent())</p>
+                    <p itemprop="text">@comment.RenderContent()</p>
                     <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)
-    {
-                <a class="noline" href="mailto:@comment.Email" title="Send email to @comment.Email">&#x2709;</a>
-                <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID" title="Delete the comment...">Delete...</a>
-}
+                    {
+                        <a class="noline" href="mailto:@comment.Email" title="Send email to @comment.Email">&#x2709;</a>
+                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID" title="Delete the comment...">Delete...</a>
+                    }
                 </div>
             </article>
         }

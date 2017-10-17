@@ -246,7 +246,7 @@ namespace Miniblog.Core
                     Author = ReadValue(node, "author"),
                     Email = ReadValue(node, "email"),
                     IsAdmin = bool.Parse(ReadAttribute(node, "isAdmin", "false")),
-                    Content = ReadValue(node, "content").Replace("\n", "<br />"),
+                    Content = ReadValue(node, "content"),
                     PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01")),
                 };
 

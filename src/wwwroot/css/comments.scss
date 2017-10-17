@@ -87,6 +87,11 @@
         border: 1px solid transparent;
         box-shadow: 5px 5px 5px $comments_border-color;
         padding: 0 1em 11px 1em;
+
+        p {
+            white-space: pre-wrap;
+            margin: 9px 0;
+        }
     }
 
     span {
