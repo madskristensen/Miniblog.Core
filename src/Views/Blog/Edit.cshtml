@@ -39,7 +39,7 @@
 
     @if (!isNew)
     {
-        <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" />
+        <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
     }
 
     <input asp-for="@Model.IsPublished" />

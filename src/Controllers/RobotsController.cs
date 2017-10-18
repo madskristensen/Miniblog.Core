@@ -66,6 +66,7 @@ namespace Miniblog.Core
             string host = Request.Scheme + "://" + Request.Host;
 
             Response.ContentType = "application/xml";
+            Response.Headers["cache-control"] = "no-cache, no-store, must-revalidate";
 
             using (var xml = XmlWriter.Create(Response.Body, new XmlWriterSettings { Indent = true }))
             {

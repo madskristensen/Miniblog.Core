@@ -146,7 +146,7 @@ namespace Miniblog.Core
             return Convert.FromBase64String(base64.Substring(index));
         }
 
-        [Route("/blog/deletepost/{slug}")]
+        [Route("/blog/deletepost/{id}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeletePost(string id)
         {
