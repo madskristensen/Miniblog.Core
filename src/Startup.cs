@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Net.Http.Headers;
 using System;
+using WebEssentials.AspNetCore.OutputCaching;
+using WebMarkupMin.AspNetCore2;
+using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
 
 namespace Miniblog.Core
@@ -44,16 +47,31 @@ namespace Miniblog.Core
             services.AddMetaWeblog<MetaWeblogService>();
 
             services
-                .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/login/";
-                    options.LoginPath = "/logout/";
+                    options.LogoutPath = "/logout/";
+                });
+
+            services.AddOutputCaching(options =>
+            {
+                options.Profiles["default"] = new OutputCacheProfile
+                {
+                    Duration = 3600
+                };
+            });
+
+            services
+                .AddWebMarkupMin(options =>
+                {
+                    options.AllowMinificationInDevelopmentEnvironment = true;
+                    options.DisablePoweredByHttpHeaders = true;
+                })
+                .AddHtmlMinification(options =>
+                {
+                    options.MinificationSettings.RemoveOptionalEndTags = false;
+                    options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                 });
 
             services.AddWebOptimizer(pipeline =>
@@ -92,6 +110,9 @@ namespace Miniblog.Core
 
             app.UseMetaWeblog("/metaweblog");
             app.UseAuthentication();
+
+            app.UseOutputCaching();
+            app.UseWebMarkupMin();
 
             app.UseMvc(routes =>
             {

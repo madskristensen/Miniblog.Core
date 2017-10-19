@@ -14,6 +14,7 @@ Password: *demo*
 - All major browsers fully supported (IE 9+)
 - Social media integration (Facebook, Twitter, Google+)
 - Lazy loads images for better performance
+- Easy YouTube video embedding
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59dbe3d80cf2993c4257ddd0)
 
@@ -41,6 +42,7 @@ Password: *demo*
 - Security HTTP headers set
   - [Run security scan](https://securityheaders.io/?q=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F&hide=on&followRedirects=on)
 - Uses the [Azure Image Optimizer](https://github.com/madskristensen/ImageOptimizerWebJob) for superb image compression
+- Uses a [CDN Tag Helper](https://github.com/madskristensen/WebEssentials.AspNetCore.CdnTagHelpers) to make it easy to serve the images from any CDN.
 
 ## How to use
 
@@ -48,6 +50,15 @@ Password: *demo*
 2. Change user settings in `\src\appsettings.json`
 3. Make any modifications you want
 4. Deploy
+
+### YouTube embeds
+You can embed any youtube video by using the following syntax in the source of a blog post:
+
+```
+[youtube:ScXvuavqhzo]
+```
+
+*ScXvuavqhzo* is the ID of the YouTube video which can be found in any YouTube link looking this *youtube.com/watch?v=**ScXvuavqhzo***
 
 ## Credits
 SVG icons by <https://simpleicons.org/>

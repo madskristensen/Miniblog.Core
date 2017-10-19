@@ -21,7 +21,7 @@
         }
     </header>
 
-    <div itemprop="articleBody mainEntityOfPage">
+    <div itemprop="articleBody mainEntityOfPage" cdnify>
         @Html.Raw(Model.RenderContent())
     </div>
 
@@ -29,7 +29,7 @@
         @if (Model.Categories.Any())
         {
             <ul class="categories">
-                <li> Posted in</li>
+                <li> Posted in </li>
                 @foreach (string cat in Model.Categories)
                 {
                     <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()">@cat</a></li>

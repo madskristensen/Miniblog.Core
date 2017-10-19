@@ -23,6 +23,7 @@ namespace Miniblog.Core
         }
 
         [Route("/robots.txt")]
+        [OutputCache(Profile = "default")]
         public string RobotsTxt()
         {
             string host = Request.Scheme + "://" + Request.Host;

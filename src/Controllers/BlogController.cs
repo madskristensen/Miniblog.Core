@@ -21,6 +21,7 @@ namespace Miniblog.Core
         }
 
         [Route("/{page:int?}")]
+        [OutputCache(Profile = "default")]
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
@@ -32,6 +33,7 @@ namespace Miniblog.Core
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
+        [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
             var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
@@ -51,7 +53,7 @@ namespace Miniblog.Core
         }
 
         [Route("/blog/{slug?}")]
-        [HttpGet]
+        [OutputCache(Profile = "default")]
         public async Task<IActionResult> Post(string slug)
         {
             var post = await _blog.GetPostBySlug(slug);

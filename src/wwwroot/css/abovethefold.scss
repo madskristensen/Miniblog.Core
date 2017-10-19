@@ -140,20 +140,6 @@ ul, ol {
         clear: both; // In case there are any floating elements in the post content
     }
 
-    .categories {
-        list-style: none;
-        display: inline;
-        padding: 0;
-
-        li {
-            display: inline-block;
-
-            &:not(:first-child):not(:last-child):after {
-                content: ", ";
-            }
-        }
-    }
-
     pre {
         font-size: .9em;
         line-height: 1.3;
