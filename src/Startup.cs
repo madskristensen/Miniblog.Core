@@ -46,14 +46,6 @@ namespace Miniblog.Core
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
 
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/login/";
-                    options.LogoutPath = "/logout/";
-                });
-
             services.AddOutputCaching(options =>
             {
                 options.Profiles["default"] = new OutputCacheProfile
@@ -61,6 +53,14 @@ namespace Miniblog.Core
                     Duration = 3600
                 };
             });
+
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/login/";
+                    options.LogoutPath = "/logout/";
+                });
 
             services
                 .AddWebMarkupMin(options =>

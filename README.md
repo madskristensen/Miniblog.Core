@@ -16,7 +16,7 @@ Password: *demo*
 - Lazy loads images for better performance
 - Easy YouTube video embedding
 - Follows best practices for web applications
-  - [See DareBoost report](https://www.dareboost.com/en/report/59dbe3d80cf2993c4257ddd0)
+  - [See DareBoost report](https://www.dareboost.com/en/report/59e928f10cf224d151dfbe2d)
 
 ## Technical features
 - High performance. Gets 100/100 points on Google PageSpeed Insights 
