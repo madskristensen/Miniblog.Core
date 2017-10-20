@@ -79,6 +79,15 @@
     .gravatar {
         float: left;
         box-shadow: 5px 5px 5px $comments_border-color;
+        background: url("../img/avatar.svg?inline") no-repeat $comments_border-color;
+        background-size: cover;
+        height: 60px;
+        width: 60px;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
     }
 
     .content {

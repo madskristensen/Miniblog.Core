@@ -77,7 +77,8 @@ namespace Miniblog.Core
             services.AddWebOptimizer(pipeline =>
             {
                 pipeline.MinifyJsFiles();
-                pipeline.CompileScssFiles();
+                pipeline.CompileScssFiles()
+                        .InlineImages(1);
             });
         }
 

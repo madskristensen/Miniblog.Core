@@ -42,7 +42,7 @@ namespace Miniblog.Core
                     sb.Append(hashBytes[i].ToString("X2"));
                 }
 
-                return $"https://www.gravatar.com/avatar/{sb.ToString().ToLowerInvariant()}?s=60&d=mm";
+                return $"https://www.gravatar.com/avatar/{sb.ToString().ToLowerInvariant()}?s=60&d=blank";
             }
         }
 
