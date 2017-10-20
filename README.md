@@ -15,6 +15,7 @@ Password: *demo*
 - Social media integration (Facebook, Twitter, Google+)
 - Lazy loads images for better performance
 - Easy YouTube video embedding
+- Looks great when printed
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59e928f10cf224d151dfbe2d)
 

@@ -134,3 +134,43 @@
         font-size: .9em;
     }
 }
+
+@media print {
+    @page {
+        margin: 2cm;
+    }
+
+    body {
+        color: #000;
+        background: #fff;
+        font: 12pt/1.5 Calibri, serif;
+    }
+
+    nav, aside, footer, #comments, [data-src], .video {
+        display: none !important;
+    }
+
+    article {
+        page-break-after: always;
+    }
+
+    h1, h2, h3, h4, h5, h6, img {
+        page-break-after: avoid;
+        page-break-inside: avoid
+    }
+
+    blockquote, table, pre {
+        page-break-inside: avoid;
+    }
+
+    ul, ol, dl {
+        page-break-before: avoid
+    }
+
+    .post pre {
+        background: none;
+        border: none;
+        box-shadow: none;
+        font-family: monospace;
+    }
+}
