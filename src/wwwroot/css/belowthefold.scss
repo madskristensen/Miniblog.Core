@@ -1,25 +1,20 @@
 ﻿@import "variables";
 
 // Lazy loading of images. See /js/site.js for more
+.notloaded {
+    opacity: 0;
+    transform: scale(.9);
+}
+
 .loaded {
-    will-change: opacity, transform;
-    animation: fadein 400ms ease-in forwards;
-
-    @keyframes fadein {
-        from {
-            opacity: 0;
-            transform: scale(.9);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
+    background: none;
+    opacity: 1;
+    transform: scale(1);
+    transition: all 400ms ease-in;
     // Don't animate when the reduced motion accessibility option
     // has been enabled in the browser or OS. Safari is supporting this
     @media screen and (prefers-reduced-motion: reduce) {
-        animation: none;
+        transition: none;
     }
 }
 

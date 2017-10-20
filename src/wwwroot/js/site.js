@@ -31,6 +31,7 @@ window.addEventListener("DOMContentLoaded", function () {
                         e.target.className = "loaded";
                     };
 
+                    img.className = "notloaded";
                     img.src = img.getAttribute("data-src");
                     img.removeAttribute("data-src");
                 }
