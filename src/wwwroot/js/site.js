@@ -1,9 +1,16 @@
 ﻿// Lazy load images/iframes
 window.addEventListener("DOMContentLoaded", function () {
 
-    var timer;
-    window.addEventListener("scroll", lazyload);
-    window.addEventListener("resize", lazyload);
+    var timer,
+        images,
+        viewHeight;
+
+    function init() {
+        images = document.body.querySelectorAll("[data-src]");
+        viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+
+        lazyload(0);
+    }
 
     function lazyload(delay) {
         if (timer) {
@@ -11,33 +18,62 @@ window.addEventListener("DOMContentLoaded", function () {
         }
 
         timer = setTimeout(function () {
-            timer = null;
-            var images = document.body.querySelectorAll("[data-src]");
+            var changed = false;
 
-            if (images.length === 0) {
-                window.removeEventListener("scroll", lazyload);
-                window.removeEventListener("resize", lazyload);
-                return;
-            }
+            requestAnimationFrame(function () {
+                for (var i = 0; i < images.length; i++) {
+                    var img = images[i];
+                    var rect = img.getBoundingClientRect();
 
-            var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+                    if (!(rect.bottom < 0 || rect.top - 100 - viewHeight >= 0)) {
+                        img.onload = function (e) {
+                            e.target.className = "loaded";
+                        };
 
-            for (var i = 0; i < images.length; i++) {
-                var img = images[i];
-                var rect = img.getBoundingClientRect();
-
-                if (!(rect.bottom < 0 || rect.top - 100 - viewHeight >= 0)) {
-                    img.onload = function (e) {
-                        e.target.className = "loaded";
-                    };
-
-                    img.className = "notloaded";
-                    img.src = img.getAttribute("data-src");
-                    img.removeAttribute("data-src");
+                        img.className = "notloaded";
+                        img.src = img.getAttribute("data-src");
+                        img.removeAttribute("data-src");
+                        changed = true;
+                    }
                 }
-            }
-        }, delay || 150);
+
+                if (changed) {
+                    filterImages();
+                }
+
+                timer = null;
+            });
+
+        }, delay || 100);
     }
 
-    lazyload(0);
+    function filterImages() {
+        images = Array.prototype.filter.call(
+            images,
+            function (img) {
+                return img.getAttribute('data-src');
+            }
+        );
+
+        if (images.length === 0) {
+            window.removeEventListener("scroll", lazyload);
+            window.removeEventListener("resize", init);
+            return;
+        }
+    }
+
+    window.requestAnimationFrame = (function () {
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            function (callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+    })();
+
+
+    window.addEventListener("scroll", lazyload);
+    window.addEventListener("resize", init);
+
+    init();
 });

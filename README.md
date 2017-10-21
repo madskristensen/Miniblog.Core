@@ -2,6 +2,8 @@
 
 A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/lwjrlpvmhg50wwbs?svg=true)](https://ci.appveyor.com/project/madskristensen/miniblog-core)
+
 **Live demo**: <https://miniblogcore.azurewebsites.net/>  
 Username: *demo*  
 Password: *demo*

@@ -173,4 +173,8 @@ time {
         border-bottom: 1px solid $comments_input_border-color;
         text-align: left;
     }
+
+    td, th{
+        padding: 2px 4px;
+    }
 }
