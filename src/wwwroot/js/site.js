@@ -6,10 +6,14 @@ window.addEventListener("DOMContentLoaded", function () {
         viewHeight;
 
     function init() {
-        images = document.body.querySelectorAll("[data-src]");
+        images = document.body.querySelectorAll("article [data-src]");
         viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
 
         lazyload(0);
+    }
+
+    function scroll() {
+        lazyload(200);
     }
 
     function lazyload(delay) {
@@ -44,19 +48,19 @@ window.addEventListener("DOMContentLoaded", function () {
                 timer = null;
             });
 
-        }, delay || 100);
+        }, delay);
     }
 
     function filterImages() {
         images = Array.prototype.filter.call(
             images,
             function (img) {
-                return img.getAttribute('data-src');
+                return img.hasAttribute('data-src');
             }
         );
 
         if (images.length === 0) {
-            window.removeEventListener("scroll", lazyload);
+            window.removeEventListener("scroll", scroll);
             window.removeEventListener("resize", init);
             return;
         }
@@ -72,7 +76,7 @@ window.addEventListener("DOMContentLoaded", function () {
     })();
 
 
-    window.addEventListener("scroll", lazyload);
+    window.addEventListener("scroll", scroll);
     window.addEventListener("resize", init);
 
     init();
