@@ -144,6 +144,7 @@
         color: #000;
         background: #fff;
         font: 12pt/1.5 Calibri, serif;
+        -webkit-print-color-adjust: exact;
     }
 
     nav, aside, footer, #comments, [data-src], .video {
@@ -172,5 +173,9 @@
         border: none;
         box-shadow: none;
         font-family: monospace;
+    }
+
+    a[href^="http"]:after, a[href^="//"]:after {
+        content: " <" attr(href) "> ";
     }
 }

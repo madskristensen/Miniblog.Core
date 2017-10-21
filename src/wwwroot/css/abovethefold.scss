@@ -66,13 +66,15 @@ ul, ol {
     padding-left: 2em;
 }
 
+time {
+    color: lighten($text_color, 25%);
+    font-size: .85em;
+}
+
 .post {
     padding-bottom: 2em;
 
     header {
-        time {
-            color: lighten($text_color, 33%);
-        }
 
         h1 {
             margin: .2em 0;
