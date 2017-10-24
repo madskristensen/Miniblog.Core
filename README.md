@@ -65,10 +65,16 @@ On the command line, install the template.
 dotnet new --install MadsKristensen.AspNetCore.Miniblog
 ```
 
-Then run it from any folder.
+Then create it into any folder.
 
 ```cmd
 dotnet new miniblog
+```
+
+Then run it or open it in Visual Studio or your favorite code editor.
+
+```cmd
+dotnet run
 ```
 
 ## Credits
