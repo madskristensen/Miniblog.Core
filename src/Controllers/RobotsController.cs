@@ -29,7 +29,7 @@ namespace Miniblog.Core
             string host = Request.Scheme + "://" + Request.Host;
             var sb = new StringBuilder();
             sb.AppendLine("User-agent: *");
-            sb.AppendLine("Disallow: /posts");
+            sb.AppendLine("Disallow:");
             sb.AppendLine($"sitemap: {host}/sitemap.xml");
 
             return sb.ToString();
@@ -51,9 +51,11 @@ namespace Miniblog.Core
 
                 foreach (Models.Post post in posts)
                 {
+                    var lastMod = new[] { post.PubDate, post.LastModified };
+
                     xml.WriteStartElement("url");
                     xml.WriteElementString("loc", host + post.GetLink());
-                    xml.WriteElementString("lastmod", post.LastModified.ToString("yyyy-MM-ddThh:mmzzz"));
+                    xml.WriteElementString("lastmod", lastMod.Max().ToString("yyyy-MM-ddThh:mmzzz"));
                     xml.WriteEndElement();
                 }
 
