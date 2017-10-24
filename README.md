@@ -3,6 +3,7 @@
 A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lwjrlpvmhg50wwbs?svg=true)](https://ci.appveyor.com/project/madskristensen/miniblog-core)
+[![NuGet](https://img.shields.io/nuget/v/MadsKristensen.AspNetCore.Miniblog.svg)](https://nuget.org/packages/MadsKristensen.AspNetCore.Miniblog/)
 
 **Live demo**: <https://miniblogcore.azurewebsites.net/>  
 Username: *demo*  
@@ -47,13 +48,6 @@ Password: *demo*
 - Uses the [Azure Image Optimizer](https://github.com/madskristensen/ImageOptimizerWebJob) for superb image compression
 - Uses a [CDN Tag Helper](https://github.com/madskristensen/WebEssentials.AspNetCore.CdnTagHelpers) to make it easy to serve the images from any CDN.
 
-## How to use
-
-1. Fork and/or clone this repo
-2. Change user settings in `\src\appsettings.json`
-3. Make any modifications you want
-4. Deploy
-
 ### YouTube embeds
 You can embed any youtube video by using the following syntax in the source of a blog post:
 
@@ -62,6 +56,19 @@ You can embed any youtube video by using the following syntax in the source of a
 ```
 
 *ScXvuavqhzo* is the ID of the YouTube video which can be found in any YouTube link looking this *youtube.com/watch?v=**ScXvuavqhzo***
+
+## How to use
+On the command line, install the template.
+
+```cmd
+dotnet new --install MadsKristensen.AspNetCore.Miniblog
+```
+
+Then run it from any folder.
+
+```cmd
+dotnet new miniblog
+```
 
 ## Credits
 SVG icons by <https://simpleicons.org/>
