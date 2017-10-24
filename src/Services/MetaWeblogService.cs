@@ -24,10 +24,10 @@ namespace Miniblog.Core
         {
             ValidateUser(username, password);
 
-            var newPost = new Post
+            var newPost = new Models.Post
             {
                 Title = post.title,
-                Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Post.CreateSlug(post.title),
+                Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
                 Content = post.description,
                 IsPublished = publish,
                 Categories = post.categories
@@ -163,7 +163,7 @@ namespace Miniblog.Core
             }
         }
 
-        private WilderMinds.MetaWeblog.Post ToMetaWebLogPost(Post post)
+        private WilderMinds.MetaWeblog.Post ToMetaWebLogPost(Models.Post post)
         {
             var request = _context.HttpContext.Request;
             string url = request.Scheme + "://" + request.Host;

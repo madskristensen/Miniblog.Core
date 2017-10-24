@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Models
 {
     public class LoginViewModel
     {

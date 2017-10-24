@@ -44,6 +44,10 @@ body {
     }
 }
 
+b, strong {
+    font-weight: 600;
+}
+
 a {
     color: $link_color;
 
@@ -91,26 +95,6 @@ time {
 
     > div {
 
-        blockquote {
-            border-top: 1px solid $comments_border-color;
-            border-bottom: 1px solid $comments_border-color;
-            color: lighten($text_color, 30%);
-            font-size: 1.3em;
-            width: 90%;
-            margin: 1.5em auto;
-            font-style: italic;
-            font-weight: lighter;
-
-            p {
-                margin: 1em .5em;
-            }
-        }
-
-        h2, h3, h4, h5, h6 {
-            margin: 1em 0 -.5em 0;
-            font-weight: normal;
-        }
-
         p {
             margin: 1em 0;
             word-wrap: break-word;
@@ -140,6 +124,25 @@ time {
         border-top: 1px solid $comments_border-color;
         padding-top: .5em;
         clear: both; // In case there are any floating elements in the post content
+    }
+
+    h2, h3, h4, h5, h6 {
+        margin: 1em 0 -.5em 0;
+    }
+
+    blockquote {
+        border-top: 1px solid $comments_border-color;
+        border-bottom: 1px solid $comments_border-color;
+        color: lighten($text_color, 30%);
+        font-size: 1.3em;
+        width: 90%;
+        margin: 1.5em auto;
+        font-style: italic;
+        font-weight: lighter;
+
+        p {
+            margin: 1em .5em;
+        }
     }
 
     pre {
@@ -174,7 +177,7 @@ time {
         text-align: left;
     }
 
-    td, th{
+    td, th {
         padding: 2px 4px;
     }
 }

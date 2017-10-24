@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Miniblog.Core.Models;
 using System;
 using System.Security.Claims;
 using System.Text;

@@ -49,7 +49,7 @@ namespace Miniblog.Core
 
                 var posts = await _blog.GetPosts(int.MaxValue);
 
-                foreach (Post post in posts)
+                foreach (Models.Post post in posts)
                 {
                     xml.WriteStartElement("url");
                     xml.WriteElementString("loc", host + post.GetLink());
@@ -106,7 +106,7 @@ namespace Miniblog.Core
                 var posts = await _blog.GetPosts(10);
                 var writer = await GetWriter(type, xmlWriter, posts.Max(p => p.PubDate));
 
-                foreach (Post post in posts)
+                foreach (Models.Post post in posts)
                 {
                     var item = new AtomEntry
                     {

@@ -1,0 +1,13 @@
+{
+  "name": {
+    "text": "Miniblog.Core"
+  },
+  "description": {
+    "text": "A high-performance blog web site using ASP.NET Core MVC and the latest in client-side technologies."
+  },
+  "order": 1000,
+  "icon": "icon.png",
+  "learnMoreLink": "url",
+  "uiFilters": [ "oneaspnet" ],
+  "supportsDocker": true
+}

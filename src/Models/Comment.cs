@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Models
 {
     public class Comment
     {
