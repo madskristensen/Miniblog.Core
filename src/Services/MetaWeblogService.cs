@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Controllers;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using WilderMinds.MetaWeblog;
 
 namespace Miniblog.Core
@@ -161,6 +163,11 @@ namespace Miniblog.Core
             {
                 throw new MetaWeblogException("Unauthorized");
             }
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(ClaimTypes.Name, _config["user:username"]));
+
+            _context.HttpContext.User = new ClaimsPrincipal(identity);
         }
 
         private WilderMinds.MetaWeblog.Post ToMetaWebLogPost(Models.Post post)
@@ -175,7 +182,7 @@ namespace Miniblog.Core
                 wp_slug = post.Slug,
                 permalink = url + post.GetLink(),
                 dateCreated = post.PubDate,
-                description = post.Excerpt,
+                description = post.Content,
                 categories = post.Categories.ToArray()
             };
         }
