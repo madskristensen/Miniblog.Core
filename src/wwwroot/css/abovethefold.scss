@@ -44,6 +44,19 @@ body {
     }
 }
 
+@keyframes fade-in{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+main{
+    animation: fade-in 1s ease;
+}
+
 b, strong {
     font-weight: 600;
 }

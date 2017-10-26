@@ -11,13 +11,19 @@
     <meta name="description" content="@ViewData["Description"]" />
     <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
     @RenderSection("Head", required: false)
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@ViewData["Title"]" />
     <meta property="og:description" content="@ViewData["Description"]" />
     <meta property="og:url" content="@(host + Context.Request.Path)" />
     <meta property="og:image" content="@host/img/icon180x180.png" />
+    <meta property="og:image:width" content="180" />
+    <meta property="og:image:height" content="180" />
+
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/icon16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/img/icon180x180.png" />
     <link rel="shortcut icon" href="/img/icon16x16.png" />
-    <link rel="apple-touch-icon" href="~/img/icon180x180.png" sizes="180x180" />
+
     <meta name="msapplication-square150x150logo" content="/img/icon180x180.png" />
     <link rel="edituri" type="application/rsd+xml" title="RSD" href="~/rsd.xml" />
     <link rel="alternate" type="application/rss+xml" href="~/feed/rss/" />
@@ -61,8 +67,8 @@
         </div>
     </footer>
 
-    <link rel="stylesheet" href="~/css/belowthefold.scss" />
+    <link rel="stylesheet" href="~/css/belowthefold.scss" lazyload="1" />
     @RenderSection("Scripts", required: false)
-    <script src="~/js/site.js" inline></script>
+    <script src="~/js/site.js" async defer></script>
 </body>
 </html>

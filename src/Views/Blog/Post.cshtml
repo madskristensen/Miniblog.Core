@@ -50,7 +50,7 @@
 
 @if (showFullPost)
 {
-    <link rel="stylesheet" href="~/css/comments.scss" />
+    <link rel="stylesheet" href="~/css/comments.scss" lazyload="1" />
     await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     await Html.RenderPartialAsync("comments");
 }
