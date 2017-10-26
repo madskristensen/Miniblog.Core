@@ -1,6 +1,6 @@
 {
   "name": {
-    "text": "Miniblog.Core"
+    "text": "Blog"
   },
   "description": {
     "text": "A high-performance blog web site using ASP.NET Core MVC and the latest in client-side technologies."
