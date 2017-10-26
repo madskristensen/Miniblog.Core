@@ -50,7 +50,7 @@
 
 @if (showFullPost)
 {
-    <link rel="stylesheet" href="~/css/comments.scss" lazyload="1" />
+    <link rel="stylesheet" href="~/css/comments.scss" />
     await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     await Html.RenderPartialAsync("comments");
 }
@@ -58,7 +58,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     @section Scripts {
-        <script src="~/js/admin.js" async></script>
+        <script src="~/js/admin.js" async defer></script>
         <link rel="stylesheet" href="~/css/admin.scss" />
     }
 }
