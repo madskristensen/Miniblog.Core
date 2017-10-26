@@ -22,7 +22,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a class="noline" href="mailto:@comment.Email" title="Send email to @comment.Email">&#x2709;</a>
-                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID" title="Delete the comment...">Delete...</a>
+                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID" asp-route-afrt="@ViewData["afrt"]" title="Delete the comment...">Delete...</a>
                     }
                 </div>
             </article>
@@ -35,7 +35,7 @@
                 <p>Be the first to post a comment</p>
             }
 
-            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
+            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID" asp-antiforgery="false">
                 <h3>Post a comment</h3>
                 <br />
 
@@ -51,6 +51,7 @@
                     <br />
 
                     <input type="submit" value="Post comment" />
+                    <input type="hidden" name="__afrt" value="@ViewData["afrt"]" />
                 </div>
             </form>
         }

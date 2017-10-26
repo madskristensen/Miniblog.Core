@@ -1,24 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Miniblog.Core.Models;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Models
 {
     public class BlogController : Controller
     {
         private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
+        private static int _afrt;
 
         public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
         {
             _blog = blog;
             _settings = settings;
+
+            if (_afrt == default(int))
+            {
+                _afrt = (_settings.Value.Name + DateTime.UtcNow.ToShortDateString()).GetHashCode();
+            }
         }
 
         [Route("/{page:int?}")]
@@ -26,7 +31,7 @@ namespace Miniblog.Core
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
-            ViewData["Title"] = _settings.Value.Name;
+            ViewData["Title"] = _settings.Value.Name + " - A blog about ASP.NET & Visual Studio";
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
@@ -50,7 +55,7 @@ namespace Miniblog.Core
         [HttpGet]
         public IActionResult Redirects(string slug)
         {
-            return RedirectToActionPermanent("Post");
+            return LocalRedirectPermanent($"/blog/{slug}");
         }
 
         [Route("/blog/{slug?}")]
@@ -61,6 +66,7 @@ namespace Miniblog.Core
 
             if (post != null)
             {
+                ViewData["afrt"] = _afrt;
                 return View(post);
             }
 
@@ -143,12 +149,6 @@ namespace Miniblog.Core
             }
         }
 
-        private byte[] ConvertToBytes(string base64)
-        {
-            int index = base64.IndexOf("base64,", StringComparison.Ordinal) + 7;
-            return Convert.FromBase64String(base64.Substring(index));
-        }
-
         [Route("/blog/deletepost/{id}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeletePost(string id)
@@ -165,15 +165,15 @@ namespace Miniblog.Core
         }
 
         [Route("/blog/comment/{postId}")]
-        [HttpPost, AutoValidateAntiforgeryToken]
+        [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("Post");
-            }
-
             var post = await _blog.GetPostById(postId);
+
+            if (!ModelState.IsValid || Request.Form["__afrt"] != _afrt.ToString())
+            {
+                return View("Post", post);
+            }
 
             if (post == null || !post.AreCommentsOpen(_settings.Value.CommentsCloseAfterDays))
             {
@@ -191,10 +191,15 @@ namespace Miniblog.Core
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
 
-        [Route("/blog/comment/{postId}/{commentId}")]
-        [Authorize, AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> DeleteComment(string postId, string commentId)
+        [Route("/blog/comment/{postId}/{commentId}/{afrt:int}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteComment(string postId, string commentId, int afrt)
         {
+            if (afrt != _afrt)
+            {
+                return NotFound();
+            }
+
             var post = await _blog.GetPostById(postId);
 
             if (post == null)
