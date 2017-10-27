@@ -47,6 +47,7 @@ namespace Miniblog.Core
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
 
+            // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             services.AddOutputCaching(options =>
             {
                 options.Profiles["default"] = new OutputCacheProfile
@@ -55,6 +56,7 @@ namespace Miniblog.Core
                 };
             });
 
+            // Cookie authentication.
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -63,6 +65,7 @@ namespace Miniblog.Core
                     options.LogoutPath = "/logout/";
                 });
 
+            // HTML minification (https://github.com/Taritsyn/WebMarkupMin)
             services
                 .AddWebMarkupMin(options =>
                 {
@@ -74,8 +77,9 @@ namespace Miniblog.Core
                     options.MinificationSettings.RemoveOptionalEndTags = false;
                     options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                 });
-            services.AddSingleton<ILogger, NullLogger>();
+            services.AddSingleton<ILogger, NullLogger>(); // Used by HTML minifier
 
+            // Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
             services.AddWebOptimizer(pipeline =>
             {
                 pipeline.MinifyJsFiles();

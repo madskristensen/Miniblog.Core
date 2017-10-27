@@ -35,7 +35,7 @@
                 <p>Be the first to post a comment</p>
             }
 
-            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID" asp-antiforgery="false">
+            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
                 <h3>Post a comment</h3>
                 <br />
 
@@ -51,7 +51,6 @@
                     <br />
 
                     <input type="submit" value="Post comment" />
-                    <input type="hidden" name="__afrt" value="@ViewData["afrt"]" />
                 </div>
             </form>
         }

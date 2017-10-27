@@ -25,7 +25,7 @@
 
     function urlify(text) {
         return text.replace(/(((https?:\/\/)|(www\.))[^\s]+)/g, function (url, b, c) {
-            var url2 = c == 'www.' ? 'http://' + url : url;
+            var url2 = c === 'www.' ? 'http://' + url : url;
             return '<a href="' + url2 + '" rel="nofollow noreferrer">' + url + '</a>';
         });
     }
