@@ -14,6 +14,7 @@ using System;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
+using WebMarkupMin.Core.Loggers;
 using WilderMinds.MetaWeblog;
 
 namespace Miniblog.Core
@@ -78,6 +79,7 @@ namespace Miniblog.Core
                     options.MinificationSettings.RemoveOptionalEndTags = false;
                     options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                 });
+            services.AddSingleton<ILogger, NullLogger>();
 
             services.AddWebOptimizer(pipeline =>
             {
