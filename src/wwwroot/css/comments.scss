@@ -91,15 +91,15 @@
     }
 
     .content {
-        margin-left: calc(60px + 1em);
+        margin-left: calc(60px + .6em);
         background: $comments_bg_color;
-        border: 1px solid transparent;
+        border: 1px solid $comments_border-color;
         box-shadow: 5px 5px 5px $comments_border-color;
-        padding: 0 1em 11px 1em;
+        padding: 0 .4em;
 
         p {
             white-space: pre-wrap;
-            margin: 9px 0;
+            margin-bottom: .5em;
         }
     }
 

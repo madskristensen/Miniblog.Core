@@ -28,6 +28,7 @@
                         var fileInput = document.createElement("input");
                         fileInput.type = "file";
                         fileInput.multiple = true;
+                        fileInput.accept = "image/*";
                         fileInput.addEventListener("change", handleFileSelect, false);
                         fileInput.click();
                     }
