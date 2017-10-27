@@ -21,6 +21,9 @@ namespace Miniblog.Core.Models
         [Required]
         public DateTime PubDate { get; set; } = DateTime.UtcNow;
 
+        public string PostID { get; set; }
+        public virtual Post Post { get; set; }
+
         public bool IsAdmin { get; set; }
 
         public string GetGravatar()
