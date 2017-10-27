@@ -13,17 +13,11 @@ namespace Miniblog.Core.Models
     {
         private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
-        private static int _afrt;
 
         public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
         {
             _blog = blog;
             _settings = settings;
-
-            if (_afrt == default(int))
-            {
-                _afrt = (_settings.Value.Name + DateTime.UtcNow.ToShortDateString()).GetHashCode();
-            }
         }
 
         [Route("/{page:int?}")]
@@ -66,7 +60,6 @@ namespace Miniblog.Core.Models
 
             if (post != null)
             {
-                ViewData["afrt"] = _afrt;
                 return View(post);
             }
 
@@ -165,12 +158,12 @@ namespace Miniblog.Core.Models
         }
 
         [Route("/blog/comment/{postId}")]
-        [HttpPost]
+        [HttpPost, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
             var post = await _blog.GetPostById(postId);
 
-            if (!ModelState.IsValid || Request.Form["__afrt"] != _afrt.ToString())
+            if (!ModelState.IsValid)
             {
                 return View("Post", post);
             }
@@ -191,15 +184,10 @@ namespace Miniblog.Core.Models
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
 
-        [Route("/blog/comment/{postId}/{commentId}/{afrt:int}")]
+        [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteComment(string postId, string commentId, int afrt)
+        public async Task<IActionResult> DeleteComment(string postId, string commentId)
         {
-            if (afrt != _afrt)
-            {
-                return NotFound();
-            }
-
             var post = await _blog.GetPostById(postId);
 
             if (post == null)
