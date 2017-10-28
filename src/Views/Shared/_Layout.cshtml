@@ -52,7 +52,7 @@
                         if (User.Identity.IsAuthenticated)
                         {
                             <li><a asp-controller="Blog" asp-action="Edit">New post</a></li>
-                            <li><a href="~/logout/?returnUrl=@path" title="Sign out as administrator">Sign out</a></li>
+                            <li><a href="~/logout/" title="Sign out as administrator">Sign out</a></li>
                         }
                         else
                         {
