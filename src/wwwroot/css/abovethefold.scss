@@ -44,16 +44,17 @@ body {
     }
 }
 
-@keyframes fade-in{
-    from{
+@keyframes fade-in {
+    from {
         opacity: 0;
     }
-    to{
+
+    to {
         opacity: 1;
     }
 }
 
-main{
+main {
     animation: fade-in 1s ease;
 }
 
@@ -70,8 +71,11 @@ a {
     }
 }
 
-img {
+img, iframe {
     max-width: 100%;
+}
+
+img {
     height: auto;
 }
 
