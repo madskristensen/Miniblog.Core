@@ -52,7 +52,7 @@
 {
     <link rel="stylesheet" href="~/css/comments.scss" />
     await Html.RenderPartialAsync("_SocialSharing", Model.Title);
-    await Html.RenderPartialAsync("comments");
+    await Html.RenderPartialAsync("Comments");
 }
 
 @if (User.Identity.IsAuthenticated)
