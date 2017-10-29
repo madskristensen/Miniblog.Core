@@ -25,23 +25,31 @@ namespace Miniblog.Core.Models
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            var count = await _blog.GetPostCount();
+            var model = new PostsViewModel(posts, count);
+
             ViewData["Title"] = _settings.Value.Name + " - A blog about ASP.NET & Visual Studio";
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+
+            return View("Views/Blog/Index.cshtml", model);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
-            var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var posts = (await _blog.GetPostsByCategory(category, _settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page));
+            var count = await _blog.GetPostCount();
+            var model = new PostsViewModel(posts, count);
+
             ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+
+            return View("Views/Blog/Index.cshtml", model);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format

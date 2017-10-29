@@ -24,7 +24,8 @@ namespace Miniblog.Core
             builder.Entity<Post>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
-                .HasForeignKey(c => c.PostID);
+                .HasForeignKey(c => c.PostID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<PostCategory>()
                 .HasKey(p => new { p.CategoryID, p.PostID });

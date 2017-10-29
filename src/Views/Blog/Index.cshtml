@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Post>
+﻿@model PostsViewModel
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
@@ -10,7 +10,7 @@
 }
 
 <nav class="pagination container" aria-label="Pagination">
-    @if (Model.Any())
+    @if (Model.Any() && Model.Count > settings.Value.PostsPerPage)
     {
         <a rel="prev" href="@ViewData["prev"]" title="Older posts">&laquo; Older</a>
     }

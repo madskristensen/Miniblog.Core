@@ -26,6 +26,11 @@ namespace Miniblog.Core
         public async Task DeletePost(Post post)
         {
             _context.Posts.Remove(post);
+
+            // remove abandoned categories
+            _context.Categories
+                .RemoveRange(_context.Categories.Where(cat => !cat.PostCategories.Any()));
+
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -33,6 +38,9 @@ namespace Miniblog.Core
         {
             bool isAdmin = IsAdmin();
 
+            // Note: this doesn't search _context.PostCategories since
+            // we want to filter categories to published posts if user
+            // is not an admin
             var categories = _context.Posts
                 .Where(p => p.IsPublished || isAdmin)
                 .SelectMany(p => p.PostCategories)
@@ -85,6 +93,7 @@ namespace Miniblog.Core
                 .Include(p => p.PostCategories)
                 .Include(p => p.Comments)
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+                .OrderByDescending(p => p.PubDate)
                 .Skip(skip)
                 .Take(count)
                 .AsEnumerable();
@@ -92,7 +101,7 @@ namespace Miniblog.Core
             return Task.FromResult(posts);
         }
 
-        public Task<IEnumerable<Post>> GetPostsByCategory(string category)
+        public Task<IEnumerable<Post>> GetPostsByCategory(string category, int count, int skip = 0)
         {
             bool isAdmin = IsAdmin();
 
@@ -101,9 +110,27 @@ namespace Miniblog.Core
                 .Include(p => p.Comments)
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
                     && p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(p => p.PubDate)
+                .Skip(skip)
+                .Take(count)
                 .AsEnumerable();
 
             return Task.FromResult(posts);
+        }
+
+        public virtual Task<int> GetPostCount(string category = null)
+        {
+            bool isAdmin = IsAdmin();
+
+            var count = _context.Posts
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                    && (
+                        string.IsNullOrEmpty(category)
+                        || p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                    )
+                .Count();
+
+            return Task.FromResult(count);
         }
 
         public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
@@ -132,10 +159,25 @@ namespace Miniblog.Core
                 ? EntityState.Modified
                 : EntityState.Added;
 
+            // remove old comments, add new comments
             _context.Comments.RemoveRange(_context.Comments.Where(c => !post.Comments.Contains(c)));
-            await _context.Comments.AddRangeAsync(post.Comments.Where(c => !_context.Comments.Contains(c)));
+            // This next line cannot simply use .Contains per a bug in EF Core that keeps getting punted
+            // See: https://github.com/aspnet/EntityFrameworkCore/issues/7687"
+            _context.Comments.AddRange(post.Comments
+                .Where(c => {
+                    foreach (var comment in _context.Comments)
+                    {
+                        if (comment.Equals(c)) return false;
+                    }
+                    return true;
+                })
+            );
 
-            _context.PostCategories.RemoveRange(_context.PostCategories.Where(p => p.PostID == post.ID && !post.PostCategories.Any(pc => p.CategoryID == pc.CategoryID)));
+            // Remove old post categories and orphaned categories. Add new post categories.
+            _context.PostCategories
+                .RemoveRange(_context.PostCategories.Where(p => p.PostID == post.ID && !post.PostCategories.Any(pc => p.CategoryID == pc.CategoryID)));
+            _context.Categories
+                .RemoveRange(_context.Categories.Where(cat => !cat.PostCategories.Any()));
             foreach (var postCat in post.PostCategories)
             {
                 if (!_context.Categories.Any(cat => cat.ID == postCat.CategoryID))

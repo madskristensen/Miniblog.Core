@@ -38,16 +38,33 @@ namespace Miniblog.Core
             return Task.FromResult(posts);
         }
 
-        public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category)
+        public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category, int count, int skip = 0)
         {
             bool isAdmin = IsAdmin();
 
             var posts = _cache
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
-                    && p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)));
+                    && p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                .Skip(skip)
+                .Take(count);
 
             return Task.FromResult(posts);
 
+        }
+
+        public virtual Task<int> GetPostCount(string category = null)
+        {
+            bool isAdmin = IsAdmin();
+
+            var count = _cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                    && (
+                        string.IsNullOrEmpty(category)
+                        || p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                    )
+                .Count();
+
+            return Task.FromResult(count);
         }
 
         public virtual Task<Post> GetPostBySlug(string slug)
