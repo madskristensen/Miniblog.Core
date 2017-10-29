@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Models;
@@ -56,10 +55,10 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/logout")]
-        public async Task<IActionResult> LogOutAsync(string returnUrl = null)
+        public async Task<IActionResult> LogOutAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return LocalRedirect(returnUrl ?? "/");
+            return LocalRedirect("/");
         }
 
         [NonAction]
