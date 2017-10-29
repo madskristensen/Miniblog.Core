@@ -27,7 +27,7 @@ namespace Miniblog.Core.Models
         {
             using (var md5 = System.Security.Cryptography.MD5.Create())
             {
-                byte[] inputBytes = Encoding.ASCII.GetBytes(Email);
+                byte[] inputBytes = Encoding.ASCII.GetBytes(Email.Trim().ToLowerInvariant());
                 byte[] hashBytes = md5.ComputeHash(inputBytes);
 
                 // Convert the byte array to hexadecimal string
