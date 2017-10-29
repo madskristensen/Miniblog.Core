@@ -29,7 +29,7 @@ namespace Miniblog.Core.Models
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("views/blog/index.cshtml", posts);
+            return View("Views/Blog/Index.cshtml", posts);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
