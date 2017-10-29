@@ -12,8 +12,10 @@ using System;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
-using WebMarkupMin.Core.Loggers;
 using WilderMinds.MetaWeblog;
+
+using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
+using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
 namespace Miniblog.Core
 {
@@ -77,7 +79,7 @@ namespace Miniblog.Core
                     options.MinificationSettings.RemoveOptionalEndTags = false;
                     options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                 });
-            services.AddSingleton<ILogger, NullLogger>(); // Used by HTML minifier
+            services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
             // Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
             services.AddWebOptimizer(pipeline =>
