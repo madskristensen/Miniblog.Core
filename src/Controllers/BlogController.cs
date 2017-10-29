@@ -41,7 +41,7 @@ namespace Miniblog.Core.Models
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("views/blog/index.cshtml", posts);
+            return View("Views/Blog/Index.cshtml", posts);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format
