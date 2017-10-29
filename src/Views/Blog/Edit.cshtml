@@ -23,7 +23,7 @@
     <br />
 
     <label for="categories" class="label">Tags</label>
-    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" aria-describedby="desc_categories" />
+    <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.PostCategories.Select(p => p.CategoryID))" aria-describedby="desc_categories" />
     <span class="desc" id="desc_categories">A comma separated list of keywords</span>
     <br />
 

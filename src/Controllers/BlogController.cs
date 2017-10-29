@@ -97,7 +97,12 @@ namespace Miniblog.Core.Models
             var existing = await _blog.GetPostById(post.ID) ?? post;
             string categories = Request.Form["categories"];
 
-            existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
+            existing.PostCategories = categories
+                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.Trim().ToLowerInvariant())
+                .Select(c => new PostCategory() { CategoryID = c, PostID = existing.ID })
+                .ToList();
+
             existing.Title = post.Title.Trim();
             existing.Slug = post.Slug.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);

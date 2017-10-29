@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Miniblog.Core.Models;
-using Miniblog.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Miniblog.Core.Services
+namespace Miniblog.Core
 {
     public class DatabaseBlogService : IBlogService
     {
@@ -36,30 +35,38 @@ namespace Miniblog.Core.Services
 
             var categories = _context.Posts
                 .Where(p => p.IsPublished || isAdmin)
-                .SelectMany(post => post.Categories)
-                .Select(cat => cat.ToLowerInvariant())
+                .SelectMany(p => p.PostCategories)
+                .Select(p => p.CategoryID.ToLowerInvariant())
                 .Distinct()
                 .AsEnumerable();
 
             return Task.FromResult(categories);
         }
 
-        public async Task<Post> GetPostById(string id)
+        public Task<Post> GetPostById(string id)
         {
-            var post = await _context.Posts.FindAsync(id);
+            var post = _context.Posts
+                .Include(p => p.PostCategories)
+                .Include(p => p.Comments)
+                .SingleOrDefault(p => p.ID == id);
+
             bool isAdmin = IsAdmin();
 
             if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
             {
-                return post;
+                return Task.FromResult(post);
             }
 
-            return null;
+            return Task.FromResult<Post>(null);
         }
 
         public Task<Post> GetPostBySlug(string slug)
         {
-            var post = _context.Posts.SingleOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+            var post = _context.Posts
+                .Include(p => p.PostCategories)
+                .Include(p => p.Comments)
+                .SingleOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+
             bool isAdmin = IsAdmin();
 
             if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
@@ -75,6 +82,8 @@ namespace Miniblog.Core.Services
             bool isAdmin = IsAdmin();
 
             var posts = _context.Posts
+                .Include(p => p.PostCategories)
+                .Include(p => p.Comments)
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .Skip(skip)
                 .Take(count)
@@ -88,10 +97,11 @@ namespace Miniblog.Core.Services
             bool isAdmin = IsAdmin();
 
             var posts = _context.Posts
-                        .Where(p => p.PubDate <= DateTime.UtcNow 
-                            && (p.IsPublished || isAdmin)
-                            && p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase))
-                        .AsEnumerable();
+                .Include(p => p.PostCategories)
+                .Include(p => p.Comments)
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                    && p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                .AsEnumerable();
 
             return Task.FromResult(posts);
         }
@@ -118,9 +128,26 @@ namespace Miniblog.Core.Services
 
         public async Task SavePost(Post post)
         {
-            _context.Entry(post).State = string.IsNullOrEmpty(post.ID) 
-                ? EntityState.Added 
-                : EntityState.Modified;
+            _context.Entry(post).State = _context.Posts.Any(p => p.ID == post.ID)
+                ? EntityState.Modified
+                : EntityState.Added;
+
+            _context.Comments.RemoveRange(_context.Comments.Where(c => !post.Comments.Contains(c)));
+            await _context.Comments.AddRangeAsync(post.Comments.Where(c => !_context.Comments.Contains(c)));
+
+            _context.PostCategories.RemoveRange(_context.PostCategories.Where(p => p.PostID == post.ID && !post.PostCategories.Any(pc => p.CategoryID == pc.CategoryID)));
+            foreach (var postCat in post.PostCategories)
+            {
+                if (!_context.Categories.Any(cat => cat.ID == postCat.CategoryID))
+                {
+                    _context.Add(new Category() { ID = postCat.CategoryID });
+                    _context.Entry(postCat).State = EntityState.Added;
+                }
+                else if (!_context.PostCategories.Any(p => p.CategoryID == postCat.CategoryID && p.PostID == postCat.PostID))
+                {
+                    _context.Entry(postCat).State = EntityState.Added;
+                }
+            }
 
             await _context.SaveChangesAsync();
         }

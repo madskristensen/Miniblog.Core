@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Net.Http.Headers;
-using Miniblog.Core.Data;
 using System;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
@@ -44,7 +43,7 @@ namespace Miniblog.Core
         {
             services.AddMvc();
 
-            services.AddSingleton<IBlogService, FileBlogService>();
+            services.AddScoped<IBlogService, DatabaseBlogService>();
             services.AddDbContext<MiniblogDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MiniblogDatabase")));
 

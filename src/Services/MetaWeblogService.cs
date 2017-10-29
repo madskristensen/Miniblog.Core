@@ -32,7 +32,7 @@ namespace Miniblog.Core
                 Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
                 Content = post.description,
                 IsPublished = publish,
-                Categories = post.categories
+                PostCategories = post.categories.Select(c => new Models.PostCategory() { CategoryID = c, PostID = post.postid.ToString() }).ToList()
             };
 
             if (post.dateCreated != DateTime.MinValue)
@@ -72,7 +72,7 @@ namespace Miniblog.Core
                 existing.Slug = post.wp_slug;
                 existing.Content = post.description;
                 existing.IsPublished = publish;
-                existing.Categories = post.categories;
+                existing.PostCategories = post.categories.Select(c => new Models.PostCategory() { CategoryID = c, PostID = post.postid.ToString() }).ToList();
 
                 if (post.dateCreated != DateTime.MinValue)
                 {
@@ -183,7 +183,7 @@ namespace Miniblog.Core
                 permalink = url + post.GetLink(),
                 dateCreated = post.PubDate,
                 description = post.Content,
-                categories = post.Categories.ToArray()
+                categories = post.PostCategories.Select(p => p.CategoryID).ToArray()
             };
         }
     }
