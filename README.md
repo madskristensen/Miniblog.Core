@@ -7,7 +7,7 @@ A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
-**Live demo**: <https://miniblogcore.azurewebsites.net/>  
+**Live demo**: <http://miniblogcore20171029091053.azurewebsites.net/>  
 Username: *demo*  
 Password: *demo*
 
