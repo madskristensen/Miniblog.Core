@@ -2,12 +2,7 @@
 
 A full-featured yet simple blog engine built on ASP.NET Core 2.0.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/lwjrlpvmhg50wwbs?svg=true)](https://ci.appveyor.com/project/madskristensen/miniblog-core)
-[![NuGet](https://img.shields.io/nuget/v/MadsKristensen.AspNetCore.Miniblog.svg)](https://nuget.org/packages/MadsKristensen.AspNetCore.Miniblog/)
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
-
-**Live demo**: <https://miniblogcore.azurewebsites.net/>  
+**Live demo**: <http://miniblogcore20171029091053.azurewebsites.net/>  
 Username: *demo*  
 Password: *demo*
 
@@ -28,13 +23,13 @@ Password: *demo*
 
 ## Technical features
 - High performance. Gets 100/100 points on Google PageSpeed Insights 
-  - [Run PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
+  - [Run PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/?url=http%3A%2F%2Fminiblogcore20171029091053.azurewebsites.net%2F)
 - Speed Index < 1000
-  - [See WebPageTest](http://www.webpagetest.org/result/170928_1R_cf91bb2d800cc389821c5cfa7e353f0d/) 
+  - [See WebPageTest](http://www.webpagetest.org/result/171030_VS_723f18942007e46a80e81ef7bbbfe9b5/) 
 - Meets highest accessibility standards 
-  - [Run accessibility validator](http://wave.webaim.org/report#/https://miniblogcore.azurewebsites.net/)
+  - [Run accessibility validator](http://wave.webaim.org/report#/http://miniblogcore20171029091053.azurewebsites.net/)
 - W3C standards compliant 
-  - [Run HTML validator](https://html5.validator.nu/?doc=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
+  - [Run HTML validator](https://html5.validator.nu/?doc=http%3A%2F%2Fminiblogcore20171029091053.azurewebsites.net)
   - [Run RSS validator](https://validator.w3.org/feed/check.cgi?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2Ffeed%2Frss%2F)
 - Responsive web design
   - [See mobile emulators](https://www.responsinator.com/?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)

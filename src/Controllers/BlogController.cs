@@ -13,11 +13,13 @@ namespace Miniblog.Core.Models
     {
         private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
+        private readonly IImportBlogService _importer;
 
-        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
+        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, IImportBlogService importer)
         {
             _blog = blog;
             _settings = settings;
+            _importer = importer;
         }
 
         [Route("/{page:int?}")]
@@ -25,23 +27,31 @@ namespace Miniblog.Core.Models
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            var count = await _blog.GetPostCount();
+            var model = new PostsViewModel(posts, count);
+
             ViewData["Title"] = _settings.Value.Name + " - A blog about ASP.NET & Visual Studio";
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+
+            return View("Views/Blog/Index.cshtml", model);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
-            var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var posts = (await _blog.GetPostsByCategory(category, _settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page));
+            var count = await _blog.GetPostCount();
+            var model = new PostsViewModel(posts, count);
+
             ViewData["Title"] = _settings.Value.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+
+            return View("Views/Blog/Index.cshtml", model);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format
@@ -97,7 +107,12 @@ namespace Miniblog.Core.Models
             var existing = await _blog.GetPostById(post.ID) ?? post;
             string categories = Request.Form["categories"];
 
-            existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
+            existing.PostCategories = categories
+                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.Trim().ToLowerInvariant())
+                .Select(c => new PostCategory() { CategoryID = c, PostID = existing.ID })
+                .ToList();
+
             existing.Title = post.Title.Trim();
             existing.Slug = post.Slug.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
@@ -211,6 +226,14 @@ namespace Miniblog.Core.Models
             await _blog.SavePost(post);
 
             return Redirect(post.GetLink() + "#comments");
+        }
+
+        [Route("/blog/import")]
+        [Authorize]
+        public async Task<IActionResult> Import()
+        {
+            await _importer.ImportBlog();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

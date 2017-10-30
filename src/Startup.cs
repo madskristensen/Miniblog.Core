@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Linq;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
@@ -44,7 +46,15 @@ namespace Miniblog.Core
         {
             services.AddMvc();
 
-            services.AddSingleton<IBlogService, FileBlogService>();
+            services.AddScoped<IBlogService, DatabaseBlogService>();
+            // If using the database blog service include the database
+            if (services.Any(service => service.ImplementationType == typeof(DatabaseBlogService)))
+            {
+                services.AddDbContext<MiniblogDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("MiniblogDatabase")));
+            }
+            services.AddScoped<IImportBlogService, ImportFileBlogService>();
+
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();

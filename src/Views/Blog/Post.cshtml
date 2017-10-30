@@ -26,11 +26,11 @@
     </div>
 
     <footer>
-        @if (Model.Categories.Any())
+        @if (Model.PostCategories.Any())
         {
             <ul class="categories">
                 <li> Posted in </li>
-                @foreach (string cat in Model.Categories)
+                @foreach (string cat in Model.PostCategories.Select(p => p.CategoryID))
                 {
                     <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()">@cat</a></li>
                 }

@@ -38,17 +38,33 @@ namespace Miniblog.Core
             return Task.FromResult(posts);
         }
 
-        public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category)
+        public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category, int count, int skip = 0)
         {
             bool isAdmin = IsAdmin();
 
-            var posts = from p in _cache
-                        where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
-                        where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
-                        select p;
+            var posts = _cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                    && p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                .Skip(skip)
+                .Take(count);
 
             return Task.FromResult(posts);
 
+        }
+
+        public virtual Task<int> GetPostCount(string category = null)
+        {
+            bool isAdmin = IsAdmin();
+
+            var count = _cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                    && (
+                        string.IsNullOrEmpty(category)
+                        || p.PostCategories.Any(pc => string.Equals(pc.CategoryID, category, StringComparison.OrdinalIgnoreCase)))
+                    )
+                .Count();
+
+            return Task.FromResult(count);
         }
 
         public virtual Task<Post> GetPostBySlug(string slug)
@@ -83,8 +99,8 @@ namespace Miniblog.Core
 
             var categories = _cache
                 .Where(p => p.IsPublished || isAdmin)
-                .SelectMany(post => post.Categories)
-                .Select(cat => cat.ToLowerInvariant())
+                .SelectMany(p => p.PostCategories)
+                .Select(p => p.CategoryID.ToLowerInvariant())
                 .Distinct();
 
             return Task.FromResult(categories);
@@ -109,7 +125,7 @@ namespace Miniblog.Core
                             ));
 
             XElement categories = doc.XPathSelectElement("post/categories");
-            foreach (string category in post.Categories)
+            foreach (string category in post.PostCategories.Select(p => p.CategoryID))
             {
                 categories.Add(new XElement("category", category));
             }
@@ -229,7 +245,7 @@ namespace Miniblog.Core
                 list.Add(node.Value);
             }
 
-            post.Categories = list.ToArray();
+            post.PostCategories = list.Select(c => new PostCategory() { CategoryID = c, PostID = post.ID }).ToArray();
         }
 
         private static void LoadComments(Post post, XElement doc)
