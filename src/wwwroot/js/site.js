@@ -1,10 +1,5 @@
 ﻿(function () {
 
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("/serviceworker.js");
-    }
-
     // Expand comment form
     var content = document.querySelector("#comments textarea");
     if (content) {
