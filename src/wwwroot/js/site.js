@@ -1,5 +1,12 @@
 ﻿(function () {
 
+    // Show comment form. It's invisible by default in case visitor
+    // has disabled javascript
+    var commentForm = document.querySelector("#comments form");
+    if (commentForm) {
+        commentForm.classList.add("js-enabled");
+    }
+
     // Expand comment form
     var content = document.querySelector("#comments textarea");
     if (content) {

@@ -10,6 +10,11 @@
 
     form {
         margin-top: 2em;
+        display: none;
+
+        &.js-enabled {
+            display: block;
+        }
     }
 
     .details {

@@ -18,6 +18,14 @@
     }
 }
 
+noscript p {
+    background-color: crimson;
+    line-height: 2em;
+    padding: 0 10px;
+    color: white;
+    font-size: .9em;
+}
+
 .video {
     position: relative;
     padding-bottom: 56.25%;
