@@ -5,6 +5,12 @@
     if (content) {
         content.addEventListener("focus", function () {
             document.querySelector(".details").className += " show";
+
+            // Removes the hidden website form field to fight spam
+            setTimeout(function () {
+                var honeypot = document.querySelector("input[name=website]");
+                honeypot.parentNode.removeChild(honeypot);
+            }, 2000);
         }, false);
     }
 

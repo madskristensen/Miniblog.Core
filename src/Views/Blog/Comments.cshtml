@@ -35,7 +35,7 @@
                 <p>Be the first to post a comment</p>
             }
 
-            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID">
+            <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID" asp-antiforgery="false">
                 <h3>Post a comment</h3>
                 <br />
 
@@ -51,6 +51,9 @@
                     <br />
 
                     <input type="submit" value="Post comment" />
+
+                    <!-- This element is being removed by site.js. It is to prevent comment spam-->
+                    <input type="hidden" name="website" />
                 </div>
             </form>
         }

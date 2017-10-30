@@ -158,7 +158,7 @@ namespace Miniblog.Core.Models
         }
 
         [Route("/blog/comment/{postId}")]
-        [HttpPost, AutoValidateAntiforgeryToken]
+        [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
             var post = await _blog.GetPostById(postId);
@@ -178,8 +178,13 @@ namespace Miniblog.Core.Models
             comment.Author = comment.Author.Trim();
             comment.Email = comment.Email.Trim();
 
-            post.Comments.Add(comment);
-            await _blog.SavePost(post);
+            // the website form key should have been removed by javascript
+            // unless the comment was posted by a spam robot
+            if (!Request.Form.ContainsKey("website"))
+            {
+                post.Comments.Add(comment);
+                await _blog.SavePost(post);
+            }
 
             return Redirect(post.GetLink() + "#" + comment.ID);
         }
