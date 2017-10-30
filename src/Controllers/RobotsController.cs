@@ -120,7 +120,7 @@ namespace Miniblog.Core
                         ContentType = "html",
                     };
 
-                    foreach (string category in post.PostCategories.Select(p => p.Category.ID))
+                    foreach (string category in post.PostCategories.Select(p => p.CategoryID))
                     {
                         item.AddCategory(new SyndicationCategory(category));
                     }
