@@ -46,14 +46,14 @@ namespace Miniblog.Core
         {
             services.AddMvc();
 
-            services.AddSingleton<IBlogService, FileBlogService>();
-
+            services.AddScoped<IBlogService, DatabaseBlogService>();
             // If using the database blog service include the database
             if (services.Any(service => service.ImplementationType == typeof(DatabaseBlogService)))
             {
                 services.AddDbContext<MiniblogDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MiniblogDatabase")));
             }
+            services.AddScoped<IImportBlogService, ImportFileBlogService>();
 
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

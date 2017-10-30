@@ -13,11 +13,13 @@ namespace Miniblog.Core.Models
     {
         private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
+        private readonly IImportBlogService _importer;
 
-        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
+        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, IImportBlogService importer)
         {
             _blog = blog;
             _settings = settings;
+            _importer = importer;
         }
 
         [Route("/{page:int?}")]
@@ -219,6 +221,14 @@ namespace Miniblog.Core.Models
             await _blog.SavePost(post);
 
             return Redirect(post.GetLink() + "#comments");
+        }
+
+        [Route("/blog/import")]
+        [Authorize]
+        public async Task<IActionResult> Import()
+        {
+            await _importer.ImportBlog();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
