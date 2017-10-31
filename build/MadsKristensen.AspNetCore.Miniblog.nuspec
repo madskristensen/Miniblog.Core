@@ -4,7 +4,7 @@
     <id>MadsKristensen.AspNetCore.Miniblog</id>
     <title>Miniblog.Core</title>
     <summary>A high-performance blog web site using ASP.NET Core MVC and the latest in client-side technologies.</summary>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>A high-performance blog web site using ASP.NET Core MVC and the latest in client-side technologies.</description>
     <authors>Mads Kristensen</authors>
     <projectUrl>https://github.com/madskristensen/Miniblog.Core</projectUrl>
