@@ -180,9 +180,11 @@ time {
 
     table {
         font-size: .9em;
-        width: 100%;
-        border-spacing: 0;
         border-collapse: collapse;
+        font-variant-numeric: lining-nums tabular-nums;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 
     tr:nth-child(2n) {
@@ -190,11 +192,11 @@ time {
     }
 
     th {
-        border-bottom: 1px solid $comments_input_border-color;
+        border-bottom: 1px solid $comments_border-color;
         text-align: left;
     }
 
     td, th {
-        padding: 2px 4px;
+        padding: 2px 7px;
     }
 }
