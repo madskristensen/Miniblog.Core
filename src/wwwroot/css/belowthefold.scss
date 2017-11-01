@@ -18,6 +18,13 @@
     }
 }
 
+a:focus,
+a:active,
+input:focus,
+textarea:focus {
+    outline: 2px solid lighten($link_color, 20%);
+}
+
 noscript p {
     background-color: crimson;
     line-height: 2em;
