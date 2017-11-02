@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.SyndicationFeed;
-using Microsoft.SyndicationFeed.Atom;
-using Microsoft.SyndicationFeed.Rss;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.SyndicationFeed;
+using Microsoft.SyndicationFeed.Atom;
+using Microsoft.SyndicationFeed.Rss;
+using Miniblog.Core.Services;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Controllers
 {
     public class RobotsController : Controller
     {
