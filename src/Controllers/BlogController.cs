@@ -25,7 +25,7 @@ namespace Miniblog.Core.Models
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
-            ViewData["Title"] = _settings.Value.Name + " - A blog about ASP.NET & Visual Studio";
+            ViewData["Title"] = _settings.Value.Name;
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
