@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Miniblog.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Miniblog.Core.Models;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Services
 {
     public interface IBlogService
     {

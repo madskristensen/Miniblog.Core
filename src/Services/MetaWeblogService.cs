@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Controllers;
-using System;
-using System.Linq;
-using System.Security.Claims;
 using WilderMinds.MetaWeblog;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Services
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
