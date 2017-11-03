@@ -31,7 +31,7 @@ namespace Miniblog.Core.Controllers
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Index", posts);
+            return View("~/Views/Blog/Index.cshtml", posts);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
@@ -43,7 +43,7 @@ namespace Miniblog.Core.Controllers
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Index", posts);
+            return View("~/Views/Blog/Index.cshtml", posts);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format
