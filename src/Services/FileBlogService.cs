@@ -20,7 +20,7 @@ namespace Miniblog.Core.Services
 
         public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, "posts");
+            _folder = Path.Combine(env.WebRootPath, "Posts");
             _contextAccessor = contextAccessor;
 
             Initialize();
@@ -174,7 +174,7 @@ namespace Miniblog.Core.Services
                 await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
-            return "/posts/" + relative;
+            return "/Posts/" + relative;
         }
 
         private string GetFilePath(Post post)

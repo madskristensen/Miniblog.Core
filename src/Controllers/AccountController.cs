@@ -51,7 +51,7 @@ namespace Miniblog.Core.Controllers
             }
 
             ModelState.AddModelError(string.Empty, "Username or password is invalid.");
-            return View("login", model);
+            return View("Login", model);
         }
 
         [Route("/logout")]
