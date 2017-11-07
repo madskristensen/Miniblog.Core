@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Miniblog.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,8 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Miniblog.Core.Models;
 
-namespace Miniblog.Core
+namespace Miniblog.Core.Services
 {
     public class FileBlogService : IBlogService
     {
@@ -20,7 +20,7 @@ namespace Miniblog.Core
 
         public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, "posts");
+            _folder = Path.Combine(env.WebRootPath, "Posts");
             _contextAccessor = contextAccessor;
 
             Initialize();
@@ -174,7 +174,7 @@ namespace Miniblog.Core
                 await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
-            return "/posts/" + relative;
+            return "/Posts/" + relative;
         }
 
         private string GetFilePath(Post post)

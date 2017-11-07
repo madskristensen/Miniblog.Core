@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Miniblog.Core.Models;
+using Miniblog.Core.Services;
 
-namespace Miniblog.Core.Models
+namespace Miniblog.Core.Controllers
 {
     public class BlogController : Controller
     {
@@ -29,7 +31,7 @@ namespace Miniblog.Core.Models
             ViewData["Description"] = _settings.Value.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+            return View("~/Views/Blog/Index.cshtml", posts);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
@@ -41,7 +43,7 @@ namespace Miniblog.Core.Models
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("Views/Blog/Index.cshtml", posts);
+            return View("~/Views/Blog/Index.cshtml", posts);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format
