@@ -104,20 +104,7 @@ namespace Miniblog.Core
             app.UseStatusCodePages("text/plain", "Status code page, status code: {0}");
             app.UseWebOptimizer();
 
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                OnPrepareResponse = (context) =>
-                {
-                    var time = TimeSpan.FromDays(365);
-                    context.Context.Response.Headers[HeaderNames.CacheControl] = $"max-age={time.TotalSeconds.ToString()}";
-                    context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.Add(time).ToString("R");
-
-                    if (context.Context.Request.Query.ContainsKey("v"))
-                    {
-                        context.Context.Response.Headers[HeaderNames.CacheControl] += $",immutable";
-                    }
-                }
-            });
+            app.UseStaticFilesWithCache();
 
             if (Configuration.GetValue<bool>("forcessl"))
             {
