@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Globalization;
 using Miniblog.Core.Services;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
@@ -109,7 +110,7 @@ namespace Miniblog.Core
                 OnPrepareResponse = (context) =>
                 {
                     var time = TimeSpan.FromDays(365);
-                    context.Context.Response.Headers[HeaderNames.CacheControl] = $"max-age={time.TotalSeconds.ToString()}";
+                    context.Context.Response.Headers[HeaderNames.CacheControl] = $"max-age={time.TotalSeconds.ToString(CultureInfo.InvariantCulture)}";
                     context.Context.Response.Headers[HeaderNames.Expires] = DateTime.UtcNow.Add(time).ToString("R");
 
                     if (context.Context.Request.Query.ContainsKey("v"))

@@ -15,7 +15,7 @@ namespace Miniblog.Core.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private IConfiguration _config;
+        private readonly IConfiguration _config;
 
         public AccountController(IConfiguration config)
         {
