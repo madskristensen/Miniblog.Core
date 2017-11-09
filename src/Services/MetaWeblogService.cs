@@ -11,9 +11,9 @@ namespace Miniblog.Core.Services
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
-        private IBlogService _blog;
-        private IConfiguration _config;
-        private IHttpContextAccessor _context;
+        private readonly IBlogService _blog;
+        private readonly IConfiguration _config;
+        private readonly IHttpContextAccessor _context;
 
         public MetaWeblogService(IBlogService blog, IConfiguration config, IHttpContextAccessor context)
         {
@@ -119,7 +119,7 @@ namespace Miniblog.Core.Services
         {
             ValidateUser(username, password);
 
-            return _blog.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(p => ToMetaWebLogPost(p)).ToArray();
+            return _blog.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(ToMetaWebLogPost).ToArray();
         }
 
         public BlogInfo[] GetUsersBlogs(string key, string username, string password)
