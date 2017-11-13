@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Net.Http.Headers;
-using System;
 using Miniblog.Core.Services;
 using WebEssentials.AspNetCore.OutputCaching;
+using WebEssentials.AspNetCore.ServiceWorker;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
@@ -45,6 +44,12 @@ namespace Miniblog.Core
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            // Service workers https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
+            services.AddServiceWorker(new ServiceWorkerOptions
+            {
+                OfflineRoute = "/home/offline/"
+            });
 
             services.AddSingleton<IBlogService, FileBlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
@@ -100,8 +105,12 @@ namespace Miniblog.Core
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
 
-            app.UseStatusCodePages("text/plain", "Status code page, status code: {0}");
+            app.UseStatusCodePagesWithReExecute("/Home/Error");
             app.UseWebOptimizer();
 
             app.UseStaticFilesWithCache();
