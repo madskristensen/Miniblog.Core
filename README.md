@@ -23,6 +23,7 @@ Password: *demo*
 - Lazy loads images for better performance
 - Easy YouTube video embedding
 - Looks great when printed
+- Works offline with use of [Service Worker](https://developers.google.com/web/fundamentals/primers/service-workers/)
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59e928f10cf224d151dfbe2d)
 
