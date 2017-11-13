@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "_Layout";
 
+    Context.Response.Headers["X-UA-Compatible"] = "ie=edge";
+
     // Setting security HTTP headers
     Context.Response.Headers["Content-Security-Policy"] = $"object-src 'none'; form-action 'self'";
     Context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
