@@ -110,6 +110,15 @@ namespace Miniblog.Core
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.Use((context, next) =>
+            {
+                if (context.Request.IsHttps)
+                {
+                    context.Response.Headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains";
+                }
+                return next();
+            });
+
             app.UseStatusCodePagesWithReExecute("/Home/Error");
             app.UseWebOptimizer();
 
