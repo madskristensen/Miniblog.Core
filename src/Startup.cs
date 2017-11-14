@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Miniblog.Core.Services;
 using WebEssentials.AspNetCore.OutputCaching;
-using WebEssentials.AspNetCore.ServiceWorker;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
@@ -45,16 +44,13 @@ namespace Miniblog.Core
         {
             services.AddMvc();
 
-            // Service workers https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
-            services.AddServiceWorker(new ServiceWorkerOptions
-            {
-                OfflineRoute = "/home/offline/"
-            });
-
             services.AddSingleton<IBlogService, FileBlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
+
+            // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
+            services.AddProgressiveWebApp();
 
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             services.AddOutputCaching(options =>

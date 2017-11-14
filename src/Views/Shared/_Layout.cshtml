@@ -1,4 +1,5 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
+@inject WebManifest manifest
 @{
     var host = Context.Request.Scheme + "://" + Context.Request.Host;
 }
@@ -20,7 +21,6 @@
     <meta property="og:image:width" content="512" />
     <meta property="og:image:height" content="512" />
 
-    <meta name="theme-color" content="#ffffff" />
     <meta name="msapplication-square150x150logo" content="/img/icon180x180.png" />
 
     <link rel="icon" type="image/png" sizes="16x16" href="/img/icon16x16.png" />
@@ -35,7 +35,7 @@
 
     <header class="siteheader">
         <div class="container">
-            <p itemprop="name"><a href="~/">@settings.Value.Name</a></p>
+            <p itemprop="name"><a href="~/">@manifest.Name</a></p>
             By <span itemprop="author">@settings.Value.Owner</span>
         </div>
     </header>
@@ -72,7 +72,10 @@
         </div>
     </footer>
 
-    <link rel="stylesheet" href="~/css/belowthefold.scss" />
+    <!-- This lazy loads the stylesheet in a non-render blocking way -->
+    <link rel="stylesheet" href="~/css/belowthefold.scss" media="none" />
+    <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
+
     @RenderSection("Scripts", required: false)
     <script src="~/js/site.js" async defer></script>
 </body>

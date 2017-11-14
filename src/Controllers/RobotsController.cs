@@ -9,6 +9,7 @@ using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 using Miniblog.Core.Services;
+using WebEssentials.AspNetCore.ServiceWorker;
 
 namespace Miniblog.Core.Controllers
 {
@@ -16,11 +17,13 @@ namespace Miniblog.Core.Controllers
     {
         private IBlogService _blog;
         private IOptionsSnapshot<BlogSettings> _settings;
+        private readonly WebManifest _manifest;
 
-        public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings)
+        public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
         {
             _blog = blog;
             _settings = settings;
+            _manifest = manifest;
         }
 
         [Route("/robots.txt")]
@@ -141,17 +144,17 @@ namespace Miniblog.Core.Controllers
             if (type.Equals("rss", StringComparison.OrdinalIgnoreCase))
             {
                 var rss = new RssFeedWriter(xmlWriter);
-                await rss.WriteTitle(_settings.Value.Name);
-                await rss.WriteDescription(_settings.Value.Description);
+                await rss.WriteTitle(_manifest.Name);
+                await rss.WriteDescription(_manifest.Description);
                 await rss.WriteGenerator("Miniblog.Core");
                 await rss.WriteValue("link", host);
                 return rss;
             }
 
             var atom = new AtomFeedWriter(xmlWriter);
-            await atom.WriteTitle(_settings.Value.Name);
+            await atom.WriteTitle(_manifest.Name);
             await atom.WriteId(host);
-            await atom.WriteSubtitle(_settings.Value.Description);
+            await atom.WriteSubtitle(_manifest.Description);
             await atom.WriteGenerator("Miniblog.Core", "https://github.com/madskristensen/Miniblog.Core", "1.0");
             await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             return atom;
