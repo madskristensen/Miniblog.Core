@@ -50,7 +50,10 @@ namespace Miniblog.Core
             services.AddMetaWeblog<MetaWeblogService>();
 
             // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
-            services.AddProgressiveWebApp("/home/offline");
+            services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
+            {
+                OfflineRoute = "/home/offline/"
+            });
 
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             services.AddOutputCaching(options =>

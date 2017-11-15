@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Miniblog.Core.Models;
 using Miniblog.Core.Services;
-using WebEssentials.AspNetCore.ServiceWorker;
+using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Controllers
 {

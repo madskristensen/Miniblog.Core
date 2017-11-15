@@ -9,7 +9,7 @@ using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
 using Miniblog.Core.Services;
-using WebEssentials.AspNetCore.ServiceWorker;
+using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Controllers
 {
