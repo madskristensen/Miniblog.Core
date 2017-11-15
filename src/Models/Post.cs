@@ -95,5 +95,10 @@ namespace Miniblog.Core.Models
 
             return result.ToString();
         }
+
+        public bool IsVisible()
+        {
+            return IsPublished && (PubDate < DateTime.UtcNow);
+        }
     }
 }
