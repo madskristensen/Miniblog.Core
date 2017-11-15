@@ -18,6 +18,10 @@
         @if (User.Identity.IsAuthenticated)
         {
             <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
+            @if(!Model.IsVisible())
+            {
+                <span>(Not Visible)</span>
+            }
         }
     </header>
 
