@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Net.Http.Headers;
-using System;
 using Miniblog.Core.Services;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
@@ -50,6 +48,12 @@ namespace Miniblog.Core
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
+
+            // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
+            services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
+            {
+                OfflineRoute = "/home/offline/"
+            });
 
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
             services.AddOutputCaching(options =>
@@ -100,8 +104,21 @@ namespace Miniblog.Core
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
 
-            app.UseStatusCodePages("text/plain", "Status code page, status code: {0}");
+            app.Use((context, next) =>
+            {
+                if (context.Request.IsHttps)
+                {
+                    context.Response.Headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains";
+                }
+                return next();
+            });
+
+            app.UseStatusCodePagesWithReExecute("/Home/Error");
             app.UseWebOptimizer();
 
             app.UseStaticFilesWithCache();

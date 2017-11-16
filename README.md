@@ -23,6 +23,7 @@ Password: *demo*
 - Lazy loads images for better performance
 - Easy YouTube video embedding
 - Looks great when printed
+- Works offline with use of [Service Worker](https://developers.google.com/web/fundamentals/primers/service-workers/)
 - Follows best practices for web applications
   - [See DareBoost report](https://www.dareboost.com/en/report/59e928f10cf224d151dfbe2d)
 
@@ -43,6 +44,7 @@ Password: *demo*
 - Schema.org support with HTML 5 Microdata 
   - [Run testing tool](https://search.google.com/structured-data/testing-tool#url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
 - OpenGraph support for Facebook, Twitter, Pinterest and more
+  - [Run Facebook validator](https://developers.facebook.com/tools/debug/sharing/?q=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F)
   - [Check the tags](http://opengraphcheck.com/result.php?url=https%3A%2F%2Fminiblogcore.azurewebsites.net%2F#.WdhRDjBlB3g)
 - Seach engine optimized
   - [Run SEO Site Checkup](https://seositecheckup.com/seo-audit/miniblogcore.azurewebsites.net)

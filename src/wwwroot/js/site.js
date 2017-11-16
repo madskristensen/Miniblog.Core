@@ -1,5 +1,14 @@
 ﻿(function () {
 
+    // Lazy load stylesheets
+    window.addEventListener("load", function () {
+        var stylesheets = document.querySelectorAll("link[media=none]");
+
+        for (var i = 0; i < stylesheets.length; i++) {
+            stylesheets[i].media = "all";
+        }
+    });
+
     // Show comment form. It's invisible by default in case visitor
     // has disabled javascript
     var commentForm = document.querySelector("#comments form");

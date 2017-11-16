@@ -1,4 +1,5 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
+@inject WebManifest manifest
 @{
     var host = Context.Request.Scheme + "://" + Context.Request.Host;
 }
@@ -7,24 +8,25 @@
 <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@ViewData["Description"]" />
     <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
     @RenderSection("Head", required: false)
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="article" />
     <meta property="og:title" content="@ViewData["Title"]" />
     <meta property="og:description" content="@ViewData["Description"]" />
     <meta property="og:url" content="@(host + Context.Request.Path)" />
-    <meta property="og:image" content="@host/img/icon180x180.png" />
-    <meta property="og:image:width" content="180" />
-    <meta property="og:image:height" content="180" />
-
-    <link rel="icon" type="image/png" sizes="16x16" href="/img/icon16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="~/img/icon180x180.png" />
-    <link rel="shortcut icon" href="/img/icon16x16.png" />
+    <meta property="og:image" content="@host/img/icon512x512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
 
     <meta name="msapplication-square150x150logo" content="/img/icon180x180.png" />
+
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/icon16x16.png" />
+    <link rel="apple-touch-icon" href="~/img/icon180x180.png" />
+    <link rel="shortcut icon" href="/img/icon16x16.png" />
+
     <link rel="edituri" type="application/rsd+xml" title="RSD" href="~/rsd.xml" />
     <link rel="alternate" type="application/rss+xml" href="~/feed/rss/" />
     <link rel="alternate" type="application/atom+xml" href="~/feed/atom/" />
@@ -33,7 +35,7 @@
 
     <header class="siteheader">
         <div class="container">
-            <p itemprop="name"><a href="~/">@settings.Value.Name</a></p>
+            <p itemprop="name"><a href="~/">@manifest.Name</a></p>
             By <span itemprop="author">@settings.Value.Owner</span>
         </div>
     </header>
@@ -70,7 +72,10 @@
         </div>
     </footer>
 
-    <link rel="stylesheet" href="~/css/belowthefold.scss" />
+    <!-- This lazy loads the stylesheet in a non-render blocking way -->
+    <link rel="stylesheet" href="~/css/belowthefold.scss" media="none" />
+    <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
+
     @RenderSection("Scripts", required: false)
     <script src="~/js/site.js" async defer></script>
 </body>
