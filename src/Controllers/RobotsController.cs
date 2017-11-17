@@ -15,8 +15,8 @@ namespace Miniblog.Core.Controllers
 {
     public class RobotsController : Controller
     {
-        private IBlogService _blog;
-        private IOptionsSnapshot<BlogSettings> _settings;
+        private readonly IBlogService _blog;
+        private readonly IOptionsSnapshot<BlogSettings> _settings;
         private readonly WebManifest _manifest;
 
         public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
