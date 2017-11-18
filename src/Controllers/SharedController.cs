@@ -2,7 +2,7 @@
 
 namespace Miniblog.Core.Controllers
 {
-    public class HomeController : Controller
+    public class SharedController : Controller
     {
         public IActionResult Error()
         {
