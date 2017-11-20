@@ -1,25 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Models;
-using System;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using Miniblog.Core.Services;
 
 namespace Miniblog.Core.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly IUserServices _userServices;
 
-        public AccountController(IConfiguration config)
+        public AccountController(IUserServices userServices)
         {
-            _config = config;
+            _userServices = userServices;
         }
 
 
@@ -38,13 +35,13 @@ namespace Miniblog.Core.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            if (ModelState.IsValid && model.UserName == _config["user:username"] && VerifyHashedPassword(model.Password, _config))
+            if (ModelState.IsValid && _userServices.ValidateUser(model.UserName, model.Password))
             {
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, _config["user:username"]));
+                identity.AddClaim(new Claim(ClaimTypes.Name, model.UserName));
 
                 var principle = new ClaimsPrincipal(identity);
-                var properties = new AuthenticationProperties { IsPersistent = model.RememberMe };
+                var properties = new AuthenticationProperties {IsPersistent = model.RememberMe};
                 await HttpContext.SignInAsync(principle, properties);
 
                 return LocalRedirect(returnUrl ?? "/");
@@ -59,23 +56,6 @@ namespace Miniblog.Core.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
-        }
-
-        [NonAction]
-        internal static bool VerifyHashedPassword(string password, IConfiguration config)
-        {
-            byte[] saltBytes = Encoding.UTF8.GetBytes(config["user:salt"]);
-
-            byte[] hashBytes = KeyDerivation.Pbkdf2(
-                password: password,
-                salt: saltBytes,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 1000,
-                numBytesRequested: 256 / 8
-            );
-
-            string hashText = BitConverter.ToString(hashBytes).Replace("-", string.Empty);
-            return hashText == config["user:password"];
         }
     }
 }
