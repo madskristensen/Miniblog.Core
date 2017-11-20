@@ -14,6 +14,14 @@
     var commentForm = document.querySelector("#comments form");
     if (commentForm) {
         commentForm.classList.add("js-enabled");
+
+        commentForm.addEventListener("submit", function (e) {
+            this.querySelector("input[type=submit]").value = "Posting comment...";
+            var elements = this.elements;
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].readOnly = true;
+            }
+        });
     }
 
     // Expand comment form

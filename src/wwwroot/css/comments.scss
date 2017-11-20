@@ -15,6 +15,11 @@
         &.js-enabled {
             display: block;
         }
+
+        [readonly] {
+            background: lightgray;
+            outline: none;
+        }
     }
 
     .details {
