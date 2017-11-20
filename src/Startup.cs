@@ -52,7 +52,7 @@ namespace Miniblog.Core
             // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
             services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
             {
-                OfflineRoute = "/home/offline/"
+                OfflineRoute = "/shared/offline/"
             });
 
             // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
@@ -106,7 +106,7 @@ namespace Miniblog.Core
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Shared/Error");
             }
 
             app.Use((context, next) =>
@@ -119,7 +119,7 @@ namespace Miniblog.Core
                 return next();
             });
 
-            app.UseStatusCodePagesWithReExecute("/Home/Error");
+            app.UseStatusCodePagesWithReExecute("/Shared/Error");
             app.UseWebOptimizer();
 
             app.UseStaticFilesWithCache();
@@ -139,7 +139,7 @@ namespace Miniblog.Core
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Blog}/{action=Index}/{id?}");
             });
         }
     }
