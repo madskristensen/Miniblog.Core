@@ -1,11 +1,13 @@
-﻿(function () {
+﻿(function (window, document) {
 
     // Lazy load stylesheets
     window.addEventListener("load", function () {
-        var stylesheets = document.querySelectorAll("link[media=none]");
+        var stylesheets = document.querySelectorAll("link[as=style]");
 
         for (var i = 0; i < stylesheets.length; i++) {
-            stylesheets[i].media = "all";
+            var link = stylesheets[i];
+            link.rel = "stylesheet";
+            link.removeAttribute("as");
         }
     });
 
@@ -140,4 +142,4 @@
         init();
     });
 
-})();
+})(window, document);

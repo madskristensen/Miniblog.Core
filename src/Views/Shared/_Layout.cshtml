@@ -73,7 +73,7 @@
     </footer>
 
     <!-- This lazy loads the stylesheet in a non-render blocking way -->
-    <link rel="stylesheet" href="~/css/belowthefold.scss" media="none" />
+    <link rel="preload" href="~/css/belowthefold.scss" as="style" />
     <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
 
     @RenderSection("Scripts", required: false)
