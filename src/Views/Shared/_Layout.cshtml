@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@ViewData["Description"]" />
 
-    <link rel="preload" href="~/css/belowthefold.scss" as="style" onload="this.rel='stylesheet'" />
+    <link rel="preload" href="~/js/site.js" as="script" />
+    <link rel="preload" href="~/css/belowthefold.scss" as="style" />
     <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
     @RenderSection("Preload", required: false)
     <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
@@ -80,7 +81,7 @@
     <link rel="preload" href="~/css/belowthefold.scss" as="style" />
     <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
 
-    @RenderSection("Scripts", required: false)
     <script src="~/js/site.js" async defer></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
