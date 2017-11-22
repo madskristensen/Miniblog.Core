@@ -1,13 +1,12 @@
 ﻿(function (window, document) {
 
     // Lazy load stylesheets
-    window.addEventListener("load", function () {
+    requestAnimationFrame(function () {
         var stylesheets = document.querySelectorAll("link[as=style]");
 
         for (var i = 0; i < stylesheets.length; i++) {
             var link = stylesheets[i];
             link.rel = "stylesheet";
-            link.removeAttribute("as");
         }
     });
 

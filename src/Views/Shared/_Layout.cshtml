@@ -10,8 +10,11 @@
     <title>@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="@ViewData["Description"]" />
+
+    <link rel="preload" href="~/css/belowthefold.scss" as="style" onload="this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
+    @RenderSection("Preload", required: false)
     <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
-    @RenderSection("Head", required: false)
 
     <meta property="og:type" content="article" />
     <meta property="og:title" content="@ViewData["Title"]" />
@@ -30,6 +33,7 @@
     <link rel="edituri" type="application/rsd+xml" title="RSD" href="~/rsd.xml" />
     <link rel="alternate" type="application/rss+xml" href="~/feed/rss/" />
     <link rel="alternate" type="application/atom+xml" href="~/feed/atom/" />
+    @RenderSection("Head", required: false)
 </head>
 <body itemscope itemtype="http://schema.org/WebPage">
 

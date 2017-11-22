@@ -50,9 +50,14 @@
 
 @if (showFullPost)
 {
-    <link rel="preload" href="~/css/comments.scss" as="style" />
     await Html.RenderPartialAsync("_SocialSharing", Model.Title);
     await Html.RenderPartialAsync("Comments");
+
+    @section Preload {
+        @* This lazy loads the stylesheet in a non-render blocking way *@
+        <link rel="preload" href="~/css/comments.scss" as="style" onload="this.rel='stylesheet'" />
+        <noscript><link rel="stylesheet" href="~/css/comments.scss" /></noscript>
+    }
 }
 
 @if (User.Identity.IsAuthenticated)
