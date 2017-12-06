@@ -6,7 +6,8 @@
 
         for (var i = 0; i < stylesheets.length; i++) {
             var link = stylesheets[i];
-            link.rel = "stylesheet";
+            link.setAttribute("rel", "stylesheet");
+            link.removeAttribute("as");
         }
     });
 
