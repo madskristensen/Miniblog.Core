@@ -15,12 +15,14 @@ namespace Miniblog.Core.Controllers
     public class BlogController : Controller
     {
         private readonly IBlogService _blog;
+        private readonly IFileService _files;
         private readonly IOptionsSnapshot<BlogSettings> _settings;
         private readonly WebManifest _manifest;
 
-        public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
+        public BlogController(IBlogService blog, IFileService files, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
         {
             _blog = blog;
+            _files = files;
             _settings = settings;
             _manifest = manifest;
         }
@@ -112,12 +114,12 @@ namespace Miniblog.Core.Controllers
 
             await _blog.SavePost(existing);
 
-            await SaveFilesToDisk(existing);
+            await SaveFiles(existing);
 
             return Redirect(post.GetLink());
         }
 
-        private async Task SaveFilesToDisk(Post post)
+        private async Task SaveFiles(Post post)
         {
             var imgRegex = new Regex("<img[^>].+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
             var base64Regex = new Regex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase);
@@ -138,7 +140,7 @@ namespace Miniblog.Core.Controllers
                     if (base64Match.Success)
                     {
                         byte[] bytes = Convert.FromBase64String(base64Match.Groups["base64"].Value);
-                        srcNode.Value = await _blog.SaveFile(bytes, fileNameNode.Value).ConfigureAwait(false);
+                        srcNode.Value = await _files.SaveFile(bytes, fileNameNode.Value).ConfigureAwait(false);
 
                         img.Attributes.Remove(fileNameNode);
                         post.Content = post.Content.Replace(match.Value, img.OuterXml);

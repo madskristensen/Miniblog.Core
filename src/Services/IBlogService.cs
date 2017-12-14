@@ -22,8 +22,6 @@ namespace Miniblog.Core.Services
         Task SavePost(Post post);
 
         Task DeletePost(Post post);
-
-        Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
     }
 
     public abstract class InMemoryBlogServiceBase : IBlogService

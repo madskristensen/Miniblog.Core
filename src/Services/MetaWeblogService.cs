@@ -11,13 +11,15 @@ namespace Miniblog.Core.Services
     public class MetaWeblogService : IMetaWeblogProvider
     {
         private readonly IBlogService _blog;
+        private readonly IFileService _files;
         private readonly IConfiguration _config;
         private readonly IUserServices _userServices;
         private readonly IHttpContextAccessor _context;
 
-        public MetaWeblogService(IBlogService blog, IConfiguration config, IHttpContextAccessor context, IUserServices userServices)
+        public MetaWeblogService(IBlogService blog, IFileService files, IConfiguration config, IHttpContextAccessor context, IUserServices userServices)
         {
             _blog = blog;
+            _files = files;
             _config = config;
             _userServices = userServices;
             _context = context;
@@ -141,7 +143,7 @@ namespace Miniblog.Core.Services
         {
             ValidateUser(username, password);
             byte[] bytes = Convert.FromBase64String(mediaObject.bits);
-            string path = _blog.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
+            string path = _files.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
 
             return new MediaObjectInfo { url = path };
         }

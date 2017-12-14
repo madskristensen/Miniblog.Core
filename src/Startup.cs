@@ -45,6 +45,16 @@ namespace Miniblog.Core
             services.AddMvc();
 
             services.AddSingleton<IUserServices, BlogUserServices>();
+
+            if (Configuration["azureblobstore:enabled"] == "True")
+            {
+                services.AddSingleton<IFileService, AzureBlobFileService>();
+            }
+            else
+            {
+                services.AddSingleton<IFileService, LocalFileService>();
+            }
+
             services.AddSingleton<IBlogService, FileBlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
