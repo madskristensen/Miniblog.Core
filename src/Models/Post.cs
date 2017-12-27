@@ -15,6 +15,7 @@ namespace Miniblog.Core.Models
         [Required]
         public string Title { get; set; }
 
+        [Required]
         public string Slug { get; set; }
 
         [Required]
