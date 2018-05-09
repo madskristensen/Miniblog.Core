@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -125,7 +126,7 @@ namespace Miniblog.Core.Controllers
             foreach (Match match in imgRegex.Matches(post.Content))
             {
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml("<root>" + match.Value + "</root>");
+                doc.LoadXml("<root>" + WebUtility.HtmlDecode(match.Value) + "</root>");
 
                 var img = doc.FirstChild.FirstChild;
                 var srcNode = img.Attributes["src"];
