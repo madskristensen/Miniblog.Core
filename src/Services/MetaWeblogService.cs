@@ -160,7 +160,7 @@ namespace Miniblog.Core.Services
 
         private void ValidateUser(string username, string password)
         {
-            if (_userServices.ValidateUser(username, password))
+            if (_userServices.ValidateUser(username, password)==false)
             {
                 throw new MetaWeblogException("Unauthorized");
             }
