@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,21 +29,21 @@ namespace Miniblog.Core
 
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseKestrel(a => a.AddServerHeader = false)
-                .Build();
+                .UseKestrel(a => a.AddServerHeader = false);
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton<IUserServices, BlogUserServices>();
             services.AddSingleton<IBlogService, FileBlogService>();
@@ -108,15 +109,12 @@ namespace Miniblog.Core
             else
             {
                 app.UseExceptionHandler("/Shared/Error");
+                app.UseHsts();
             }
 
             app.Use((context, next) =>
             {
                 context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-                if (context.Request.IsHttps)
-                {
-                    context.Response.Headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains";
-                }
                 return next();
             });
 
@@ -127,7 +125,7 @@ namespace Miniblog.Core
 
             if (Configuration.GetValue<bool>("forcessl"))
             {
-                app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
+                app.UseHttpsRedirection();
             }
 
             app.UseMetaWeblog("/metaweblog");
