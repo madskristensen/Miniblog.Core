@@ -109,15 +109,12 @@ namespace Miniblog.Core
             else
             {
                 app.UseExceptionHandler("/Shared/Error");
+                app.UseHsts();
             }
 
             app.Use((context, next) =>
             {
                 context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-                if (context.Request.IsHttps)
-                {
-                    context.Response.Headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains";
-                }
                 return next();
             });
 
