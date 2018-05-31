@@ -28,14 +28,13 @@ namespace Miniblog.Core
 
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseKestrel(a => a.AddServerHeader = false)
-                .Build();
+                .UseKestrel(a => a.AddServerHeader = false);
 
         public IConfiguration Configuration { get; }
 
