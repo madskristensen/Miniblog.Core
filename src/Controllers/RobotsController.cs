@@ -107,7 +107,7 @@ namespace Miniblog.Core.Controllers
             Response.ContentType = "application/xml";
             string host = Request.Scheme + "://" + Request.Host;
 
-            using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true }))
+            using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true, Encoding = new UTF8Encoding(false) }))
             {
                 var posts = await _blog.GetPosts(10);
                 var writer = await GetWriter(type, xmlWriter, posts.Max(p => p.PubDate));
