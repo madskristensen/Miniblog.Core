@@ -3,7 +3,7 @@
 @{
     int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
     bool prevPage = false;
-    bool.TryParse((string)(@ViewData["prevPage"] ?? "true"), out prevPage);
+    bool.TryParse(@ViewData["prevPage"] == null ? "true" : @ViewData["prevPage"].ToString(), out prevPage);
 }
 
 @foreach (var post in Model)
