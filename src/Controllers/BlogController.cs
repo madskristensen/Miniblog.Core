@@ -53,6 +53,16 @@ namespace Miniblog.Core.Controllers
             return View("~/Views/Blog/Index.cshtml", posts);
         }
 
+        [Route("/blog/categories")]
+        [HttpGet, Authorize]
+        public async Task<JsonResult> GetCats()
+        {
+            var categories = await _blog.GetCategories();
+            var allOrderedCategories = categories.OrderBy(q => q).ToList();
+
+            return Json(allOrderedCategories);
+        }
+
         // This is for redirecting potential existing URLs from the old Miniblog URL format
         [Route("/post/{slug}")]
         [HttpGet]
