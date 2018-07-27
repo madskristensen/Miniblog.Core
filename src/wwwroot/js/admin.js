@@ -39,12 +39,13 @@
 
         // Delete post
         var deleteButton = edit.querySelector(".delete");
-
-        deleteButton.addEventListener("click", function (e) {
-            if (!confirm("Are you sure you want to delete the post?")) {
-                e.preventDefault();
-            }
-        });
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the post?")) {
+                    e.preventDefault();
+                }
+            });
+        }
 
         // File upload
         function handleFileSelect(event) {
@@ -86,15 +87,60 @@
 
     // Delete comments
     var deleteLinks = document.querySelectorAll("#comments a.delete");
+    if (deleteLinks) {
+        for (var i = 0; i < deleteLinks.length; i++) {
+            var link = deleteLinks[i];
 
-    for (var i = 0; i < deleteLinks.length; i++) {
-        var link = deleteLinks[i];
+            link.addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the comment?")) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
 
-        link.addEventListener("click", function (e) {
-            if (!confirm("Are you sure you want to delete the comment?")) {
-                e.preventDefault();
+    // autocomplete for tags
+    // Get the <datalist> and <input> elements.
+    var dataList = document.getElementById('json-taglist');
+    var input = document.getElementById('categories');
+
+    if (dataList && input) {
+
+        // Create a new XMLHttpRequest.
+        var request = new XMLHttpRequest();
+
+        // Handle state changes for the request.
+        request.onreadystatechange = function (response) {
+            if (request.readyState === 4) {
+                if (request.status === 200) {
+                    // Parse the JSON
+                    var jsonOptions = JSON.parse(request.responseText);
+
+                    // Loop over the JSON array.
+                    jsonOptions.forEach(function (item) {
+                        // Create a new <option> element.
+                        var option = document.createElement('option');
+                        // Set the value using the item in the JSON array.
+                        option.value = item;
+                        // Add the <option> element to the <datalist>.
+                        dataList.appendChild(option);
+                    });
+
+                    // Update the placeholder text.
+                    input.placeholder = "e.g. taglist";
+                } else {
+                    // An error occured :(
+                    input.placeholder = "Couldn't load taglist options :(";
+                }
             }
-        });
+        };
+
+        // Update the placeholder text.
+        input.placeholder = "Loading options...";
+
+        // Set up and make the request.
+        request.open('GET', '/blog/categories', true);
+        request.send();
     }
 
 })();
