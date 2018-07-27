@@ -26,6 +26,7 @@
         <br />
 
         <label for="categories" class="label">Tags</label>
+
         <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)"  />
         <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
         <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
@@ -45,15 +46,18 @@
         <textarea asp-for="@Model.Content" rows="20" aria-label="Content">@Model.Content</textarea>
         <br />
 
-        <input type="submit" value="Save" title="Save the post" />
-
-        <input asp-for="@Model.IsPublished" />
-        <label asp-for="@Model.IsPublished">Is published</label>
-
-        @if (!isNew)
-        {
-            <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
-        }
+        <section style="text-align:left; max-width:30%; float:left;">
+            <a asp-controller="Blog" asp-action="Index">Cancel</a>
+            @if (!isNew)
+            {
+                <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
+            }
+        </section>
+        <section style="text-align:right; max-width:30%; float:right;">
+            <input type="submit" value="Save" title="Save the post" />
+            <input asp-for="@Model.IsPublished" />
+            <label asp-for="@Model.IsPublished">Is published</label>
+        </section>
     </form>
 
 @section Scripts {
