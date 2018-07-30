@@ -5,6 +5,7 @@
     ViewData["Description"] = Model.Excerpt;
     bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
     string host = Context.Request.Scheme + "://" + Context.Request.Host;
+    bool isCodePreview = Model.Content.Contains("</code>");
 }
 
 @section Head {
@@ -57,6 +58,11 @@
         @* This lazy loads the stylesheet in a non-render blocking way *@
         <link rel="preload" href="~/css/comments.scss" as="style" />
         <noscript><link rel="stylesheet" href="~/css/comments.scss" /></noscript>
+        @if (isCodePreview)
+        {
+            <link rel="preload" href="~/lib/prism/prism.scss" as="style" />
+            <script src="~/lib/prism/prism.js" async defer></script>
+        }
     }
 }
 
