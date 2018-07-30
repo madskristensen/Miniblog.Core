@@ -39,12 +39,13 @@
 
         // Delete post
         var deleteButton = edit.querySelector(".delete");
-
-        deleteButton.addEventListener("click", function (e) {
-            if (!confirm("Are you sure you want to delete the post?")) {
-                e.preventDefault();
-            }
-        });
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the post?")) {
+                    e.preventDefault();
+                }
+            });
+        }
 
         // File upload
         function handleFileSelect(event) {
@@ -86,15 +87,61 @@
 
     // Delete comments
     var deleteLinks = document.querySelectorAll("#comments a.delete");
+    if (deleteLinks) {
+        for (var i = 0; i < deleteLinks.length; i++) {
+            var link = deleteLinks[i];
 
-    for (var i = 0; i < deleteLinks.length; i++) {
-        var link = deleteLinks[i];
+            link.addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the comment?")) {
+                    e.preventDefault();
+                }
+            });
+        }
+    }
 
-        link.addEventListener("click", function (e) {
-            if (!confirm("Are you sure you want to delete the comment?")) {
-                e.preventDefault();
+    // Tag input enhancement - using autocomplete input
+    var selecttag = document.getElementById("selecttag");
+    var categories = document.getElementById("categories");
+    if (selecttag && categories) {
+
+        function removeEmpy(item) {
+            var trimmedItem = item.trim();
+            if (trimmedItem.length > 0) {
+                return trimmedItem
             }
-        });
+        }
+
+        selecttag.onchange = function () {
+
+            var phv = selecttag.placeholder;
+            var val = selecttag.value.toLowerCase();
+
+            var phv_array = phv.split(",").map(function (item) {
+                return removeEmpy(item);
+            });
+
+            var val_array = val.split(",").map(function (item) {
+                return removeEmpy(item);
+            });
+
+            for (var j = val_array.length - 1; j >= 0; j--) {
+                var v = val_array[j];
+                var flag = false;
+                for (var i = phv_array.length - 1; i >= 0; i--) {
+                    if (phv_array[i] === v) {
+                        phv_array.splice(i, 1);
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    phv_array.push(v);
+                }
+            }
+
+            selecttag.placeholder = phv_array.join(", ");
+            categories.value = selecttag.placeholder;
+            selecttag.value = "";
+        };
     }
 
 })();
