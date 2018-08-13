@@ -132,7 +132,7 @@ namespace Miniblog.Core.Services
 
             return new[] { new BlogInfo {
                 blogid ="1",
-                blogName = _config["blog:name"],
+                blogName = _config["blog:name"] ?? nameof(MetaWeblogService),
                 url = url
             }};
         }
