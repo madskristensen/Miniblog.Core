@@ -2,6 +2,7 @@
 @{
     bool isNew = string.IsNullOrEmpty(Model.Title);
     ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
+    var host = Context.Request.Host.ToString();
 }
 
 @section Head{
@@ -47,6 +48,6 @@
 </form>
 
 @section Scripts {
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="//@host/lib/tinymce/tinymce.min.js"></script> // for CDN
     <script src="~/js/admin.js" async></script>
 }
