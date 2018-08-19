@@ -158,26 +158,6 @@ namespace Miniblog.Core.Services
             return Task.CompletedTask;
         }
 
-        public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
-        {
-            suffix = suffix ?? DateTime.UtcNow.Ticks.ToString();
-
-            string ext = Path.GetExtension(fileName);
-            string name = Path.GetFileNameWithoutExtension(fileName);
-
-            string relative = $"files/{name}_{suffix}{ext}";
-            string absolute = Path.Combine(_folder, relative);
-            string dir = Path.GetDirectoryName(absolute);
-
-            Directory.CreateDirectory(dir);
-            using (var writer = new FileStream(absolute, FileMode.CreateNew))
-            {
-                await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-            }
-
-            return "/Posts/" + relative;
-        }
-
         private string GetFilePath(Post post)
         {
             return Path.Combine(_folder, post.ID + ".xml");
