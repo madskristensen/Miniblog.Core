@@ -2,12 +2,9 @@
 @{
     bool isNew = string.IsNullOrEmpty(Model.Title);
     ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
-<<<<<<< HEAD
-    var allCats = ViewData["AllCats"] as List<string> ?? new List<string>();
-    allCats.Sort();
-=======
     var host = Context.Request.Host.ToString();
->>>>>>> master
+    List<string> allCats = ViewData["AllCats"] as List<string> ?? new List<string>();
+    allCats.Sort();
 }
 
 @section Head{
@@ -31,7 +28,7 @@
         <label for="categories" class="label">Tags</label>
         <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)"  />
         <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
-        <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double it</span>
+        <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
         <datalist id="taglist">
             @foreach (var cat in allCats)
             {
