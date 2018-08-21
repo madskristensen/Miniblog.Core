@@ -75,6 +75,8 @@ namespace Miniblog.Core.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> Edit(string id)
         {
+            ViewData["AllCats"] = (await _blog.GetCategories()).ToList();
+
             if (string.IsNullOrEmpty(id))
             {
                 return View(new Post());
