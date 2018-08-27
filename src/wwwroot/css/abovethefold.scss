@@ -200,3 +200,115 @@ time {
         padding: 2px 7px;
     }
 }
+
+/* Container */
+.container {
+    .row a {
+        text-decoration: none;
+    }
+}
+
+/* Calendar */
+#calendar {
+    .month {
+        padding: 25px 25px;
+        width: 100%;
+        background: #bbb;
+        text-align: center;
+    }
+
+    .month ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .month ul li {
+        color: white;
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        list-style-type: none;
+    }
+
+    .month .prev {
+        float: left;
+        padding-top: 10px;
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    }
+
+    .month .next {
+        float: right;
+        padding-top: 10px;
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+    }
+
+    .month .center a {
+        text-decoration: none;
+        color: white;
+    }
+
+    .weekdays {
+        margin: 0;
+        padding: 10px 0;
+        background-color: #ddd;
+    }
+
+    .weekdays li {
+        display: inline-block;
+        width: 13.6%;
+        color: #666;
+        text-align: center;
+    }
+
+    .days {
+        padding: 10px 0;
+        background: #eee;
+        margin: 0;
+    }
+
+    .days li {
+        list-style-type: none;
+        display: inline-block;
+        width: 13.6%;
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    .days li .active a {
+        padding: 5px;
+        background: #bbb;
+        color: white !important;
+    }
+    /* Add media queries for smaller screens */
+    @media screen and (max-width:720px) {
+        .weekdays li, .days li {
+            width: 13.1%;
+        }
+    }
+
+    @media screen and (max-width: 420px) {
+        .weekdays li, .days li {
+            width: 12.5%;
+        }
+
+        .days li .active {
+            padding: 2px;
+        }
+    }
+
+    @media screen and (max-width: 290px) {
+        .weekdays li, .days li {
+            width: 12.2%;
+        }
+    }
+}
