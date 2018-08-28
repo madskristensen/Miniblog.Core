@@ -203,9 +203,35 @@ time {
 
 /* Container */
 .container {
+
+    .row .tag {
+        display: inline;
+        line-height: 25px;
+    }
+
     .row a {
         text-decoration: none;
     }
+}
+
+.smallestTag {
+    font-size: 1.0em;
+}
+
+.smallTag {
+    font-size: 1.3em;
+}
+
+.mediumTag {
+    font-size: 1.6em;
+}
+
+.largeTag {
+    font-size: 1.9em;
+}
+
+.largestTag {
+    font-size: 2.2em;
 }
 
 /* Calendar */

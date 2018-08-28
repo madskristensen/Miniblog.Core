@@ -176,6 +176,33 @@ namespace Miniblog.Core.Controllers
                 }
             }
 
+            var tagCount = 0;
+            foreach (var cat in archiveItems)
+            {
+                if (tagCount == 0)
+                {
+                    cat.TagCategory = "largestTag";
+                }
+                else if (tagCount == 1)
+                {
+                    cat.TagCategory = "largeTag";
+                }
+                else if (tagCount == 2)
+                {
+                    cat.TagCategory = "mediumTag";
+                }
+                else if (tagCount == 3)
+                {
+                    cat.TagCategory = "smallTag";
+                }
+                else
+                {
+                    break;
+                }
+                tagCount++;
+            }
+            archiveItems.Sort((x, y) => string.Compare(x.Name, y.Name));
+
             ViewData["Title"] = _manifest.Name + " Archive";
             ViewData["LastSearch"] = !string.IsNullOrWhiteSpace(searching) && !searching.StartsWith("cal__") ? searching : "";
 

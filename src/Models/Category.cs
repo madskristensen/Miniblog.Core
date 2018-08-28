@@ -22,5 +22,8 @@ namespace Miniblog.Core.Models
 
         [Required]
         public IList<Post> Posts { get; set; } = new List<Post>();
+
+        [Required]
+        public string TagCategory { get; set; } = "smallestTag";
     }
 }

@@ -103,12 +103,12 @@
                 @foreach (var category in Model)
                 {
                     <span>
-                        <a href="#@category.Name.ToLowerInvariant()">&#9679;&nbsp;@category.Name.ToLowerInvariant()</a>&nbsp;(@category.Count)
+                        <a href="#@category.Name.ToLowerInvariant()" class="tag @category.TagCategory">@category.Name.ToLowerInvariant()</a>
                     </span>
                 }
                 <br />
                 <span>
-                    <a asp-controller="Blog" asp-action="archive" asp-route-searching="cal__" asp-route-year="" asp-route-month="" title="View archived posts by calendar">&#9679;&nbsp;<img src="~/img/calendar.svg" /></a>
+                    <a asp-controller="Blog" asp-action="archive" asp-route-searching="cal__" asp-route-year="" asp-route-month="" title="View archived posts by calendar"><img src="~/img/calendar.svg" /></a>
                 </span>
             </p>
         </div>
