@@ -1,27 +1,31 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Miniblog.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Miniblog.Core.Models;
 
 namespace Miniblog.Core.Services
 {
     public class FileBlogService : IBlogService
     {
+        private const string POSTS = "Posts";
+        private const string FILES = "files";
+
         private readonly List<Post> _cache = new List<Post>();
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string _folder;
 
         public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, "Posts");
+            _folder = Path.Combine(env.WebRootPath, POSTS);
             _contextAccessor = contextAccessor;
 
             Initialize();
@@ -49,7 +53,65 @@ namespace Miniblog.Core.Services
                         select p;
 
             return Task.FromResult(posts);
+        }
 
+        public virtual Task<IEnumerable<Post>> GetPostsByDate(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Equals(date) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByMonth(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Year.Equals(date.Year)
+                        && p.PubDate.Date.Month.Equals(date.Month) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByYear(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Year.Equals(date.Year) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByTimeSpan(DateTime firstDay, DateTime lastDay)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date >= firstDay.Date
+                        && p.PubDate.Date <= lastDay.Date && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<Post> GetFirstPost()
+        {
+            bool isAdmin = IsAdmin();
+
+            var post = _cache.LastOrDefault(p => p.IsPublished == true || isAdmin);
+            if (post != null)
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
         }
 
         public virtual Task<Post> GetPostBySlug(string slug)
@@ -87,6 +149,22 @@ namespace Miniblog.Core.Services
                 .SelectMany(post => post.Categories)
                 .Select(cat => cat.ToLowerInvariant())
                 .Distinct();
+
+            return Task.FromResult(categories);
+        }
+
+        public virtual Task<IOrderedEnumerable<CategoryCount>> GetCategoriesCount()
+        {
+            bool isAdmin = IsAdmin();
+
+            var categories = _cache
+                    .Where(p => p.IsPublished || isAdmin)
+                    .SelectMany(post => post.Categories)
+                    .Select(cat => cat.ToLowerInvariant())
+                    .GroupBy(i => i) //Group the categories
+                    .Select(i => new CategoryCount { Name = i.Key, Count = i.Count() }) //get a count for each
+                    .OrderByDescending(c => c.Count)
+                        .ThenBy(n => n.Name);
 
             return Task.FromResult(categories);
         }
@@ -160,13 +238,14 @@ namespace Miniblog.Core.Services
 
         public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
         {
-            suffix = suffix ?? DateTime.UtcNow.Ticks.ToString();
+            suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString());
 
             string ext = Path.GetExtension(fileName);
-            string name = Path.GetFileNameWithoutExtension(fileName);
+            string name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
 
-            string relative = $"files/{name}_{suffix}{ext}";
-            string absolute = Path.Combine(_folder, relative);
+            string fileNameWithSuffix = $"{name}_{suffix}{ext}";
+
+            string absolute = Path.Combine(_folder, FILES, fileNameWithSuffix);
             string dir = Path.GetDirectoryName(absolute);
 
             Directory.CreateDirectory(dir);
@@ -175,7 +254,7 @@ namespace Miniblog.Core.Services
                 await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
-            return "/Posts/" + relative;
+            return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
         }
 
         private string GetFilePath(Post post)
@@ -271,6 +350,17 @@ namespace Miniblog.Core.Services
 
             return defaultValue;
         }
+
+        private static string CleanFromInvalidChars(string input)
+        {
+            // ToDo: what we are doing here if we switch the blog from windows
+            // to unix system or vice versa? we should remove all invalid chars for both systems
+
+            var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+            var r = new Regex($"[{regexSearch}]");
+            return r.Replace(input, "");
+        }
+
         protected void SortCache()
         {
             _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
@@ -280,6 +370,5 @@ namespace Miniblog.Core.Services
         {
             return _contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
         }
-
     }
 }
