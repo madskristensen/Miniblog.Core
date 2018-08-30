@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Miniblog.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,9 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Miniblog.Core.Models;
 
 namespace Miniblog.Core.Services
 {
@@ -49,7 +49,6 @@ namespace Miniblog.Core.Services
                         select p;
 
             return Task.FromResult(posts);
-
         }
 
         public virtual Task<Post> GetPostBySlug(string slug)
@@ -100,8 +99,8 @@ namespace Miniblog.Core.Services
                             new XElement("post",
                                 new XElement("title", post.Title),
                                 new XElement("slug", post.Slug),
-                                new XElement("pubDate", post.PubDate.ToString("yyyy-MM-dd HH:mm:ss")),
-                                new XElement("lastModified", post.LastModified.ToString("yyyy-MM-dd HH:mm:ss")),
+                                new XElement("pubDate", FormatDateTime(post.PubDate)),
+                                new XElement("lastModified", FormatDateTime(post.LastModified)),
                                 new XElement("excerpt", post.Excerpt),
                                 new XElement("content", post.Content),
                                 new XElement("ispublished", post.IsPublished),
@@ -122,7 +121,7 @@ namespace Miniblog.Core.Services
                     new XElement("comment",
                         new XElement("author", comment.Author),
                         new XElement("email", comment.Email),
-                        new XElement("date", comment.PubDate.ToString("yyyy-MM-dd HH:m:ss")),
+                        new XElement("date", FormatDateTime(comment.PubDate)),
                         new XElement("content", comment.Content),
                         new XAttribute("isAdmin", comment.IsAdmin),
                         new XAttribute("id", comment.ID)
@@ -207,7 +206,7 @@ namespace Miniblog.Core.Services
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
                     PubDate = DateTime.Parse(ReadValue(doc, "pubDate")),
-                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.Now.ToString(CultureInfo.InvariantCulture))),
+                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 
@@ -271,6 +270,16 @@ namespace Miniblog.Core.Services
 
             return defaultValue;
         }
+
+        private static string FormatDateTime(DateTime dateTime)
+        {
+            const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
+
+            return dateTime.Kind == DateTimeKind.Utc
+                ? dateTime.ToString(UTC)
+                : dateTime.ToUniversalTime().ToString(UTC);
+        }
+
         protected void SortCache()
         {
             _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
@@ -280,6 +289,5 @@ namespace Miniblog.Core.Services
         {
             return _contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
         }
-
     }
 }
