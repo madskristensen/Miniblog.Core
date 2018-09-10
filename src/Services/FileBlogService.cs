@@ -103,8 +103,8 @@ namespace Miniblog.Core.Services
                             new XElement("post",
                                 new XElement("title", post.Title),
                                 new XElement("slug", post.Slug),
-                                new XElement("pubDate", post.PubDate.ToString("yyyy-MM-dd HH:mm:ss")),
-                                new XElement("lastModified", post.LastModified.ToString("yyyy-MM-dd HH:mm:ss")),
+                                new XElement("pubDate", FormatDateTime(post.PubDate)),
+                                new XElement("lastModified", FormatDateTime(post.LastModified)),
                                 new XElement("excerpt", post.Excerpt),
                                 new XElement("content", post.Content),
                                 new XElement("ispublished", post.IsPublished),
@@ -125,7 +125,7 @@ namespace Miniblog.Core.Services
                     new XElement("comment",
                         new XElement("author", comment.Author),
                         new XElement("email", comment.Email),
-                        new XElement("date", comment.PubDate.ToString("yyyy-MM-dd HH:m:ss")),
+                        new XElement("date", FormatDateTime(comment.PubDate)),
                         new XElement("content", comment.Content),
                         new XAttribute("isAdmin", comment.IsAdmin),
                         new XAttribute("id", comment.ID)
@@ -211,7 +211,7 @@ namespace Miniblog.Core.Services
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
                     PubDate = DateTime.Parse(ReadValue(doc, "pubDate")),
-                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.Now.ToString(CultureInfo.InvariantCulture))),
+                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 
@@ -284,6 +284,15 @@ namespace Miniblog.Core.Services
             var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
             var r = new Regex($"[{regexSearch}]");
             return r.Replace(input, "");
+        }
+        
+        private static string FormatDateTime(DateTime dateTime)
+        {
+            const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
+
+            return dateTime.Kind == DateTimeKind.Utc
+                ? dateTime.ToString(UTC)
+                : dateTime.ToUniversalTime().ToString(UTC);
         }
 
         protected void SortCache()
