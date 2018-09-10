@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -15,13 +16,16 @@ namespace Miniblog.Core.Services
 {
     public class FileBlogService : IBlogService
     {
+        private const string POSTS = "Posts";
+        private const string FILES = "files";
+
         private readonly List<Post> _cache = new List<Post>();
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string _folder;
 
         public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, "Posts");
+            _folder = Path.Combine(env.WebRootPath, POSTS);
             _contextAccessor = contextAccessor;
 
             Initialize();
@@ -159,13 +163,14 @@ namespace Miniblog.Core.Services
 
         public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
         {
-            suffix = suffix ?? DateTime.UtcNow.Ticks.ToString();
+            suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString());
 
             string ext = Path.GetExtension(fileName);
-            string name = Path.GetFileNameWithoutExtension(fileName);
+            string name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
 
-            string relative = $"files/{name}_{suffix}{ext}";
-            string absolute = Path.Combine(_folder, relative);
+            string fileNameWithSuffix = $"{name}_{suffix}{ext}";
+
+            string absolute = Path.Combine(_folder, FILES, fileNameWithSuffix);
             string dir = Path.GetDirectoryName(absolute);
 
             Directory.CreateDirectory(dir);
@@ -174,7 +179,7 @@ namespace Miniblog.Core.Services
                 await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
 
-            return "/Posts/" + relative;
+            return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
         }
 
         private string GetFilePath(Post post)
@@ -271,6 +276,16 @@ namespace Miniblog.Core.Services
             return defaultValue;
         }
 
+        private static string CleanFromInvalidChars(string input)
+        {
+            // ToDo: what we are doing here if we switch the blog from windows
+            // to unix system or vice versa? we should remove all invalid chars for both systems
+
+            var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+            var r = new Regex($"[{regexSearch}]");
+            return r.Replace(input, "");
+        }
+        
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
