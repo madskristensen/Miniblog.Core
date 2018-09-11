@@ -33,9 +33,14 @@ namespace Miniblog.Core.Models
 
         public IList<Comment> Comments { get; } = new List<Comment>();
 
+        public string GetTitle()
+        {
+            return !string.IsNullOrWhiteSpace(Title) ? $"{Title}" : "no title";
+        }
+
         public string GetLink()
         {
-            return $"/blog/{Slug}/";
+            return !string.IsNullOrWhiteSpace(Slug) ? $"/blog/{Slug}/" : $"/blog/{ID}/";
         }
 
         public bool AreCommentsOpen(int commentsCloseAfterDays)
