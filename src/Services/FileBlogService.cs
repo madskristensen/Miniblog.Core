@@ -31,6 +31,19 @@ namespace Miniblog.Core.Services
             Initialize();
         }
 
+        public virtual Task<Post> GetFirstPost()
+        {
+            bool isAdmin = IsAdmin();
+
+            var post = _cache.LastOrDefault(p => p.IsPublished == true || isAdmin);
+            if (post != null)
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
+        }
+
         public virtual Task<IEnumerable<Post>> GetPosts(int count, int skip = 0)
         {
             bool isAdmin = IsAdmin();
@@ -50,6 +63,50 @@ namespace Miniblog.Core.Services
             var posts = from p in _cache
                         where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
                         where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByDate(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Equals(date) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByMonth(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Year.Equals(date.Year) && p.PubDate.Date.Month.Equals(date.Month) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByYear(DateTime date)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date.Year.Equals(date.Year) && (p.IsPublished || isAdmin)
+                        select p;
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetPostsByTimeSpan(DateTime firstDay, DateTime lastDay)
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = from p in _cache
+                        where p.PubDate.Date >= firstDay.Date && p.PubDate.Date <= lastDay.Date && (p.IsPublished || isAdmin)
                         select p;
 
             return Task.FromResult(posts);
@@ -90,6 +147,23 @@ namespace Miniblog.Core.Services
                 .SelectMany(post => post.Categories)
                 .Select(cat => cat.ToLowerInvariant())
                 .Distinct();
+
+            return Task.FromResult(categories);
+        }
+
+        public virtual Task<IOrderedEnumerable<CategoryCount>> GetCategoriesCount()
+        {
+            bool isAdmin = IsAdmin();
+
+            var categories = _cache
+                    .Where(p => p.IsPublished || isAdmin)
+                    .SelectMany(post => post.Categories)
+                    .Select(cat => cat.ToLowerInvariant())
+                    .GroupBy(i => i) //Group the categories
+                    .Select(i => new CategoryCount
+                    { Name = i.Key, Count = i.Count() }) //get a count for each
+                    .OrderByDescending(c => c.Count)
+                        .ThenBy(n => n.Name);
 
             return Task.FromResult(categories);
         }
@@ -285,7 +359,7 @@ namespace Miniblog.Core.Services
             var r = new Regex($"[{regexSearch}]");
             return r.Replace(input, "");
         }
-        
+
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";

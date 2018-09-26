@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Category>
+@inject IOptionsSnapshot<BlogSettings> settings
+@{
+    string host = Context.Request.Scheme + "://" + Context.Request.Host;
+    var isCategory = Model.FirstOrDefault(c => !string.IsNullOrWhiteSpace(c.Name)) != null;
+
+    var fields = new string[]{
+nameof(Post.Title),
+nameof(Post.Slug),
+nameof(Post.Excerpt),
+nameof(Post.Content),
+nameof(Category),
+nameof(Post.Comments),
+nameof(Post.PubDate)
+};
+
+    var sFields = string.Join(", ", fields);
+
+    var isCalendar = Context.Request.Path.ToString().Contains("cal__");
+
+    var previous = isCalendar ? (DateTime)ViewBag.PreviousMonth : DateTime.MinValue;
+    var current = isCalendar ? (DateTime)ViewBag.CurrentMonth : DateTime.MinValue;
+    var next = isCalendar ? (DateTime)ViewBag.NextMonth : DateTime.MinValue;
+
+    var previusYear = isCalendar ? (DateTime)ViewBag.PreviousYear : DateTime.MinValue;
+    var nextYear = isCalendar ? (DateTime)ViewBag.NextYear : DateTime.MinValue;
+
+    DayOfWeek firstDay = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+}
+
+<div class="container">
+    @if (!isCategory)
+    {
+        @if (isCalendar)
+        {
+            <div id="calendar">
+                <div class="month">
+                    <ul>
+                        <li class="prev"><a asp-controller="Blog" asp-action="Posted" asp-route-search="cal__p" asp-route-year="@previusYear.Year" asp-route-month="@previusYear.Month" title="previus year">&#9664;</a></li>
+                        <li class="prev"><a asp-controller="Blog" asp-action="Posted" asp-route-search="cal__p" asp-route-year="@previous.Year" asp-route-month="@previous.Month" title="previus month">&#10094;</a></li>
+                        <li class="next"><a asp-controller="Blog" asp-action="Posted" asp-route-search="cal__n" asp-route-year="@nextYear.Year" asp-route-month="@nextYear.Month" title="next year">&#9654;</a></li>
+                        <li class="next"><a asp-controller="Blog" asp-action="Posted" asp-route-search="cal__n" asp-route-year="@next.Year" asp-route-month="@next.Month" title="next month">&#10095;</a></li>
+                        <li class="center">
+                            <a asp-controller="Blog" asp-action="Post" asp-route-slug="@($"{current:yyyyMM}")01default-month">@($"{current:MMMM}")</a><br>
+                            <span style="font-size:18px"><a asp-controller="Blog" asp-action="Post" asp-route-slug="@($"{current:yyyy}")0101default-year">@($"{current:yyyy}")</a></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <ul class="weekdays">
+                    @if (firstDay.Equals(DayOfWeek.Monday))
+                    {
+                        <li>Mo</li>
+                    }
+                    else
+                    {
+                        <li>Su</li>
+                        <li>Mo</li>
+                    }
+                    <li>Tu</li>
+                    <li>We</li>
+                    <li>Th</li>
+                    <li>Fr</li>
+                    <li>Sa</li>
+                    @if (firstDay.Equals(DayOfWeek.Monday))
+                    {
+                        <li>Su</li>
+                    }
+                </ul>
+
+                <ul class="days">
+                    @foreach (var category in Model)
+                    {
+                        @foreach (var dayEntry in category.Posts)
+                        {
+                            <li>
+                                @if (!string.IsNullOrEmpty(dayEntry.Content))
+                                {
+                                    <span class="active">
+                                        <a class="nodecoration" href="@dayEntry.GetLink()" title="@dayEntry.GetTitle()">
+                                            @if (dayEntry.PubDate.Day == 1)
+                                            {
+                                                @($"{dayEntry.PubDate:MMM d}")
+                                            }
+                                            else
+                                            {
+                                                @dayEntry.PubDate.Day
+                                            }
+                                        </a>
+                                    </span>
+                                }
+                                else
+                                {
+                                    @if (dayEntry.PubDate.Day == 1)
+                                    {
+                                        @($"{dayEntry.PubDate:MMM d}")
+                                    }
+                                    else
+                                    {
+                                        @dayEntry.PubDate.Day
+                                    }
+                                }
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <br />
+        }
+    }
+    else
+    {
+        <hr />
+        <div class="row">
+            <p>
+                @foreach (var category in Model)
+                {
+                    <span>
+                        <a href="#@category.Name.ToLowerInvariant()" class="tag @category.TagCategory">@category.Name.ToLowerInvariant()</a>
+                    </span>
+                }
+                <br />
+                <span>
+                    <a asp-controller="Blog" asp-action="Posted" asp-route-search="cal__" asp-route-year="" asp-route-month="" title="View posts by calendar"><img src="~/img/calendar.svg" /></a>
+                </span>
+            </p>
+        </div>
+        <hr />
+        <div class="row">
+            <p>
+                @foreach (var category in Model)
+                {
+                    <h4><a name="@category.Name" class="nodecoration" href="/blog/category/@category.Name"><b>@category.Name (@category.Count)</b></a></h4>
+                    @foreach (var post in category.Posts)
+                    {
+                        <a class="nodecoration" href="@post.GetLink()" title="@post.PubDate.ToString("ddd MMM d, yyyy HH:mm")">@post.GetTitle()</a><br />
+                    }
+                }
+            </p>
+        </div>
+    }
+</div>
+
+@{await Html.RenderPartialAsync("_SocialSharing", ViewData["Title"]);}

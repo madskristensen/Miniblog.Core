@@ -30,7 +30,7 @@
         @if (Model.Categories.Any())
         {
             <ul class="categories">
-                <li> Posted in </li>
+                <li><a asp-controller="Blog" asp-action="Posted" asp-route-search="">Posted</a> in</li>
                 @foreach (string cat in Model.Categories)
                 {
                     <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()" asp-route-page="">@cat</a></li>

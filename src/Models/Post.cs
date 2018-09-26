@@ -33,9 +33,14 @@ namespace Miniblog.Core.Models
 
         public IList<Comment> Comments { get; } = new List<Comment>();
 
+        public string GetTitle()
+        {
+            return !string.IsNullOrWhiteSpace(Title) ? $"{Title}" : "no title";
+        }
+
         public string GetLink()
         {
-            return $"/blog/{Slug}/";
+            return !string.IsNullOrWhiteSpace(Slug) ? $"/blog/{Slug}/" : $"/blog/{ID}/";
         }
 
         public bool AreCommentsOpen(int commentsCloseAfterDays)
@@ -52,7 +57,7 @@ namespace Miniblog.Core.Models
             return title.ToLowerInvariant();
         }
 
-        static string RemoveReservedUrlCharacters(string text)
+        private static string RemoveReservedUrlCharacters(string text)
         {
             var reservedCharacters = new List<string> { "!", "#", "$", "&", "'", "(", ")", "*", ",", "/", ":", ";", "=", "?", "@", "[", "]", "\"", "%", ".", "<", ">", "\\", "^", "_", "'", "{", "}", "|", "~", "`", "+" };
 
@@ -64,7 +69,7 @@ namespace Miniblog.Core.Models
             return text;
         }
 
-        static string RemoveDiacritics(string text)
+        private static string RemoveDiacritics(string text)
         {
             var normalizedString = text.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
