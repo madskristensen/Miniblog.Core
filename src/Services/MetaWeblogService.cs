@@ -38,7 +38,7 @@ namespace Miniblog.Core.Services
 
             if (post.dateCreated != DateTime.MinValue)
             {
-                newPost.PubDate = post.dateCreated;
+                newPost.PubDate = post.dateCreated.ToUniversalTime();
             }
 
             _blog.SavePost(newPost).GetAwaiter().GetResult();
@@ -77,7 +77,7 @@ namespace Miniblog.Core.Services
 
                 if (post.dateCreated != DateTime.MinValue)
                 {
-                    existing.PubDate = post.dateCreated;
+                    existing.PubDate = post.dateCreated.ToUniversalTime();
                 }
 
                 _blog.SavePost(existing).GetAwaiter().GetResult();

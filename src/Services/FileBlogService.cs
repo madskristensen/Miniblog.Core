@@ -210,8 +210,8 @@ namespace Miniblog.Core.Services
                     Excerpt = ReadValue(doc, "excerpt"),
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate")),
-                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))),
+                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate")).ToUniversalTime(),
+                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))).ToUniversalTime(),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 
