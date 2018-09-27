@@ -210,8 +210,8 @@ namespace Miniblog.Core.Services
                     Excerpt = ReadValue(doc, "excerpt"),
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate")),
-                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))),
+                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate")).ToUniversalTime(),
+                    LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))).ToUniversalTime(),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 
@@ -285,7 +285,7 @@ namespace Miniblog.Core.Services
             var r = new Regex($"[{regexSearch}]");
             return r.Replace(input, "");
         }
-        
+
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
