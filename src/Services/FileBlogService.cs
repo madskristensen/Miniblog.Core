@@ -285,7 +285,7 @@ namespace Miniblog.Core.Services
             var r = new Regex($"[{regexSearch}]");
             return r.Replace(input, "");
         }
-        
+
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
