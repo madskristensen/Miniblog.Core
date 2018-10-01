@@ -38,6 +38,11 @@ namespace Miniblog.Core.Models
             return $"/blog/{Slug}/";
         }
 
+        public string GetEncodedLink()
+        {
+            return $"/blog/{System.Net.WebUtility.UrlEncode(Slug)}/";
+        }
+
         public bool AreCommentsOpen(int commentsCloseAfterDays)
         {
             return PubDate.AddDays(commentsCloseAfterDays) >= DateTime.UtcNow;
@@ -52,7 +57,7 @@ namespace Miniblog.Core.Models
             return title.ToLowerInvariant();
         }
 
-        static string RemoveReservedUrlCharacters(string text)
+        private static string RemoveReservedUrlCharacters(string text)
         {
             var reservedCharacters = new List<string> { "!", "#", "$", "&", "'", "(", ")", "*", ",", "/", ":", ";", "=", "?", "@", "[", "]", "\"", "%", ".", "<", ">", "\\", "^", "_", "'", "{", "}", "|", "~", "`", "+" };
 
@@ -64,7 +69,7 @@ namespace Miniblog.Core.Models
             return text;
         }
 
-        static string RemoveDiacritics(string text)
+        private static string RemoveDiacritics(string text)
         {
             var normalizedString = text.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
