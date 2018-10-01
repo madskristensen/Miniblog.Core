@@ -115,7 +115,7 @@ namespace Miniblog.Core.Controllers
 
             await SaveFilesToDisk(existing);
 
-            return Redirect(post.GetLink());
+            return Redirect(post.GetEncodedLink());
         }
 
         private async Task SaveFilesToDisk(Post post)
@@ -192,7 +192,7 @@ namespace Miniblog.Core.Controllers
                 await _blog.SavePost(post);
             }
 
-            return Redirect(post.GetLink() + "#" + comment.ID);
+            return Redirect(post.GetEncodedLink() + "#" + comment.ID);
         }
 
         [Route("/blog/comment/{postId}/{commentId}")]
@@ -216,7 +216,7 @@ namespace Miniblog.Core.Controllers
             post.Comments.Remove(comment);
             await _blog.SavePost(post);
 
-            return Redirect(post.GetLink() + "#comments");
+            return Redirect(post.GetEncodedLink() + "#comments");
         }
     }
 }
