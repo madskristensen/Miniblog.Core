@@ -111,9 +111,9 @@ namespace Miniblog.Core.Controllers
             existing.Content = post.Content.Trim();
             existing.Excerpt = post.Excerpt.Trim();
 
-            await _blog.SavePost(existing);
-
             await SaveFilesToDisk(existing);
+
+            await _blog.SavePost(existing);
 
             return Redirect(post.GetEncodedLink());
         }
