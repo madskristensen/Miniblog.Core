@@ -43,6 +43,11 @@ namespace Miniblog.Core.Models
             return !string.IsNullOrWhiteSpace(Slug) ? $"/blog/{Slug}/" : $"/blog/{ID}/";
         }
 
+        public string GetEncodedLink()
+        {
+            return $"/blog/{System.Net.WebUtility.UrlEncode(Slug)}/";
+        }
+
         public bool AreCommentsOpen(int commentsCloseAfterDays)
         {
             return PubDate.AddDays(commentsCloseAfterDays) >= DateTime.UtcNow;
