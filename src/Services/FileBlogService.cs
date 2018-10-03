@@ -121,11 +121,7 @@ namespace Miniblog.Core.Services
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 string[] searchings;
-                if (searchTerm.Contains(" OR "))
-                {
-                    searchings = searchTerm.ToLowerInvariant().Replace("\"", "").Split(" or ", StringSplitOptions.RemoveEmptyEntries);
-                }
-                else if (searchTerm.StartsWith("\"") && (searchTerm.EndsWith("\"")))
+                if (searchTerm.StartsWith("\"") && (searchTerm.EndsWith("\"")))
                 {
                     searchings = new string[] { searchTerm.ToLowerInvariant().Replace("\"", "") };
                 }
@@ -143,12 +139,10 @@ namespace Miniblog.Core.Services
 
                         foreach (var s in searchings)
                         {
-                            var prefix = trie.Prefix(s);
-                            var foundT = prefix.Depth == s.Length && prefix.FindChildNode('$') != null;
-
-                            if (foundT && !posts.Contains(post))
+                            if (trie.Search(s))
                             {
                                 posts = posts.Concat(new[] { post });
+                                continue;
                             }
                         }
                     }
@@ -440,9 +434,22 @@ namespace Miniblog.Core.Services
             return words;
         }
 
-        private static void AddWords(string source, List<string> items)
+        private static void AddWords(string source, List<string> words)
         {
-            items.AddRange(StripHtml(source).ToLowerInvariant().Split(new char[] { ' ', ',', '.', ':', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+            var word = new System.Text.StringBuilder();
+            foreach (char ch in source)
+            {
+                if (char.IsLetter(ch))
+                {
+                    word.Append(ch);
+                }
+                else
+                {
+                    if (word.Length == 0) continue;
+                    words.Add(word.ToString().ToLowerInvariant());
+                    word.Clear();
+                }
+            }
         }
 
         private static Regex _htmlRegex = new Regex(@"<(.|\n)*?>", RegexOptions.Compiled);
