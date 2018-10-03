@@ -29,8 +29,26 @@ nameof(Post.PubDate)
 }
 
 <div class="container">
+    <div id="search">
+        <input type="text" id="searching" name="searching" value="@ViewData["LastSearch"]" placeholder="e.g. test OR sample"><input type="submit" class="button-search" onclick="return doSearching('searching', '/blog/posted/');" value=" " title="search field" />
+    </div>
     @if (!isCategory)
     {
+        @if (!isCalendar)
+        {
+            <div class="row">
+                <p>
+                    @foreach (var category in Model)
+                    {
+                        @foreach (var post in category.Posts)
+                        {
+                            @post.PubDate.ToString("dd/MM/yyyy")
+                            <a class="nodecoration" href="@post.GetLink()" title="@post.GetTitle()">@post.GetTitle()</a><br />
+                        }
+                    }
+                </p>
+            </div>
+        }
         @if (isCalendar)
         {
             <div id="calendar">

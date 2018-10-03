@@ -55,8 +55,115 @@ namespace Miniblog.Core.Controllers
         {
             var postedItems = new System.Collections.Generic.List<Category>();
 
-            // view all categories with there posts
-            if (string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                if (!search.StartsWith("cal__"))
+                {
+                    var posts = await _blog.GetPostsBySearch(search.Trim());
+                    if (posts.Any())
+                    {
+                        postedItems.Add(new Category()
+                        {
+                            Posts = posts.ToList()
+                        });
+                    }
+                }
+                else
+                {
+                    var date = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+                    var firstPost = await _blog.GetFirstPost();
+                    var lastPost = (await _blog.GetPosts(1)).FirstOrDefault();
+
+                    if (firstPost == null || lastPost == null)
+                    {
+                        throw new ArgumentException("no post found!");
+                    }
+
+                    date = year == 0 && month == 0
+                        ? lastPost.PubDate.Date
+                        : new DateTime(year, month, 1);
+
+                    date = (date.Date < firstPost.PubDate.Date)
+                        ? firstPost.PubDate.Date
+                        : date;
+
+                    date = (date.Date > DateTime.UtcNow.Date)
+                        ? lastPost.PubDate.Date
+                        : date;
+
+                    var firstDay = new DateTime(date.Year, date.Month, 1);
+                    var lastDay = firstDay.AddMonths(1).AddDays(-1);
+                    FillFullWeeks(ref firstDay, ref lastDay);
+                    var allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
+                    while (!allPostInSpan.Any())
+                    {
+                        if (search.StartsWith("cal__p"))
+                        {
+                            var allPostToFirst = await _blog.GetPostsByTimeSpan(DateTime.MinValue, firstDay);
+                            if (!allPostToFirst.Any())
+                            {
+                                if (firstPost != null)
+                                {
+                                    date = firstPost.PubDate.Date;
+                                    firstDay = new DateTime(date.Year, date.Month, 1);
+                                    lastDay = firstDay.AddMonths(1).AddDays(-1);
+                                    FillFullWeeks(ref firstDay, ref lastDay);
+                                    allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
+                                }
+                                break;
+                            }
+                        }
+                        date = date.AddMonths(search.StartsWith("cal__n") ? 1 : -1);
+                        if (date.Date == DateTime.MinValue.Date) break;
+                        firstDay = new DateTime(date.Year, date.Month, 1);
+                        lastDay = firstDay.AddMonths(1).AddDays(-1);
+                        FillFullWeeks(ref firstDay, ref lastDay);
+                        allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
+                    }
+                    var days = (lastDay - firstDay).TotalDays;
+
+                    postedItems.Add(new Category());
+                    for (var day = firstDay; day <= lastDay; day = day.AddDays(1))
+                    {
+                        var posts = from p in allPostInSpan
+                                    where p.PubDate.Date.Equals(day.Date)
+                                    select p;
+
+                        if (posts != null && posts.Count() > 0)
+                        {
+                            if (posts.Count() == 1)
+                            {
+                                postedItems[0].Posts.Add(posts.FirstOrDefault());
+                            }
+                            else
+                            {
+                                postedItems[0].Posts.Add(new Post
+                                {
+                                    PubDate = day,
+                                    Title = posts.FirstOrDefault().Title + "..",
+                                    Slug = day.ToString("yyyyMMdd") + "default-date",
+                                    Content = ".."
+                                });
+                            }
+                        }
+                        else
+                        {
+                            postedItems[0].Posts.Add(new Post { PubDate = day });
+                        }
+                    }
+
+                    ViewBag.PreviousMonth = firstPost.PubDate.Date < date.AddMonths(-1).Date ? date.AddMonths(-1).Date : firstPost.PubDate.Date;
+
+                    ViewBag.NextMonth = lastPost.PubDate.Date > date.AddMonths(1).Date ? date.AddMonths(1).Date : lastPost.PubDate.Date;
+
+                    ViewBag.CurrentMonth = date.Date;
+
+                    ViewBag.PreviousYear = firstPost.PubDate.Date < date.AddYears(-1).Date ? date.AddYears(-1).Date : firstPost.PubDate.Date;
+
+                    ViewBag.NextYear = lastPost.PubDate.Date > date.AddYears(1).Date ? date.AddYears(1).Date : lastPost.PubDate.Date;
+                }
+            }
+            else
             {
                 var categoriesCounts = await _blog.GetCategoriesCount();
 
@@ -81,130 +188,34 @@ namespace Miniblog.Core.Controllers
 
                     postedItems.Add(category);
                 }
-
-                var tagCount = 0;
-                foreach (var cat in postedItems)
-                {
-                    if (tagCount == 0)
-                    {
-                        cat.TagCategory = "largestTag";
-                    }
-                    else if (tagCount == 1)
-                    {
-                        cat.TagCategory = "largeTag";
-                    }
-                    else if (tagCount == 2)
-                    {
-                        cat.TagCategory = "mediumTag";
-                    }
-                    else if (tagCount == 3)
-                    {
-                        cat.TagCategory = "smallTag";
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    tagCount++;
-                }
-                postedItems.Sort((x, y) => string.Compare(x.Name, y.Name));
             }
 
-            // show a calendar control to get an overview
-            else
+            var tagCount = 0;
+            foreach (var cat in postedItems)
             {
-                var date = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
-                var firstPost = await _blog.GetFirstPost();
-                var lastPost = (await _blog.GetPosts(1)).FirstOrDefault();
-
-                if (firstPost == null || lastPost == null)
+                if (tagCount == 0)
                 {
-                    throw new ArgumentException("no post found!");
+                    cat.TagCategory = "largestTag";
                 }
-
-                date = year == 0 && month == 0
-                    ? lastPost.PubDate.Date
-                    : new DateTime(year, month, 1);
-
-                date = (date.Date < firstPost.PubDate.Date)
-                    ? firstPost.PubDate.Date
-                    : date;
-
-                date = (date.Date > DateTime.UtcNow.Date)
-                    ? lastPost.PubDate.Date
-                    : date;
-
-                var firstDay = new DateTime(date.Year, date.Month, 1);
-                var lastDay = firstDay.AddMonths(1).AddDays(-1);
-                FillFullWeeks(ref firstDay, ref lastDay);
-                var allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
-                while (!allPostInSpan.Any())
+                else if (tagCount == 1)
                 {
-                    if (search.StartsWith("cal__p"))
-                    {
-                        var allPostToFirst = await _blog.GetPostsByTimeSpan(DateTime.MinValue, firstDay);
-                        if (!allPostToFirst.Any())
-                        {
-                            if (firstPost != null)
-                            {
-                                date = firstPost.PubDate.Date;
-                                firstDay = new DateTime(date.Year, date.Month, 1);
-                                lastDay = firstDay.AddMonths(1).AddDays(-1);
-                                FillFullWeeks(ref firstDay, ref lastDay);
-                                allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
-                            }
-                            break;
-                        }
-                    }
-                    date = date.AddMonths(search.StartsWith("cal__n") ? 1 : -1);
-                    if (date.Date == DateTime.MinValue.Date) break;
-                    firstDay = new DateTime(date.Year, date.Month, 1);
-                    lastDay = firstDay.AddMonths(1).AddDays(-1);
-                    FillFullWeeks(ref firstDay, ref lastDay);
-                    allPostInSpan = await _blog.GetPostsByTimeSpan(firstDay, lastDay);
+                    cat.TagCategory = "largeTag";
                 }
-                var days = (lastDay - firstDay).TotalDays;
-
-                postedItems.Add(new Category());
-                for (var day = firstDay; day <= lastDay; day = day.AddDays(1))
+                else if (tagCount == 2)
                 {
-                    var posts = from p in allPostInSpan
-                                where p.PubDate.Date.Equals(day.Date)
-                                select p;
-
-                    if (posts != null && posts.Count() > 0)
-                    {
-                        if (posts.Count() == 1)
-                        {
-                            postedItems[0].Posts.Add(posts.FirstOrDefault());
-                        }
-                        else
-                        {
-                            postedItems[0].Posts.Add(new Post
-                            {
-                                PubDate = day,
-                                Title = posts.FirstOrDefault().Title + "..",
-                                Slug = day.ToString("yyyyMMdd") + "default-date",
-                                Content = ".."
-                            });
-                        }
-                    }
-                    else
-                    {
-                        postedItems[0].Posts.Add(new Post { PubDate = day });
-                    }
+                    cat.TagCategory = "mediumTag";
                 }
-
-                ViewBag.PreviousMonth = firstPost.PubDate.Date < date.AddMonths(-1).Date ? date.AddMonths(-1).Date : firstPost.PubDate.Date;
-
-                ViewBag.NextMonth = lastPost.PubDate.Date > date.AddMonths(1).Date ? date.AddMonths(1).Date : lastPost.PubDate.Date;
-
-                ViewBag.CurrentMonth = date.Date;
-
-                ViewBag.PreviousYear = firstPost.PubDate.Date < date.AddYears(-1).Date ? date.AddYears(-1).Date : firstPost.PubDate.Date;
-
-                ViewBag.NextYear = lastPost.PubDate.Date > date.AddYears(1).Date ? date.AddYears(1).Date : lastPost.PubDate.Date;
+                else if (tagCount == 3)
+                {
+                    cat.TagCategory = "smallTag";
+                }
+                else
+                {
+                    break;
+                }
+                tagCount++;
             }
+            postedItems.Sort((x, y) => string.Compare(x.Name, y.Name));
 
             ViewData["Title"] = _manifest.Name + " Archive";
             ViewData["LastSearch"] = !string.IsNullOrWhiteSpace(search) && !search.StartsWith("cal__") ? search : "";

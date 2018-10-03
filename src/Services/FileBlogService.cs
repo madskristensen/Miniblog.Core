@@ -112,6 +112,52 @@ namespace Miniblog.Core.Services
             return Task.FromResult(posts);
         }
 
+        public virtual Task<IEnumerable<Post>> GetPostsBySearch(string searchTerm)
+        {
+            bool isAdmin = IsAdmin();
+
+            IEnumerable<Post> posts = Enumerable.Empty<Post>();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                string[] searchings;
+                if (searchTerm.Contains(" OR "))
+                {
+                    searchings = searchTerm.ToLowerInvariant().Replace("\"", "").Split(" or ", StringSplitOptions.RemoveEmptyEntries);
+                }
+                else if (searchTerm.StartsWith("\"") && (searchTerm.EndsWith("\"")))
+                {
+                    searchings = new string[] { searchTerm.ToLowerInvariant().Replace("\"", "") };
+                }
+                else
+                {
+                    searchings = searchTerm.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                foreach (var post in _cache)
+                {
+                    if (post.IsPublished || isAdmin)
+                    {
+                        var trie = new Trie();
+                        trie.InsertRange(ExtractWords(post));
+
+                        foreach (var s in searchings)
+                        {
+                            var prefix = trie.Prefix(s);
+                            var foundT = prefix.Depth == s.Length && prefix.FindChildNode('$') != null;
+
+                            if (foundT && !posts.Contains(post))
+                            {
+                                posts = posts.Concat(new[] { post });
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Task.FromResult(posts);
+        }
+
         public virtual Task<Post> GetPostBySlug(string slug)
         {
             var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
@@ -377,6 +423,33 @@ namespace Miniblog.Core.Services
         protected bool IsAdmin()
         {
             return _contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
+        }
+
+        private static List<string> ExtractWords(Post post)
+        {
+            var words = new List<string>();
+
+            AddWords(post.Title, words);
+            AddWords(post.Excerpt, words);
+            AddWords(post.Content, words);
+            foreach (var comment in post.Comments)
+            {
+                AddWords(comment.Content, words);
+            }
+
+            return words;
+        }
+
+        private static void AddWords(string source, List<string> items)
+        {
+            items.AddRange(StripHtml(source).ToLowerInvariant().Split(new char[] { ' ', ',', '.', ':', '\t' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+        }
+
+        private static Regex _htmlRegex = new Regex(@"<(.|\n)*?>", RegexOptions.Compiled);
+
+        private static string StripHtml(string source)
+        {
+            return _htmlRegex.Replace(source, string.Empty);
         }
     }
 }

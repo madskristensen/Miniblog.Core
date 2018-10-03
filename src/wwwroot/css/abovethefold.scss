@@ -199,6 +199,52 @@ time {
     }
 }
 
+#search {
+    padding-bottom: 2em;
+
+    .label {
+        display: inline-block;
+        margin-right: .3em;
+        font-weight: bold;
+        min-width: 50px;
+    }
+
+    input {
+        font: inherit;
+
+        &[type=text] {
+            border-radius: 3px;
+            border: 1px solid #bbb;
+            padding: 4px 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        &[type=submit] {
+            padding: 0 10px;
+        }
+    }
+
+    input.button-search {
+        background-image: url(/img/search.svg);
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: 0px 0px;
+        border: none;
+        cursor: pointer;
+        height: 30px;
+        vertical-align: middle;
+        margin-left: -25px;
+    }
+
+    input + span,
+    textarea + span {
+        display: block;
+        font-size: .9em,;
+        color: #888;
+    }
+}
+
 /* Container */
 .container {
     .row .tag {

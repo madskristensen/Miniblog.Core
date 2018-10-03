@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Miniblog.Core.Models;
 
 namespace Miniblog.Core.Services
@@ -20,6 +19,8 @@ namespace Miniblog.Core.Services
         Task<IEnumerable<Post>> GetPostsByYear(DateTime date);
 
         Task<IEnumerable<Post>> GetPostsByTimeSpan(DateTime firstDay, DateTime lastDay);
+
+        Task<IEnumerable<Post>> GetPostsBySearch(string searchTerm);
 
         Task<Post> GetFirstPost();
 
