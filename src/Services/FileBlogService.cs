@@ -428,6 +428,8 @@ namespace Miniblog.Core.Services
             AddWords(post.Content, words);
             foreach (var comment in post.Comments)
             {
+                AddWords(comment.Author, words);
+                AddWords(comment.Email, words);
                 AddWords(comment.Content, words);
             }
 
