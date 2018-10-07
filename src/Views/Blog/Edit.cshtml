@@ -1,7 +1,11 @@
 ﻿@model Post
+
 @{
     bool isNew = string.IsNullOrEmpty(Model.Title);
     ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
+    var host = Context.Request.Host.ToString();
+    List<string> allCats = ViewData["AllCats"] as List<string> ?? new List<string>();
+    allCats.Sort();
 }
 
 @section Head{
@@ -23,8 +27,16 @@
         <br />
 
         <label for="categories" class="label">Tags</label>
-        <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" aria-describedby="desc_categories" />
-        <span class="desc" id="desc_categories">A comma separated list of keywords</span>
+        <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)" />
+        <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
+        <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
+        <datalist id="taglist">
+
+            @foreach (var cat in allCats)
+            {
+                <option value="@cat" />
+            }
+        </datalist>
         <br />
 
         <label asp-for="@Model.Excerpt" class="label">Excerpt</label>
@@ -34,21 +46,20 @@
 
         <textarea asp-for="@Model.Content" rows="20" aria-label="Content">@Model.Content</textarea>
         <br />
-        <section style="text-align:left; max-width:30%; float:left;">
-            <a asp-controller="Blog" asp-action="Index">Cancel</a>
-            @if (!isNew)
-            {
-                <input type="submit" value="Delete" class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
-            }
-        </section>
-        <section style="text-align:right; max-width:30%; float:right;">
-            <input type="submit" value="Save" title="Save the post" />
-            <input asp-for="@Model.IsPublished" />
-            <label asp-for="@Model.IsPublished">Is published</label>
-        </section>
+
+        <input type="submit" value="Save" title="Save the post" />
+
+        <input asp-for="@Model.IsPublished" />
+        <label asp-for="@Model.IsPublished">Is published</label>
+
+        <a asp-controller="Blog" asp-action="Index">Cancel</a>
+        @if (!isNew)
+        {
+            <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
+        }
     </form>
 
 @section Scripts {
-    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="//@host/lib/tinymce/tinymce.min.js"></script> @*with enabled CDN tinymce is not able to find some files*@
     <script src="~/js/admin.js" async></script>
 }
