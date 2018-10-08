@@ -52,7 +52,7 @@
         <input asp-for="@Model.IsPublished" />
         <label asp-for="@Model.IsPublished">Is published</label>
 
-        <a asp-controller="Blog" asp-action="Index" asp-route-id="@Model.ID">Cancel</a>
+        <a asp-controller="Blog" class="cancel" asp-action="Index" asp-route-id="@Model.ID">Cancel</a>
         @if (!isNew)
         {
             <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePost" asp-route-id="@Model.ID" />
