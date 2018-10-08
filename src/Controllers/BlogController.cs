@@ -191,8 +191,15 @@ namespace Miniblog.Core.Controllers
             }
 
             var tagCount = 0;
+            var lastCatCount = 0;
             foreach (var cat in postedItems)
             {
+                if (cat.Count != lastCatCount)
+                {
+                    tagCount++;
+                }
+                lastCatCount = cat.Count;
+
                 if (tagCount == 0)
                 {
                     cat.TagCategory = "largestTag";
@@ -213,7 +220,6 @@ namespace Miniblog.Core.Controllers
                 {
                     break;
                 }
-                tagCount++;
             }
             postedItems.Sort((x, y) => string.Compare(x.Name, y.Name));
 
