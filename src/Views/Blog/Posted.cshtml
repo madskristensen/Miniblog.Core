@@ -43,7 +43,7 @@ nameof(Post.PubDate)
                         @foreach (var post in category.Posts)
                         {
                             @post.PubDate.ToString("dd/MM/yyyy")
-                            <a class="nodecoration" href="@post.GetLink()" title="@post.GetTitle()">@post.GetTitle()</a><br />
+                            <a class="nodecoration" href="@post.GetLink()" title="@post.PubDate.ToString("ddd MMM d, yyyy HH:mm") - @post.Excerpt">@post.GetTitle()</a><br />
                         }
                     }
                 </p>
@@ -151,7 +151,7 @@ nameof(Post.PubDate)
                     <h4><a name="@category.Name" class="nodecoration" href="/blog/category/@category.Name"><b>@category.Name (@category.Count)</b></a></h4>
                     @foreach (var post in category.Posts)
                     {
-                        <a class="nodecoration" href="@post.GetLink()" title="@post.PubDate.ToString("ddd MMM d, yyyy HH:mm")">@post.GetTitle()</a><br />
+                        <a class="nodecoration" href="@post.GetLink()" title="@post.PubDate.ToString("ddd MMM d, yyyy HH:mm") - @post.Excerpt">@post.GetTitle()</a><br />
                     }
                 }
             </p>

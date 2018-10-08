@@ -167,15 +167,15 @@ namespace Miniblog.Core.Controllers
             {
                 var categoriesCounts = await _blog.GetCategoriesCount();
 
-                foreach (var count in categoriesCounts)
+                foreach (var categoryCount in categoriesCounts)
                 {
                     var category = new Category()
                     {
-                        Count = count.Count,
-                        Name = count.Name
+                        Count = categoryCount.Count,
+                        Name = categoryCount.Name
                     };
 
-                    var posts = await _blog.GetPostsByCategory(count.Name);
+                    var posts = await _blog.GetPostsByCategory(category.Name);
 
                     var postList = new System.Collections.Generic.List<Post>();
                     foreach (var post in posts)
@@ -200,19 +200,19 @@ namespace Miniblog.Core.Controllers
                 }
                 lastCatCount = cat.Count;
 
-                if (tagCount == 0)
+                if (tagCount == 1)
                 {
                     cat.TagCategory = "largestTag";
                 }
-                else if (tagCount == 1)
+                else if (tagCount == 2)
                 {
                     cat.TagCategory = "largeTag";
                 }
-                else if (tagCount == 2)
+                else if (tagCount == 3)
                 {
                     cat.TagCategory = "mediumTag";
                 }
-                else if (tagCount == 3)
+                else if (tagCount == 4)
                 {
                     cat.TagCategory = "smallTag";
                 }
@@ -221,7 +221,7 @@ namespace Miniblog.Core.Controllers
                     break;
                 }
             }
-            postedItems.Sort((x, y) => string.Compare(x.Name, y.Name));
+            postedItems.Sort((p1, p2) => string.Compare(p1.Name, p2.Name));
 
             ViewData["Title"] = _manifest.Name + " Archive";
             ViewData["LastSearch"] = !string.IsNullOrWhiteSpace(search) && !search.StartsWith("cal__") ? search : "";

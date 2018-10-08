@@ -199,7 +199,7 @@ namespace Miniblog.Core.Services
                     .Where(p => p.IsPublished || isAdmin)
                     .SelectMany(post => post.Categories)
                     .Select(cat => cat.ToLowerInvariant())
-                    .GroupBy(i => i) //Group the categories
+                    .GroupBy(g => g) //Group the categories
                     .Select(i => new CategoryCount
                     { Name = i.Key, Count = i.Count() }) //get a count for each
                     .OrderByDescending(c => c.Count)
