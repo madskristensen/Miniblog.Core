@@ -195,17 +195,11 @@ namespace Miniblog.Core.Services
 
         private void LoadPosts()
         {
-            if (!Directory.Exists(_folder))
-                Directory.CreateDirectory(_folder);
-
-            // Can this be done in parallel to speed it up?
-            foreach (string file in Directory.EnumerateFiles(_folder, "*.xml", SearchOption.TopDirectoryOnly))
+            var addPost = new Action<XElement, string>((doc, id) =>
             {
-                XElement doc = XElement.Load(file);
-
-                Post post = new Post
+                var post = new Post
                 {
-                    ID = Path.GetFileNameWithoutExtension(file),
+                    ID = id,
                     Title = ReadValue(doc, "title"),
                     Excerpt = ReadValue(doc, "excerpt"),
                     Content = ReadValue(doc, "content"),
@@ -217,7 +211,29 @@ namespace Miniblog.Core.Services
 
                 LoadCategories(post, doc);
                 LoadComments(post, doc);
+
                 _cache.Add(post);
+            });
+
+            if (!Directory.Exists(_folder))
+                Directory.CreateDirectory(_folder);
+
+            // Yes, it can be done in parallel to speed it up
+            var filePaths = from path in Directory.EnumerateFiles(_folder, "*.xml", SearchOption.TopDirectoryOnly)
+                            select path;
+
+            // Limit parallelism here if needed
+            var degreeOfParallelism = Environment.ProcessorCount;
+
+            var fileContents = from path in filePaths.AsParallel()
+                               .WithDegreeOfParallelism(degreeOfParallelism)
+                               let doc = XElement.Load(path)
+                               let id = Path.GetFileNameWithoutExtension(path)
+                               select new { Doc = doc, Id = id };
+
+            foreach (var item in fileContents)
+            {
+                addPost(item.Doc, item.Id);
             }
         }
 
@@ -285,7 +301,7 @@ namespace Miniblog.Core.Services
             var r = new Regex($"[{regexSearch}]");
             return r.Replace(input, "");
         }
-        
+
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
