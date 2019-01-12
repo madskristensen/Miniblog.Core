@@ -52,9 +52,6 @@ namespace Miniblog.Core
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
-            services.AddLogging(builder => builder
-                .AddConsole()
-                .AddFilter<ConsoleLoggerProvider>(category: null, level: LogLevel.Information));
 
             // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
             services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
