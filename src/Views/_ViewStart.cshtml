@@ -7,5 +7,13 @@
     Context.Response.Headers["Content-Security-Policy"] = $"object-src 'none'; form-action 'self'";
     Context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
     Context.Response.Headers["Referrer-Policy"] = "no-referrer-when-downgrade";
-    Context.Response.Headers["X-Frame-Options"] = "ALLOW-FROM https://www.responsinator.com/"; // Should be set to "DENY"
+    Context.Response.Headers["X-Frame-Options"] = "SAMEORIGIN";
+    Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    Context.Response.Headers["Expect-CT"] = "max-age=0, report-uri=https://3rdpig.report-uri.com/r/d/csp/reportOnly";
+    Context.Response.Headers["Feature-Policy"] = "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'; sync-xhr 'self'";
+
+    if (Context.Request.IsHttps)
+    {
+        Context.Response.Headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains";
+    }
 }
