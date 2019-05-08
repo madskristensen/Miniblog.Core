@@ -11,13 +11,15 @@ namespace Miniblog.Core.Services
     public class MetaWeblogService : IMetaWeblogProvider
     {
         private readonly IBlogService _blog;
+        private readonly IPageService _page;
         private readonly IConfiguration _config;
         private readonly IUserServices _userServices;
         private readonly IHttpContextAccessor _context;
 
-        public MetaWeblogService(IBlogService blog, IConfiguration config, IHttpContextAccessor context, IUserServices userServices)
+        public MetaWeblogService(IBlogService blog, IPageService page, IConfiguration config, IHttpContextAccessor context, IUserServices userServices)
         {
             _blog = blog;
+            _page = page;
             _config = config;
             _userServices = userServices;
             _context = context;
@@ -100,6 +102,69 @@ namespace Miniblog.Core.Services
                                    title = cat
                                })
                            .ToArray();
+        }
+
+        public string AddPage(string blogid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
+        {
+            ValidateUser(username, password);
+
+            var newPage = new Models.Page
+            {
+                Title = post.title,
+                Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
+                Content = post.description,
+                IsPublished = publish
+            };
+
+            if (post.dateCreated != DateTime.MinValue)
+            {
+                newPage.PubDate = post.dateCreated;
+            }
+
+            _page.SavePage(newPage).GetAwaiter().GetResult();
+
+            return newPage.ID;
+        }
+
+        public bool DeletePage(string key, string postid, string username, string password, bool publish)
+        {
+            ValidateUser(username, password);
+
+            var page = _page.GetPageById(postid).GetAwaiter().GetResult();
+
+            if (page != null)
+            {
+                _page.DeletePage(page).GetAwaiter().GetResult();
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool EditPage(string postid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
+        {
+            ValidateUser(username, password);
+
+            var existing = _page.GetPageById(postid).GetAwaiter().GetResult();
+
+            if (existing != null)
+            {
+                existing.Title = post.title;
+                existing.Slug = post.wp_slug;
+                existing.Content = post.description;
+                existing.IsPublished = publish;
+
+                if (post.dateCreated != DateTime.MinValue)
+                {
+                    existing.PubDate = post.dateCreated;
+                }
+
+                _page.SavePage(existing).GetAwaiter().GetResult();
+
+                return true;
+            }
+
+            return false;
         }
 
         public WilderMinds.MetaWeblog.Post GetPost(string postid, string username, string password)

@@ -46,8 +46,11 @@ namespace Miniblog.Core
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSingleton<IUserServices, BlogUserServices>();
+            services.AddSingleton<IUserServices, PageUserServices>();
             services.AddSingleton<IBlogService, FileBlogService>();
+            services.AddSingleton<IPageService, FilePageService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
+            services.Configure<PageSettings>(Configuration.GetSection("page"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
 
@@ -138,7 +141,12 @@ namespace Miniblog.Core
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Blog}/{action=Index}/{id?}");
+                    template: "{controller=Page}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "blog",
+                    template: "blog/index",
+                    defaults: "{controller=Blog}/{action=Index}/{id?}");
             });
         }
     }

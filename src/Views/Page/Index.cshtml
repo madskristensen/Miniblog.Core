@@ -1,0 +1,60 @@
+﻿@model Page
+@inject IOptionsSnapshot<PageSettings> settings
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.Excerpt;
+    bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
+    string host = Context.Request.Scheme + "://" + Context.Request.Host;
+    bool isCodePreview = Model.Content.Contains("</code>");
+}
+
+@section Head {
+    <link rel="canonical" href="@(host + Model.GetLink())" />
+}
+
+<article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <header>
+        <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
+        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
+        }
+    </header>
+
+    <div itemprop="articleBody mainEntityOfPage" cdnify>
+        @Html.Raw(Model.RenderContent())
+    </div>
+
+    <footer>
+        <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
+        <meta itemprop="mainEntityOfPage" content="@(host + Model.GetLink())" />
+    </footer>
+</article>
+
+@if (showFullPost)
+{
+    await Html.RenderPartialAsync("_SocialSharing", Model.Title);
+
+    @section Preload {
+        @* This lazy loads the stylesheet in a non-render blocking way *@
+        <link rel="preload" href="~/css/comments.scss" as="style" />
+        <noscript><link rel="stylesheet" href="~/css/comments.scss" /></noscript>
+        @if (isCodePreview)
+        {
+            <link rel="preload" href="~/lib/prism/prism.scss" as="style" />
+            <script src="~/lib/prism/prism.js" async defer></script>
+        }
+    }
+}
+
+@{await Html.RenderPartialAsync("_SocialSharing", ViewData["Title"]);}
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    @section Scripts {
+        <script src="~/js/admin.js" async defer></script>
+        <link rel="stylesheet" href="~/css/admin.scss" />
+    }
+}

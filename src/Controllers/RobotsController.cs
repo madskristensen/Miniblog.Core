@@ -16,13 +16,17 @@ namespace Miniblog.Core.Controllers
     public class RobotsController : Controller
     {
         private readonly IBlogService _blog;
+        private readonly IPageService _page;
         private readonly IOptionsSnapshot<BlogSettings> _settings;
+        private readonly IOptionsSnapshot<PageSettings> _pagesettings;
         private readonly WebManifest _manifest;
 
-        public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
+        public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, IPageService page, IOptionsSnapshot<PageSettings> pagesettings, WebManifest manifest)
         {
             _blog = blog;
             _settings = settings;
+            _page = page;
+            _pagesettings = pagesettings;
             _manifest = manifest;
         }
 
@@ -50,6 +54,18 @@ namespace Miniblog.Core.Controllers
             {
                 xml.WriteStartDocument();
                 xml.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+                var pages = await _page.GetPages(int.MaxValue);
+
+                foreach (Models.Page page in pages)
+                {
+                    var lastMod = new[] { page.PubDate, page.LastModified };
+
+                    xml.WriteStartElement("url");
+                    xml.WriteElementString("loc", host + page.GetLink());
+                    xml.WriteElementString("lastmod", lastMod.Max().ToString("yyyy-MM-ddThh:mmzzz"));
+                    xml.WriteEndElement();
+                }
 
                 var posts = await _blog.GetPosts(int.MaxValue);
 
