@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="~/css/admin.scss" />
 }
 
-    <form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
+    <form method="post" id="edit" class="container" asp-controller="Page" asp-action="UpdatePage">
         <div asp-validation-summary="All"></div>
         <input type="hidden" asp-for="@Model.ID" />
 
         <label asp-for="@Model.Title" class="label">Title</label>
-        <input asp-for="@Model.Title" required placeholder="Title of blog post" aria-describedby="desc_title" />
+        <input asp-for="@Model.Title" required placeholder="Title of page" aria-describedby="desc_title" />
         <span class="desc" id="desc_title">The title as it appears on the website</span>
         <br />
 
@@ -27,20 +27,20 @@
 
         <label asp-for="@Model.Excerpt" class="label">Excerpt</label>
         <textarea asp-for="@Model.Excerpt" rows="3" placeholder="Short description of blog post" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
-        <span class="desc" id="desc_excerpt">A brief description of the content of the post</span>
+        <span class="desc" id="desc_excerpt">A brief description of the content of the page</span>
         <br />
 
         <textarea asp-for="@Model.Content" rows="20" aria-label="Content">@Model.Content</textarea>
         <br />
 
-        <input type="submit" value="Save" title="Save the post" />
+        <input type="submit" value="Save" title="Save the page" />
 
         <input asp-for="@Model.IsPublished" />
         <label asp-for="@Model.IsPublished">Is published</label>
 
         @if (!isNew)
         {
-            <input type="submit" value="Delete..." class="delete" title="Delete the post..." asp-action="DeletePage" asp-route-id="@Model.ID" />
+            <input type="submit" value="Delete..." class="delete" title="Delete the page..." asp-action="DeletePage" asp-route-id="@Model.ID" />
         }
     </form>
 

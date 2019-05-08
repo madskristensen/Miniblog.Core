@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<post>
+<page>
   <title>Welcome to your new website</title>
   <slug>index</slug>
-  <pubDate>2017-10-13 18:59:01</pubDate>
-  <lastModified>2017-10-19 21:59:29</lastModified>
-  <excerpt>Congratulations on your new blog</excerpt>
-  <content>&lt;p&gt;Congratulations on installing your new blog!&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://github.com/madskristensen/Miniblog.Core"&gt;Miniblog.Core&lt;/a&gt; is optimized to give your visitors a fantastic reading experience on all types of devices. It is built to be fast and responsive so your visitors never have to wait for the content to load.&lt;/p&gt;
+  <pubDate>2019-05-08T21:44:58.210Z</pubDate>
+  <lastModified>2019-05-08T21:44:58.215Z</lastModified>
+  <excerpt>Congratulations on your new website</excerpt>
+  <content>&lt;p&gt;Congratulations on installing your new website!&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/madskristensen/Miniblog.Core"&gt;Miniblog.Core&lt;/a&gt;&amp;nbsp;is optimized to give your visitors a fantastic reading experience on all types of devices. It is built to be fast and responsive so your visitors never have to wait for the content to load.&lt;/p&gt;
 &lt;h2&gt;Fonts and layout&lt;/h2&gt;
 &lt;p&gt;Instead of using custom fonts that visitors need to download, Miniblog.Core uses fonts native to each device and operating system. This ensures that the blog loads very fast and the fonts feel natural and beautiful on all devices.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -16,7 +16,7 @@
 &lt;ul&gt;
 &lt;li&gt;Social media integration&lt;/li&gt;
 &lt;li&gt;User comments&lt;/li&gt;
-&lt;li&gt;Passing &lt;a href="http://webdevchecklist.com/"&gt;Web Developer Checklist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Passing&amp;nbsp;&lt;a href="http://webdevchecklist.com/"&gt;Web Developer Checklist&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Search engine optimized&lt;/li&gt;
 &lt;li&gt;Supported in all major browsers&lt;/li&gt;
 &lt;li&gt;Phone and tablet support&lt;/li&gt;
@@ -64,24 +64,4 @@
 &lt;/table&gt;
 &lt;p&gt;Enjoy!&lt;/p&gt;</content>
   <ispublished>true</ispublished>
-  <categories>
-    <category>welcome</category>
-    <category>miniblog</category>
-  </categories>
-  <comments>
-    <comment isAdmin="false" id="cd58dea4-a4d5-498a-b164-6a5b7c3f2f62">
-      <author>John Doe</author>
-      <email>john@gmail.com</email>
-      <date>2017-10-13 20:15:23</date>
-      <content>This is a comment made by a visitor</content>
-    </comment>
-    <comment isAdmin="true" id="13d7cd7d-6336-4c42-8c91-27f27d6bf648">
-      <author>Mads Kristensen</author>
-      <email>post@madskristensen.net</email>
-      <date>2017-10-13 20:15:48</date>
-      <content>This is a comment made by the owner of the blog while logged in.
-
-It looks slightly different to make it clear that this is a response from the owner.</content>
-    </comment>
-  </comments>
-</post>
+</page>

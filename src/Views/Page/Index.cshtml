@@ -18,7 +18,7 @@
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
         @if (User.Identity.IsAuthenticated)
         {
-            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
+        <a asp-controller="Page" asp-action="edit" asp-route-id="@Model.ID" title="Edit the page">Edit page</a>
         }
     </header>
 

@@ -43,7 +43,7 @@ namespace Miniblog.Core.Controllers
 
             if (page != null)
             {
-                return View(page);
+                return View("~/Views/Page/Page.cshtml", page);
             }
 
             return NotFound();
@@ -68,7 +68,7 @@ namespace Miniblog.Core.Controllers
             return NotFound();
         }
 
-        [Route("/{slug?}")]
+        [Route("/page/{slug?}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> UpdatePage(Page page)
         {
