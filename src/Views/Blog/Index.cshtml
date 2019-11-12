@@ -2,7 +2,7 @@
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
-    int pageCount = Model.ToList().Count-1; 
+    int pageCount = Model.ToList().Count; 
 }
 
 @foreach (var post in Model)
