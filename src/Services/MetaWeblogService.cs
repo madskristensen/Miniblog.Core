@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,12 @@ namespace Miniblog.Core.Services
             _context = context;
         }
 
-        public string AddPost(string blogid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
+        public Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
+        {
+            return Task.Run(() => AddPost(blogid, username, password, post, publish));
+        }
+
+        private string AddPost(string blogid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
         {
             ValidateUser(username, password);
 
@@ -46,7 +52,12 @@ namespace Miniblog.Core.Services
             return newPost.ID;
         }
 
-        public bool DeletePost(string key, string postid, string username, string password, bool publish)
+        public Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
+        {
+            return Task.Run(() => DeletePost(key, postid, username, password, publish));
+        }
+
+        private bool DeletePost(string key, string postid, string username, string password, bool publish)
         {
             ValidateUser(username, password);
 
@@ -60,6 +71,12 @@ namespace Miniblog.Core.Services
 
             return false;
         }
+
+        public Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
+        {
+            return Task.Run(() => EditPost(postid, username, password, post, publish));
+        }
+
 
         public bool EditPost(string postid, string username, string password, WilderMinds.MetaWeblog.Post post, bool publish)
         {
@@ -88,6 +105,12 @@ namespace Miniblog.Core.Services
             return false;
         }
 
+        public Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
+        {
+            return Task.Run(() => GetCategories(blogid, username, password));
+        }
+
+
         public CategoryInfo[] GetCategories(string blogid, string username, string password)
         {
             ValidateUser(username, password);
@@ -102,7 +125,12 @@ namespace Miniblog.Core.Services
                            .ToArray();
         }
 
-        public WilderMinds.MetaWeblog.Post GetPost(string postid, string username, string password)
+        public Task<Post> GetPostAsync(string postid, string username, string password)
+        {
+            return Task.Run(() => GetPost(postid, username, password));
+        }
+
+        private WilderMinds.MetaWeblog.Post GetPost(string postid, string username, string password)
         {
             ValidateUser(username, password);
 
@@ -116,14 +144,24 @@ namespace Miniblog.Core.Services
             return null;
         }
 
-        public WilderMinds.MetaWeblog.Post[] GetRecentPosts(string blogid, string username, string password, int numberOfPosts)
+        public Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
+        {
+            return Task.Run(() => GetRecentPosts(blogid, username, password, numberOfPosts));
+        }
+
+        private WilderMinds.MetaWeblog.Post[] GetRecentPosts(string blogid, string username, string password, int numberOfPosts)
         {
             ValidateUser(username, password);
 
             return _blog.GetPosts(numberOfPosts).GetAwaiter().GetResult().Select(ToMetaWebLogPost).ToArray();
         }
 
-        public BlogInfo[] GetUsersBlogs(string key, string username, string password)
+        public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
+        {
+            return Task.Run(() => GetUsersBlogs(key, username, password));
+        }
+
+        private BlogInfo[] GetUsersBlogs(string key, string username, string password)
         {
             ValidateUser(username, password);
 
@@ -137,7 +175,12 @@ namespace Miniblog.Core.Services
             }};
         }
 
-        public MediaObjectInfo NewMediaObject(string blogid, string username, string password, MediaObject mediaObject)
+        public Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
+        {
+            return Task.Run(() => NewMediaObject(blogid, username, password, mediaObject));
+        }
+
+        private MediaObjectInfo NewMediaObject(string blogid, string username, string password, MediaObject mediaObject)
         {
             ValidateUser(username, password);
             byte[] bytes = Convert.FromBase64String(mediaObject.bits);
@@ -146,10 +189,20 @@ namespace Miniblog.Core.Services
             return new MediaObjectInfo { url = path };
         }
 
-        public UserInfo GetUserInfo(string key, string username, string password)
+        public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
+        {
+            return Task.Run(() => GetUserInfo(key, username, password));
+        }
+
+        private UserInfo GetUserInfo(string key, string username, string password)
         {
             ValidateUser(username, password);
             throw new NotImplementedException();
+        }
+
+        public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
+        {
+            return Task.Run(() => AddCategory(key, username, password, category));
         }
 
         public int AddCategory(string key, string username, string password, NewCategory category)
@@ -186,6 +239,43 @@ namespace Miniblog.Core.Services
                 description = post.Content,
                 categories = post.Categories.ToArray()
             };
+        }
+
+
+
+
+
+
+        // These may be new methods that may not be required for Miniblog
+
+        public Task<Page> GetPageAsync(string blogid, string pageid, string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Author[]> GetAuthorsAsync(string blogid, string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
+        {
+            throw new NotImplementedException();
         }
     }
 }
