@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Multiple Sign-In Methods in Orchard CMS</title>
+  <slug>multiple-sign-in-methods-in-orchard-cms</slug>
+  <pubDate>2012-07-22T22:51:00.000Z</pubDate>
+  <lastModified>2019-01-12T22:49:23.785Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;Today I stumbled upon a feature that I previously did not know existed in &lt;a href="http://orchardproject.net/" target="_blank"&gt;Orchard CMS&lt;/a&gt;. In fact, I have not found this documented in anywhere as of yet. But in any case, I forgot the username for the administrator’s account in one of my Orchard development environments and could not log in.&lt;/p&gt;  &lt;p&gt;I was afraid that I would have to re-deploy the site until, as I was pondering the possibilities for the username, I actually read the error message. As displayed in the image below, &lt;a href="http://orchardproject.net/" target="_blank"&gt;Orchard CMS&lt;/a&gt; accepts both the username established during set-up or the email address configured for the account as valid username entries during log on.&lt;/p&gt;  &lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/ErrorDeIniciarSesion_636829301634931916.png"&gt;&lt;img title="ErrorDeIniciarSesion" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="ErrorDeIniciarSesion" src="http://www.bacardibryant.com/Posts/files/ErrorDeIniciarSesion_thumb_636829301636471272.png" width="527" height="292" /&gt;&lt;/a&gt;&lt;/p&gt;  &lt;p&gt;&lt;strong&gt;So Be Sure to Add an Email Address for the Administrator’s Account&lt;/strong&gt;&lt;/p&gt;  &lt;p&gt;You should note that by default, the administrator account created during set-up does not have an email address associated with it. Luckily for me, during account provisioning for other users, I configured an email address for the administrator’s account.&lt;/p&gt;  &lt;p&gt;So keep in mind as you deploy your Orchard CMS builds that both the username and email address are acceptable sign in values, and that since by default there is no email associated with the admininistrator´s account, you should enter one as a best practice.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>blogging</category>
+  </categories>
+  <comments></comments>
+</post>

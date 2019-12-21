@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>ASP.NET MVC3 and Multiple HTML Forms</title>
+  <slug>aspnet-mvc3-and-multiple-html-forms</slug>
+  <pubDate>2011-06-14T23:43:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:41:47.755Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;In moving to ASP.NET from classic ASP and ColdFusion, one of the first things that I had to adjust to was developing using only one form within a web page. This isn’t a true limitation, to be accurate, WebForms supports only one server-side form per web page but technically, there can still be multiple HTML forms on the page, the additional forms simply are not able to participate in the ASP.NET WebForms Framework.&lt;/p&gt;    &lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;form&lt;/span&gt; &lt;span class="attr"&gt;runat&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;server&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="rem"&gt;&amp;lt;!-- a lot of magic here --&amp;gt;&lt;/span&gt;
+
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;form&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&lt;br /&gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;The aim, I believe, is to provide state and events in the world of web application development that are similar to what we are accustomed to with WinForms application development. So with WebForms we are provided with the concepts of viewstate and postback events, which are raised by other server-side form elements such as buttons, written as:&lt;/p&gt;
+
+
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;asp:Button&lt;/span&gt; &lt;span class="attr"&gt;ID&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;MyButton&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;OnClick&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;MyButton_Click&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;runat&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;server&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&lt;br /&gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;Since adopting ASP.NET MVC3 I’ve been reunited with HTML form elements and I find myself enjoying the flexibility of multiple forms per page by design and not necessarily a hack. As written in Pro ASP.NET MVC3 Framework, Third Edition, “…there are no ViewState or other hidden form elements, and the ID values you assign to IDs don’t get mangled”. So not to travel down memory lane on this one, but it is nice to write HTML and JavaScript (or should I say jQuery script) without wrestling with the nuances of WebForms. Now with the wide implementation of data attributes in &lt;a href="http://dev.w3.org/html5/spec/" target="_blank"&gt;HTML5&lt;/a&gt; elements by browsers, markup semantics have become cleaner as well. So now markup such as this:&lt;/p&gt;
+
+
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;id&lt;/span&gt;&lt;span class="kwrd"&gt;='&amp;lt;%= MyLogicalValue1 %&amp;gt;_&amp;lt;%= MyLogicalValue2 %&amp;gt;'&lt;/span&gt;
+    &lt;span class="attr"&gt;onclick&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;javascript:MyFunction(this.id);&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="rem"&gt;&amp;lt;!-- display information --&amp;gt;&lt;/span&gt;
+
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&lt;br /&gt;&lt;/span&gt;&lt;/pre&gt;
+&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;
+
+&lt;p&gt;Can be better represented as:&lt;/p&gt;
+
+
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;id&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;MyDiv&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;data-url&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;/mydestination.aspx&amp;quot;&lt;/span&gt;
+    &lt;span class="attr"&gt;data-value1&lt;/span&gt;&lt;span class="kwrd"&gt;='&amp;lt;%= MyDataValue1 %&amp;gt;'&lt;/span&gt;
+    &lt;span class="attr"&gt;data-value2&lt;/span&gt;&lt;span class="kwrd"&gt;='&amp;lt;%= MyDataValue2 %&amp;gt;'&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="rem"&gt;&amp;lt;!-- display markup here --&amp;gt;&lt;/span&gt;
+
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&lt;br /&gt;&lt;/span&gt;&lt;/pre&gt;
+&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;
+
+&lt;p&gt;&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;Of course &lt;a href="http://ejohn.org/blog/html-5-data-attributes/" target="_blank"&gt;JQuery provides some convenient methods&lt;/a&gt; for enumerating and working with the data values; and although this was merely a short and dirty “how-to”, data attributes can also be expressed in JSON notation, as a collection of properties and values, instead of a data attribute for each value that you would like to represent.&lt;/p&gt;
+
+
+
+&lt;p&gt;In any case…it’s a good time to be a developer. All of the once so complicated concepts that we had to work around are all trivial implementations of semantics now.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+    <category>asp.net</category>
+  </categories>
+  <comments></comments>
+</post>

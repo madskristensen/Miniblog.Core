@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Moving Site to Another Server</title>
+  <slug>moving-site-to-another-server</slug>
+  <pubDate>2008-04-22T00:03:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:32:18.467Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;I know that the Test Driven Development series is lagging behind schedule a bit, but this weekend I decided to move the site from a shared hosting provider to a virtual private server. What a weekend it was. Hats off to all of the server administrators out there that do such great jobs at keeping the worlds servers online. I won't blog about the experience b/c it's just typical IT mambo jumbo, but hopefully I will be done in a couple of days and can upload the remaining content for the series. I have about six more sites to transfer, but they all require databases so I am moving fast to get Microsoft SQL Server installed and configured.&lt;/p&gt;    &lt;p&gt;Anyways, happy coding, will blog again soon.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>hosting</category>
+  </categories>
+  <comments></comments>
+</post>

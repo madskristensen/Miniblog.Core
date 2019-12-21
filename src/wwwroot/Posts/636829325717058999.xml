@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>HTML Markup is Duplicated in WebAPI Template</title>
+  <slug>duplicated-html-markup-in-webapi-template</slug>
+  <pubDate>2012-04-29T23:32:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:29:31.705Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;In working with a test project for ASP.NET Web API, I noticed an interesting script reference in the _Layout.cshtml.&lt;/p&gt;  &lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;script&lt;/span&gt;
+    &lt;span class="attr"&gt;src&lt;/span&gt;=&amp;quot;&lt;span class="attr"&gt;System&lt;/span&gt;.&lt;span class="attr"&gt;Web&lt;/span&gt;.&lt;span class="attr"&gt;Optimization&lt;/span&gt;.&lt;span class="attr"&gt;BundleTable&lt;/span&gt;.&lt;span class="attr"&gt;Bundles&lt;/span&gt;.&lt;span class="attr"&gt;ResolveBundleUrl&lt;/span&gt;(“~/&lt;span class="attr"&gt;Scripts&lt;/span&gt;/&lt;span class="attr"&gt;js&lt;/span&gt;”)”&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;script&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;
+
+&lt;p&gt;Because this url is apparently pointing to the directory and the file extension, I wanted to know if indeed the scripts were being pre-loaded from this one script call. So I ran the application and clicked on “View Source” in the browser where I found the following source code:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;&amp;lt;!&lt;/span&gt;&lt;span class="html"&gt;DOCTYPE&lt;/span&gt; &lt;span class="attr"&gt;html&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;html&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;head&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;meta&lt;/span&gt; &lt;span class="attr"&gt;charset&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;utf-8&amp;quot;&lt;/span&gt; &lt;span class="kwrd"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;meta&lt;/span&gt; &lt;span class="attr"&gt;name&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;viewport&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;content&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;width=device-width&amp;quot;&lt;/span&gt; &lt;span class="kwrd"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;title&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;title&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;link&lt;/span&gt; &lt;span class="attr"&gt;href&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;/Content/css?v=oI5uNwN5NWmYrn8E1&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;rel&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;type&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;text/css&amp;quot;&lt;/span&gt; &lt;span class="kwrd"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;link&lt;/span&gt; &lt;span class="attr"&gt;href&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;/Content/themes/base/css?v=UM4Ob0i8OdW81&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;rel&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;type&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;text/css&amp;quot;&lt;/span&gt; &lt;span class="kwrd"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;script&lt;/span&gt; &lt;span class="attr"&gt;src&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;/Scripts/js?v=4h5lPNUsLiFoa0vqrItjS2JpFtAe35Q6o_sY03tBK_Q1&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;script&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&lt;span class="str"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;meta charset=&lt;span class="str"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt; /&amp;gt;
+&amp;lt;title&amp;gt;ASP.NET Web API&amp;lt;/title&amp;gt;
+&amp;lt;link href=&lt;span class="str"&gt;&amp;quot;/Content/Site.css&amp;quot;&lt;/span&gt; rel=&lt;span class="str"&gt;&amp;quot;stylesheet&amp;quot;&lt;/span&gt; type=&lt;span class="str"&gt;&amp;quot;text/css&amp;quot;&lt;/span&gt; /&amp;gt;
+&amp;lt;script src=&lt;span class="str"&gt;&amp;quot;/Scripts/modernizr-2.0.6-development-only.js&amp;quot;&lt;/span&gt; type=&lt;span class="str"&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt;&amp;gt;&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;script&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;meta&lt;/span&gt; &lt;span class="attr"&gt;name&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;viewport&amp;quot;&lt;/span&gt; &lt;span class="attr"&gt;content&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;width=device-width&amp;quot;&lt;/span&gt; &lt;span class="kwrd"&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;head&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;body&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;header&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;content-wrapper&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt; 
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;float-left&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;p&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;site-title&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;a&lt;/span&gt; &lt;span class="attr"&gt;href&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;ASP.NET Web API&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;a&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;p&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;header&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;id&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;section&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;featured&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;content-wrapper&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;hgroup&lt;/span&gt; &lt;span class="attr"&gt;class&lt;/span&gt;&lt;span class="kwrd"&gt;=&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;h1&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;Welcome to ASP.NET Web API!&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;h1&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;h2&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;Modify the code in this template to jump-start your ASP.NET Web API development.&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;h2&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;hgroup&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;&lt;/span&gt;&lt;span class="html"&gt;p&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;font color="#000000"&gt;… CONTENT DELETED FOR BREVITY… &amp;lt;/p&amp;gt;&lt;/font&gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;section&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;section&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;section&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;div&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;body&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;html&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;body&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="html"&gt;html&lt;/span&gt;&lt;span class="kwrd"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;I’ve removed some of the markup for brevity, but left the main sections to illustrate my point. As you can see in the markup there are two DOCTYPE elements, two &amp;lt;head&amp;gt; sections as well as two &amp;lt;body&amp;gt; sections. In essence, we have a web page wrapped in a web page and interestingly enough, the browser rendered it.&lt;/p&gt;
+
+&lt;p&gt;So I took a look at the template file as well as the index view for the home controller and indeed found that both pages contained full page declarations. As a result, the RenderBody() call from _Layout.cshtml caused all of the content in Views/Home/Index.cshtml to render including the doctype, head, and body tags.&lt;/p&gt;
+
+&lt;p&gt;I presume that this would not present an issue unless you attempt to traverse the DOM using jQuery or some other script library. This is where you may experience some unexpected results. In any case, if you are at all familiar with ASP.NET MVC then you are already familiar with how to clean this up, in fact, the instructions on the page itself are to replace the contents with your own. My recommendation is simply to ensure that you remove the repeating page declarations in the Index.cshtml page as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;strike&gt;On another note, I didn’t actually resolve my question by going through this which is, are the scripts being pre-loaded&lt;/strike&gt;. The Scripts folder does contain a _references.js file which we know the “_&amp;lt;filename&amp;gt;” convention in ASP.NET MVC generally means a special/reserved file. The file contains a few commented lines referencing other script files contained in the directory. &lt;strike&gt;I presume that if you uncomment these lines, then the files will be loaded together resulting in one HTTP request instead of one for each file.&lt;/strike&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;font color="#ff0000"&gt;Updated:&lt;/font&gt; &lt;/p&gt;
+
+&lt;p&gt;After further reading over on &lt;a href="http://haacked.com/archive/2012/03/11/itrsquos-the-little-things-about-asp-net-mvc-4.aspx" target="_blank"&gt;Phil Haack’s&lt;/a&gt; blog post about the little things in MVC 4 and then another link through to the &lt;a href="http://gurustop.net/blog/2012/03/03/javascript-js-intellisense-auto_complete-in-visual-studio-11-beta-the-web-_references-js-file/" target="_blank"&gt;GuruStop.Net&lt;/a&gt; I found that the _references.js file is a helper file that provides JavaScript intellisense for Visual Studio. So there we have it, question answered.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

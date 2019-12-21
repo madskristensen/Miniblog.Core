@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>disqus_this</title>
+  <slug>disqusthis</slug>
+  <pubDate>2014-01-30T22:19:00.000Z</pubDate>
+  <lastModified>2019-02-03T22:21:40.949Z</lastModified>
+  <excerpt />
+  <content>&lt;h2&gt;&lt;font face="Calibri"&gt;unable to accept comments &lt;img class="wlEmoticon wlEmoticon-sadsmile" alt="Sad smile" src="http://www.bacardibryant.com/Posts/files/wlEmoticon-sadsmile_636848291806755923.png" /&gt;&lt;/font&gt;&lt;/h2&gt;  &lt;p&gt;&lt;font face="Calibri"&gt;feeling a bit weary about not being able to allow comments on blog posts, i went to the ghost support page and performed a search on &lt;/font&gt;&lt;a href="http://disqus.com/" target="_blank"&gt;&lt;font face="Calibri"&gt;disqus&lt;/font&gt;&lt;/a&gt;&lt;font face="Calibri"&gt;. i recalled it having been mentioned in one of the threads that i had read when researching running ghost as a blogging engine, however during that time, my focus was on getting the blog up and running. however, after moving over a few legacy posts, and publishing something new, the ability for readers to leave comments came to the to forefront.&lt;/font&gt;&lt;/p&gt;  &lt;h2&gt;&lt;font face="Calibri"&gt;added disqus module&lt;/font&gt;&lt;/h2&gt;  &lt;p&gt;&lt;font face="Calibri"&gt;that's when to great satisfaction, i found an article which pointed to this &lt;/font&gt;&lt;a href="http://blog.christophvoigt.com/enable-comments-on-ghost-with-disqus/" target="_blank"&gt;&lt;font face="Calibri"&gt;post&lt;/font&gt;&lt;/a&gt;&lt;font face="Calibri"&gt; on how to configure disqus to work with &lt;/font&gt;&lt;a href="https://twitter.com/TryGhost" target="_blank"&gt;&lt;font face="Calibri"&gt;@ghost&lt;/font&gt;&lt;/a&gt;&lt;font face="Calibri"&gt; blogs.&lt;/font&gt;&lt;/p&gt;  &lt;h2&gt;efficient and to the point&lt;/h2&gt;  &lt;p&gt;&lt;font face="Calibri"&gt;within ten minutes, i was able to create a &lt;a href="https://twitter.com/disqus" target="_blank"&gt;@disqus&lt;/a&gt; account, update the blog files, restart ghost, and everything was all set. it's a beautiful thing when all things just come together.&lt;/font&gt;&lt;/p&gt;  &lt;p&gt;&lt;font face="Calibri"&gt;happy coding!&lt;/font&gt;&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>blogging</category>
+  </categories>
+  <comments></comments>
+</post>

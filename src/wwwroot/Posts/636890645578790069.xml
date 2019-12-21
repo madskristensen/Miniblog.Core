@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Restart ASP.NET Application Programmatically</title>
+  <slug>restart-aspnet-application-programmatically</slug>
+  <pubDate>2008-06-02T22:41:00.000Z</pubDate>
+  <lastModified>2019-03-24T22:49:17.953Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;I have found that there are times in developing when I had the need to restart my ASP.NET application. One good application of this is troubleshooting application level events, which is exactly what I needed to accomplish.&lt;/p&gt;  &lt;p&gt;&amp;#160;&lt;/p&gt;  &lt;p&gt;While browsing the digital library (Google), I found &lt;b&gt;&lt;a href="http://www.nullskull.com/a/762/restart-aspnet-apps-programmatically-log-applicationend-events-and-use-web-management-logging.aspx" target="_blank"&gt;Peter Bromberg’s&lt;/a&gt;&lt;/b&gt; post, that handles the fundamental aspects of the task and simply modified it to fit the context of my environment and needs.&lt;/p&gt;  &lt;p&gt;An &lt;b&gt;ASP.NET application automatically restarts&lt;/b&gt; when one of the following occurs: the &lt;b&gt;web.config file has been modified&lt;/b&gt;, a referenced &lt;b&gt;class library has been modified&lt;/b&gt;, or when the &lt;b&gt;HttpRuntime.UnloadAppDomain()&lt;/b&gt; method has been called. That call would look something like this:&lt;/p&gt;  &lt;p&gt;&amp;#160;&lt;/p&gt;    &lt;pre&gt;&lt;code class="c-sharp csharp"&gt;System.Web.HttpRuntime.UnloadAppDomain();&lt;/code&gt;&lt;/pre&gt;
+
+
+
+&lt;p&gt;&amp;#160;&lt;/p&gt;
+
+&lt;p&gt;After this following line executes, any subsequent page request to your application will fire the &lt;strong&gt;Application_Start()&lt;/strong&gt; event and execute any code found in the method of the same name in the Global.asax file.&lt;/p&gt;
+
+&lt;p&gt;To be of any use for me, I needed the process to be completed automated and “on demand” as Peter points out in his post, so it worked out well.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>asp.net</category>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

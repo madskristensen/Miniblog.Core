@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>First Post using Miniblog.Core</title>
+  <slug>first-post-using-miniblog-core</slug>
+  <pubDate>2019-01-12T20:07:16.897Z</pubDate>
+  <lastModified>2019-12-21T05:30:25.341Z</lastModified>
+  <excerpt>This is my first blog post using Miniblog.Core developed by Mads Kristensen.</excerpt>
+  <content>&lt;p&gt;This is my first post using Miniblog.Core developed by Mads Kristensen. I migrated over from Ghost because I wanted more simple upgrade experience. Given that I host my blog on Microsoft Azure and I am a .NET developer, I will be able to make updates as often and as rapidly as I desire or at least as Microsoft upgrades Azure itself.&lt;/p&gt;
+&lt;p&gt;Even more importantly, the integration with Open Live Writer is a huge plus because I can compose blog posts with layout and images using a familiar editor and retain those blog posts locally.&lt;/p&gt;</content>
+  <ispublished>false</ispublished>
+  <categories>
+    <category>general</category>
+  </categories>
+  <comments></comments>
+</post>

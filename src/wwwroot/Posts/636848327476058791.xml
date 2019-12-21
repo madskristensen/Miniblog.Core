@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>dotnet CORE Install for macOS fails</title>
+  <slug>net-core-install-for-macos-fails</slug>
+  <pubDate>2016-12-09T23:18:00.000Z</pubDate>
+  <lastModified>2019-02-10T03:14:38.794Z</lastModified>
+  <excerpt>when following this tutorial. after completing step one, you should close the terminal (or maybe open a new terminal window before attempting to run the commands instructed in step three as you will likely get the error "dotnet command not found".</excerpt>
+  <content>&lt;h2&gt;&lt;span style="font-family: Lucida Sans;"&gt;the gist&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span style="font-family: Lucida Sans;"&gt;when following &lt;/span&gt;&lt;a href="https://www.microsoft.com/net/core#macos" target="_blank" rel="noopener"&gt;&lt;span style="font-family: Lucida Sans;"&gt;this tutorial&lt;/span&gt;&lt;/a&gt;&lt;span style="font-family: Lucida Sans;"&gt;. &lt;strong&gt;after completing step one, you should close the terminal&lt;/strong&gt; (or maybe open a new terminal window before attempting to run the commands instructed in step three as you will likely get the error &lt;strong&gt;"dotnet command not found"&lt;/strong&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;span style="font-family: Lucida Sans;"&gt;visual studio for macOS!&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span style="font-family: Lucida Sans;"&gt;i've begun to play with &lt;/span&gt;&lt;a href="https://www.visualstudio.com/vs/visual-studio-mac/" target="_blank" rel="noopener"&gt;&lt;span style="font-family: Lucida Sans;"&gt;visual studio for macOS preview&lt;/span&gt;&lt;/a&gt;&lt;span style="font-family: Lucida Sans;"&gt; and found &lt;/span&gt;&lt;a href="https://www.microsoft.com/net/core#macos" target="_blank" rel="noopener"&gt;&lt;span style="font-family: Lucida Sans;"&gt;this resource&lt;/span&gt;&lt;/a&gt;&lt;span style="font-family: Lucida Sans;"&gt; on how to install .net core so that i could begin coding and serving up .net applications. i am ready to have my ice cream and eat it too...in other words code for everything from one workstation, no parallels, bootcamp, remote desktop, etc. we'll see how well that goes.&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;span style="font-family: Lucida Sans;"&gt;but i ran into a snag:(&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span style="font-family: Lucida Sans;"&gt;after completing step one and attempting step three, i was presented with the error mentioned above. i went back through the steps and begin to search the known issues, but all of these topics and solutions appeared to be overkill for what i was experiencing. so...i decided to clean up my screen by closing the terminal and all other windows and apps as a sort of going back to baseline if you will.&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;span style="font-family: Lucida Sans;"&gt;it works!&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;then i launched the terminal again just to ensure that i had the terminology correct for the error, only this time &lt;strong&gt;it worked!&lt;/strong&gt; i thought it to be a strange thing, but maybe it's a common oversight for many visual studio developers like myself, whose previous experience has been totally on the pc.&lt;/p&gt;
+&lt;h2&gt;what do i like so far&lt;/h2&gt;
+&lt;p&gt;&lt;span style="font-family: Lucida Sans;"&gt;the ux is a bit different as it takes on the macOS ui styles, however it is refreshing in its simplicity. while i obviously haven't explored everything in one day, i did give the git integration a test run and published a project up to &lt;/span&gt;&lt;a href="https://github.com/bacardibryant/NimbleSchedule-API-Mono-Client" target="_blank" rel="noopener"&gt;&lt;span style="font-family: Lucida Sans;"&gt;github&lt;/span&gt;&lt;/a&gt;&lt;span style="font-family: Lucida Sans;"&gt;. i was later able to get my home computer set-up, clone the repo, and run the project just fine.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style="font-family: Lucida Sans;"&gt;all of that said, currently the normal start-up workflow of &lt;strong&gt;create &amp;gt; code &amp;gt; commit &amp;gt; clone&lt;/strong&gt; works seamlessly. not sure that i will continue to write on my experiences with the product, but i would definitely recommend visual studio for macOS to a colleague.&lt;/span&gt;&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>.net core</category>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

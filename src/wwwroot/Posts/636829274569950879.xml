@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>First post using Open Live Writer</title>
+  <slug>first-post-using-open-live-writer</slug>
+  <pubDate>2019-01-12T23:41:00.000Z</pubDate>
+  <lastModified>2019-12-21T05:31:06.595Z</lastModified>
+  <excerpt>This is an initial post using Open Live Writer.</excerpt>
+  <content>&lt;p&gt;&lt;span style="font-family: times new roman; font-size: 12pt;"&gt;This is an initial post using Open Live Writer. It's just a test to confirm that I can post to the blog service. More exciting content to follow.&lt;/span&gt;&lt;/p&gt;</content>
+  <ispublished>false</ispublished>
+  <categories>
+    <category>general</category>
+    <category>blogging</category>
+  </categories>
+  <comments></comments>
+</post>

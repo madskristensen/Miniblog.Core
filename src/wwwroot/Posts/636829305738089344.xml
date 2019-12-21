@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>About Me</title>
+  <slug>about-me</slug>
+  <pubDate>2008-04-14T00:50:00.000Z</pubDate>
+  <lastModified>2019-01-12T22:56:13.808Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;Hi, my name is Bacardi Bryant and I have developing applications using Microsoft .NET technologies and ColdFusion for eight years.&lt;/p&gt;  &lt;p&gt;I live in Spring, Texas with my wife and now 3 year old son. When I am not coding, I enjoy watching my son run around the play area at the Woodlands Mall and listening to my wife save the world.&lt;/p&gt;  &lt;p&gt;This blog is my small contribution to the .NET community.&lt;/p&gt;  &lt;p&gt;Any questions are comments are welcomed.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>general</category>
+  </categories>
+  <comments></comments>
+</post>

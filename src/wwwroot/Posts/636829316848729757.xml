@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Problems with Un-Scoped Client-Side Calls in SecurityGuard.MVC NuGet Package.</title>
+  <slug>problems-with-un-scoped-client-side-calls-in-securityguardmvc-nuget-package</slug>
+  <pubDate>2012-08-09T20:53:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:14:44.873Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;&lt;strong&gt;The Gist: You should update _SecurityGuardLayoutPage.cshtml and any other views that you decide to customize, adding scoped JavaScript references to the UI elements used by the package.&lt;/strong&gt;&lt;/p&gt;  &lt;p&gt;&lt;strong&gt;The Issue:&lt;/strong&gt; &lt;a href="https://github.com/kahanu/Security-Guard/issues/10"&gt;https://github.com/kahanu/Security-Guard/issues/10&lt;/a&gt;&lt;/p&gt;  &lt;p&gt;&lt;strong&gt;The Long Story&lt;/strong&gt;&lt;/p&gt;  &lt;p&gt;Like many others that are available, &lt;a href="http://www.mvccentral.net/Story/Details/tools/kahanu/securityguard-nuget-package-for-asp-net-membership" target="_blank"&gt;SecurityGuard&lt;/a&gt; is an awesome NuGet package available for both ASP.NET MVC3 and ASP.NET MVC4 which when installed, gives you a quick and easy way to get up and going in managing users and roles within your web application using the ASP.NET Security Providers.&lt;/p&gt;  &lt;p&gt;After installing SecurityGuard and completing the site integration, I also decided that I wanted to update the look and feel, making it more consistent with the rest of the site. More specifically, I incorporated the top-level site’s navigation bar which was implemented using a &amp;lt;ul&amp;gt; element and CSS. Well, after completing this UI integration, I found that in one of the views (Roles\Index.cshtml) in particular, each time that I selected a role, my navigation elements disappeared from the top of the page.&lt;/p&gt;  &lt;p&gt;So I took a look at the source code and found an interesting method call:&lt;/p&gt;  &lt;p&gt;&lt;strong&gt;OnGetUsersInRoleSuccess()&lt;/strong&gt;&lt;/p&gt;  &lt;pre class="csharpcode"&gt; &lt;span class="rem"&gt;/***********************************************&lt;/span&gt;
+&lt;span class="rem"&gt;        * Begin Get Users In Role Functions&lt;/span&gt;
+&lt;span class="rem"&gt;        ***********************************************/&lt;/span&gt;
+
+        &lt;span class="rem"&gt;//users-in-role-div&lt;/span&gt;
+
+        &lt;span class="kwrd"&gt;var&lt;/span&gt; usersInRoleDiv = $(&lt;span class="str"&gt;&amp;quot;#users-in-role-div&amp;quot;&lt;/span&gt;);
+
+        $(&lt;span class="str"&gt;&amp;quot;#RolesList&amp;quot;&lt;/span&gt;).change(&lt;span class="kwrd"&gt;function&lt;/span&gt; () {
+            &lt;span class="kwrd"&gt;var&lt;/span&gt; item = $(&lt;span class="kwrd"&gt;this&lt;/span&gt;).val();
+
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (item != &lt;span class="str"&gt;&amp;quot;&amp;quot;&lt;/span&gt;) {
+                usersInRoleDiv.show();
+
+                $.ajax({
+                    url: &lt;span class="str"&gt;'@Url.Action(&amp;quot;GetUsersInRole&amp;quot;, &amp;quot;Role&amp;quot;)'&lt;/span&gt;,
+                    dataType: &lt;span class="str"&gt;'json'&lt;/span&gt;,
+                    type: &lt;span class="str"&gt;'GET'&lt;/span&gt;,
+                    cache: &lt;span class="kwrd"&gt;false&lt;/span&gt;,
+                    data: { roleName: item },
+                    success: OnGetUsersInRoleSuccess,
+                    error: OnGetUsersInRoleError
+                });
+            } &lt;span class="kwrd"&gt;else&lt;/span&gt; {
+                $(&lt;span class="str"&gt;&amp;quot;#users-in-role-div&amp;quot;&lt;/span&gt;).hide();
+            }
+        });
+
+        &lt;span class="kwrd"&gt;function&lt;/span&gt; OnGetUsersInRoleSuccess(data) {
+            $(&lt;span class="str"&gt;&amp;quot;li&amp;quot;&lt;/span&gt;).remove();
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (data == &lt;span class="str"&gt;&amp;quot;&amp;quot;&lt;/span&gt;) {
+                ul.append(&lt;span class="str"&gt;&amp;quot;&amp;lt;li&amp;gt;No user(s).&amp;lt;/li&amp;gt;&amp;quot;&lt;/span&gt;);
+            } &lt;span class="kwrd"&gt;else&lt;/span&gt; {
+                $.each(data, &lt;span class="kwrd"&gt;function&lt;/span&gt; (index, item) {
+                    ul.append(&lt;span class="str"&gt;&amp;quot;&amp;lt;li&amp;gt;&amp;lt;a href=\&amp;quot;/SecurityGuard/Membership/Update/&amp;quot;&lt;/span&gt; + &lt;br /&gt;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160; item + &lt;span class="str"&gt;&amp;quot;\&amp;quot;&amp;gt;&amp;quot;&lt;/span&gt; + item + &lt;span class="str"&gt;&amp;quot;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&amp;quot;&lt;/span&gt;);
+                });
+            }
+        }
+
+        &lt;span class="kwrd"&gt;function&lt;/span&gt; OnGetUsersInRoleError(xhr, status, error) {
+            message.show().delay(5000).fadeOut();    &lt;span class="rem"&gt;// Show the message&lt;/span&gt;
+            $(&lt;span class="str"&gt;&amp;quot;li&amp;quot;&lt;/span&gt;, message).addClass(&lt;span class="str"&gt;&amp;quot;red&amp;quot;&lt;/span&gt;);      &lt;span class="rem"&gt;// Apply the Green style&lt;/span&gt;
+            $(&lt;span class="str"&gt;&amp;quot;strong&amp;quot;&lt;/span&gt;, message).text(error); &lt;span class="rem"&gt;// Insert the message&lt;/span&gt;
+        }
+
+        &lt;span class="rem"&gt;/***********************************************&lt;/span&gt;
+&lt;span class="rem"&gt;        * End Get Users In Role Functions&lt;/span&gt;
+&lt;span class="rem"&gt;        ***********************************************/&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;The thing that is interesting about this method is that the call to &lt;strong&gt;$(“li”).remove() is not scoped, meaning it will remove all &amp;lt;li&amp;gt; elements on the page, regardless of location (scope).&lt;/strong&gt; This included my navigation menu elements.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Solution:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;As a solution, I simply scoped the calls to the &amp;lt;ul&amp;gt; element that the function is intended to execute on.&lt;/strong&gt; The end result is a set of methods that look like this:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt; &lt;span class="rem"&gt;/***********************************************&lt;/span&gt;
+&lt;span class="rem"&gt;        * Begin Get Users In Role Functions&lt;/span&gt;
+&lt;span class="rem"&gt;        ***********************************************/&lt;/span&gt;
+
+        &lt;span class="rem"&gt;//users-in-role-div&lt;/span&gt;
+        &lt;span class="rem"&gt;//roles ul&lt;/span&gt;
+
+        var usersInRoleDiv = $(&lt;span class="str"&gt;&amp;quot;#users-in-role-div&amp;quot;&lt;/span&gt;);
+        var ul = $(&lt;span class="str"&gt;&amp;quot;#users-in-role-div ul&amp;quot;&lt;/span&gt;);
+
+        $(&lt;span class="str"&gt;&amp;quot;#RolesList&amp;quot;&lt;/span&gt;).change(function () {
+            var item = $(&lt;span class="kwrd"&gt;this&lt;/span&gt;).val();
+
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (item != &lt;span class="str"&gt;&amp;quot;&amp;quot;&lt;/span&gt;) {
+                usersInRoleDiv.show();
+
+                $.ajax({
+                    url: &lt;span class="str"&gt;'@Url.Action(&amp;quot;GetUsersInRole&amp;quot;, &amp;quot;Role&amp;quot;)'&lt;/span&gt;,
+                    dataType: &lt;span class="str"&gt;'json'&lt;/span&gt;,
+                    type: &lt;span class="str"&gt;'GET'&lt;/span&gt;,
+                    cache: &lt;span class="kwrd"&gt;false&lt;/span&gt;,
+                    data: { roleName: item },
+                    success: OnGetUsersInRoleSuccess,
+                    error: OnGetUsersInRoleError
+                });
+            } &lt;span class="kwrd"&gt;else&lt;/span&gt; {
+                $(&lt;span class="str"&gt;&amp;quot;#users-in-role-div&amp;quot;&lt;/span&gt;).hide();
+            }
+        });
+
+        function OnGetUsersInRoleSuccess(data) {
+            &lt;span class="rem"&gt;//clear existing list items&lt;/span&gt;
+            ul.empty();
+           
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (data == &lt;span class="str"&gt;&amp;quot;&amp;quot;&lt;/span&gt;) {
+                ul.append(&lt;span class="str"&gt;&amp;quot;&amp;lt;li&amp;gt;No user(s).&amp;lt;/li&amp;gt;&amp;quot;&lt;/span&gt;);
+            } &lt;span class="kwrd"&gt;else&lt;/span&gt; {
+                $.each(data, function (index, item) {
+                    ul.append(&lt;span class="str"&gt;&amp;quot;&amp;lt;li&amp;gt;&amp;lt;a href=\&amp;quot;/SecurityGuard/Membership/Update/&amp;quot;&lt;/span&gt; + &lt;br /&gt;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160;&amp;#160; item + &lt;span class="str"&gt;&amp;quot;\&amp;quot;&amp;gt;&amp;quot;&lt;/span&gt; + item + &lt;span class="str"&gt;&amp;quot;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&amp;quot;&lt;/span&gt;);
+                });
+            }
+        }
+
+        function OnGetUsersInRoleError(xhr, status, error) {
+            message.show().delay(5000).fadeOut();    &lt;span class="rem"&gt;// Show the message&lt;/span&gt;
+            $(&lt;span class="str"&gt;&amp;quot;li&amp;quot;&lt;/span&gt;, message).addClass(&lt;span class="str"&gt;&amp;quot;red&amp;quot;&lt;/span&gt;);      &lt;span class="rem"&gt;// Apply the Green style&lt;/span&gt;
+            $(&lt;span class="str"&gt;&amp;quot;strong&amp;quot;&lt;/span&gt;, message).text(error); &lt;span class="rem"&gt;// Insert the message&lt;/span&gt;
+        }
+
+        &lt;span class="rem"&gt;/***********************************************&lt;/span&gt;
+&lt;span class="rem"&gt;        * End Get Users In Role Functions&lt;/span&gt;
+&lt;span class="rem"&gt;        ***********************************************/&lt;/span&gt;&lt;/pre&gt;
+&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;
+
+&lt;p&gt;Essentially, &lt;strong&gt;I created a global object scoped to the “users-in-role-div” &amp;lt;ul&amp;gt;. Then in the method, I could simply call empty() on the DOM element&lt;/strong&gt;. Note that [list element].empty() is a native method exposed by JavaScript and not a &lt;a href="http://jquery.com/" target="_blank"&gt;jQuery&lt;/a&gt; method. It’s funny how the two are so ambiguous these days.&lt;/p&gt;
+
+&lt;p&gt;In any case, problem solved and I posted the issue on github so I’m sure that it will be resolved in later releases.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Getting Started With Test Driven Development</title>
+  <slug>getting-started-with-test-driven-development</slug>
+  <pubDate>2008-04-14T01:21:00.000Z</pubDate>
+  <lastModified>2019-01-12T22:52:31.746Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;Recently I decided that I would adopt TDD or &amp;quot;Test Driven Development&amp;quot; as an approach to building C# applications. While I found plenty of information on testing tools such as &lt;a href="http://www.ayende.com/default.aspx" target="_blank"&gt;RhinoMocks&lt;/a&gt;, &lt;a href="http://www.nunit.org/index.php" target="_blank"&gt;NUnit&lt;/a&gt;, and the newly introduced &lt;a href="http://www.clariusconsulting.net/blogs/kzu/archive/2007/12/18/46465.aspx" target="_blank"&gt;MoQ&lt;/a&gt; pronounced Mock-You, the QuickStarts and code snippets were comprehensive and difficult for a newbie to follow in my opinion.&lt;/p&gt;  &lt;p&gt;Therefore, for anyone that is looking to get going with TDD for the first time, as I was, here is a QuickStart Series that I hope will help you along.&lt;/p&gt;  &lt;p&gt;As the title mentions, I am focusing on TDD for C#. That said, if you intend to practice along with the tutorials in this series, you will need:&lt;/p&gt;  &lt;br /&gt;  &lt;ul&gt;   &lt;li&gt;Microsoft Visual Studio &lt;/li&gt;    &lt;li&gt;The NUnit Library &lt;/li&gt;    &lt;li&gt;The RhinoMocks Library &lt;/li&gt;    &lt;li&gt;The MoQ Library&lt;/li&gt; &lt;/ul&gt;  &lt;p&gt;Although I won't cover it in this series, I should mention that Visual Studio Professional and higher versions have MS Test, a testing framework offered by Microsoft, integrated into the IDE.&lt;/p&gt;  &lt;p&gt;The series:&lt;/p&gt;    &lt;ul&gt;   &lt;li&gt;&lt;a href="http://www.bacardibryant.com/downloading-and-installing-nunit"&gt;Downloading and Installing NUnit&lt;/a&gt; &lt;/li&gt;    &lt;li&gt;&lt;a href="http://www.bacardibryant.com/creating-an-application-the-tdd-approach"&gt;Creating An Application, the TDD Approach&lt;/a&gt; &lt;/li&gt;    &lt;li&gt;TDD, Mocking with RhinoMocks[coming soon] &lt;/li&gt;    &lt;li&gt;TDD, Mocking with MoQ [coming soon] &lt;/li&gt; &lt;/ul&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

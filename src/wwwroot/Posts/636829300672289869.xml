@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Windows Phone 7 Project Missing IsolatedSettings Class</title>
+  <slug>windows-phone-7-project-missing-isolatedsettings-class</slug>
+  <pubDate>2012-03-14T22:49:00.000Z</pubDate>
+  <lastModified>2019-01-12T22:47:47.229Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;In reading “&lt;a href="http://www.amazon.com/101-Windows-Phone-Apps-Volume/dp/0672335522/ref=sr_1_1?ie=UTF8&amp;amp;qid=1331768263&amp;amp;sr=8-1" target="_blank"&gt;101 Windows Phone 7 Apps&lt;/a&gt;” I discovered that there was a missing reference when following the guide in the book. In all fairness to the authors, the book was published pre-Mango and so it may well have worked on the earlier phone OS. I could have built a 7.0 test project to verify this, but I thought it more important that the code example be applicable with the latest developer tools and current Windows Phone 7 edition.&lt;/p&gt;  &lt;p&gt;Chapter 1, Tally, is a simple application that increments a number each time that the screen is tapped. The application leverages the Windows Phone 7 isolated storage feature to store and retrieve the last value whenever the users navigates to and from the application.&lt;/p&gt;  &lt;p&gt;In the “Updating the Code-Behind” section where the MainPage.xaml.cs file’s source code is modified, there is a using statement pointing to an assembly called WindowsPhoneApp. Well in attempting to implement the author’s code, I could not find the assembly for making the reference nor could I find a previous instruction to create the class during the walk-through. Their use of the assembly and implementation of the class is below.&lt;/p&gt;  &lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows.Navigation;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows.Input;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; Microsoft.Phone.Controls;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; WindowsPhoneApp; &lt;span class="rem"&gt;// For the Setting class&lt;/span&gt;
+
+&lt;span class="kwrd"&gt;namespace&lt;/span&gt; Tally
+{
+    &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;partial&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; MainPage : PhoneApplicationPage
+    {
+        &lt;span class="kwrd"&gt;int&lt;/span&gt; count = 0;
+
+        &lt;span class="rem"&gt;// Remember what the user typed, for future app activations or launches&lt;/span&gt;
+        Setting&amp;lt;&lt;span class="kwrd"&gt;int&lt;/span&gt;&amp;gt; savedCount = &lt;span class="kwrd"&gt;new&lt;/span&gt; Setting&amp;lt;&lt;span class="kwrd"&gt;int&lt;/span&gt;&amp;gt;(&lt;span class="str"&gt;&amp;quot;SavedCount&amp;quot;&lt;/span&gt;,0);
+       
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; MainPage()
+        {
+            InitializeComponent();
+        }
+
+        &lt;span class="rem"&gt;//Handle a tap anywhere on the page (other than the button)&lt;/span&gt;
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnMouseLeftButtonDown(e);
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.count++;
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.CountTextBlock.Text = &lt;span class="kwrd"&gt;this&lt;/span&gt;.count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+        &lt;span class="rem"&gt;// Handle a tap on the button&lt;/span&gt;
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; ResetButtonClick(&lt;span class="kwrd"&gt;object&lt;/span&gt; sender, RoutedEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.count = 0;
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.CountTextBlock.Text = &lt;span class="kwrd"&gt;this&lt;/span&gt;.count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnNavigatedFrom(NavigationEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnNavigatedFrom(e);
+
+            &lt;span class="rem"&gt;// Persist state when leaving for any reason (Deactivated or Closing)&lt;/span&gt;
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.savedCount.Value = &lt;span class="kwrd"&gt;this&lt;/span&gt;.count;
+        }
+
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnNavigatedTo(NavigationEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnNavigatedTo(e);
+    &lt;span class="rem"&gt;// Restore persisted state&lt;/span&gt;
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.count = &lt;span class="kwrd"&gt;this&lt;/span&gt;.savedCount.Value;
+            &lt;span class="kwrd"&gt;this&lt;/span&gt;.CountTextBlock.Text = &lt;span class="kwrd"&gt;this&lt;/span&gt;.count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;When VisualStudio complained about the Setting class and the using statement and I could not find an assembly to reference I knew that something had changed since publishing. To resolve the issue, I simply created a settings a class to manage application persistence using isolated storage settings. By convention, I generally place coding classes in a folder named “Modules” as shown in the image below.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/SolutionExplorer_636829300664931639.jpg"&gt;&lt;img title="SolutionExplorer" style="border: 0px currentcolor; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="SolutionExplorer" src="http://www.bacardibryant.com/Posts/files/SolutionExplorer_thumb_636829300667020028.jpg" width="369" height="524" /&gt;&lt;/a&gt; &lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;&lt;/p&gt;
+
+&lt;p&gt;The settings class actually implements the Settings.cs class found on MSDN with added properties to support persisting and retrieving the count. Here is the code for this class.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;using&lt;/span&gt; System;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.IO.IsolatedStorage;
+
+&lt;span class="kwrd"&gt;namespace&lt;/span&gt; Tally.Modules
+{
+    &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; Settings
+    {
+        &lt;span class="kwrd"&gt;readonly&lt;/span&gt; IsolatedStorageSettings _settings;
+        &lt;span class="kwrd"&gt;const&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; SavedCountSettingKeyName = &lt;span class="str"&gt;&amp;quot;SavedCount&amp;quot;&lt;/span&gt;;
+        &lt;span class="kwrd"&gt;const&lt;/span&gt; &lt;span class="kwrd"&gt;int&lt;/span&gt; SavedCountSettingDefault = 0;
+
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; Settings()
+        {
+            _settings = IsolatedStorageSettings.ApplicationSettings;
+        }
+
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; T Setting&amp;lt;T&amp;gt;(&lt;span class="kwrd"&gt;string&lt;/span&gt; key, T defaultValue)
+        {
+            T &lt;span class="kwrd"&gt;value&lt;/span&gt;;
+
+            &lt;span class="rem"&gt;// If the key exists, retrieve the value.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (_settings.Contains(key))
+            {
+                &lt;span class="kwrd"&gt;value&lt;/span&gt; = (T)_settings[key];
+            }
+            &lt;span class="rem"&gt;// Otherwise, use the default value.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;else&lt;/span&gt;
+            {
+                &lt;span class="kwrd"&gt;value&lt;/span&gt; = defaultValue;
+            }
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; &lt;span class="kwrd"&gt;value&lt;/span&gt;;
+        }
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; Save()
+        {
+            _settings.Save();
+        }
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// Update a setting value for our application. If the setting does not&lt;/span&gt;
+        &lt;span class="rem"&gt;/// exist, then add the setting.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;key&amp;quot;&amp;gt;&amp;lt;/param&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;value&amp;quot;&amp;gt;&amp;lt;/param&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;bool&lt;/span&gt; AddOrUpdateValue(&lt;span class="kwrd"&gt;string&lt;/span&gt; key, Object &lt;span class="kwrd"&gt;value&lt;/span&gt;)
+        {
+            &lt;span class="kwrd"&gt;bool&lt;/span&gt; valueChanged = &lt;span class="kwrd"&gt;false&lt;/span&gt;;
+
+            &lt;span class="rem"&gt;// If the key exists&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (_settings.Contains(key))
+            {
+                &lt;span class="rem"&gt;// If the value has changed&lt;/span&gt;
+                &lt;span class="kwrd"&gt;if&lt;/span&gt; (_settings[key] != &lt;span class="kwrd"&gt;value&lt;/span&gt;)
+                {
+                    &lt;span class="rem"&gt;// Store the new value&lt;/span&gt;
+                    _settings[key] = &lt;span class="kwrd"&gt;value&lt;/span&gt;;
+                    valueChanged = &lt;span class="kwrd"&gt;true&lt;/span&gt;;
+                }
+            }
+            &lt;span class="rem"&gt;// Otherwise create the key.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;else&lt;/span&gt;
+            {
+                _settings.Add(key, &lt;span class="kwrd"&gt;value&lt;/span&gt;);
+                valueChanged = &lt;span class="kwrd"&gt;true&lt;/span&gt;;
+            }
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; valueChanged;
+        }
+
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// Get the current value of the setting, or if it is not found, set the &lt;/span&gt;
+        &lt;span class="rem"&gt;/// setting to the default setting.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;typeparam name=&amp;quot;T&amp;quot;&amp;gt;&amp;lt;/typeparam&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;key&amp;quot;&amp;gt;&amp;lt;/param&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;defaultValue&amp;quot;&amp;gt;&amp;lt;/param&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; T GetValueOrDefault&amp;lt;T&amp;gt;(&lt;span class="kwrd"&gt;string&lt;/span&gt; key, T defaultValue)
+        {
+            T &lt;span class="kwrd"&gt;value&lt;/span&gt;;
+
+            &lt;span class="rem"&gt;// If the key exists, retrieve the value.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (_settings.Contains(key))
+            {
+                &lt;span class="kwrd"&gt;value&lt;/span&gt; = (T)_settings[key];
+            }
+            &lt;span class="rem"&gt;// Otherwise, use the default value.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;else&lt;/span&gt;
+            {
+                &lt;span class="kwrd"&gt;value&lt;/span&gt; = defaultValue;
+            }
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; &lt;span class="kwrd"&gt;value&lt;/span&gt;;
+        }
+
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// Property to get and set a Password Setting Key.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;int&lt;/span&gt; SavedCount
+        {
+            get
+            {
+                &lt;span class="kwrd"&gt;return&lt;/span&gt; GetValueOrDefault(SavedCountSettingKeyName, SavedCountSettingDefault);
+            }
+            set
+            {
+                &lt;span class="kwrd"&gt;if&lt;/span&gt; (AddOrUpdateValue(SavedCountSettingKeyName, &lt;span class="kwrd"&gt;value&lt;/span&gt;))
+                {
+                    Save();
+                }
+            }
+        }
+
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;Now that the class exists, here is an updated implementation of MainPage.xaml.cs.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows.Navigation;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Windows.Input;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; Microsoft.Phone.Controls;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; Tally.Modules;
+
+&lt;span class="kwrd"&gt;namespace&lt;/span&gt; Tally
+{
+    &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;partial&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; MainPage : PhoneApplicationPage
+    {
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;int&lt;/span&gt; _count;
+
+        &lt;span class="rem"&gt;// Remember what the user typed, for future app activations or launches&lt;/span&gt;
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;readonly&lt;/span&gt; Settings _settings = &lt;span class="kwrd"&gt;new&lt;/span&gt; Settings();
+       
+
+        &lt;span class="rem"&gt;// Constructor&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; MainPage()
+        {
+            InitializeComponent();
+        }
+
+        &lt;span class="rem"&gt;//Handle a tap anywhere on the page (other than the button)&lt;/span&gt;
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnMouseLeftButtonDown(e);
+            _count++;
+            CountTextBlock.Text = _count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; ResetButtonClick(&lt;span class="kwrd"&gt;object&lt;/span&gt; sender, RoutedEventArgs e)
+        {
+            _count = 0;
+            CountTextBlock.Text = _count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnNavigatedFrom(NavigationEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnNavigatedFrom(e);
+            &lt;span class="rem"&gt;//Persist state when leaving for any reason (deactivated or closing)&lt;/span&gt;
+            _settings.SavedCount = _count;
+        }
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;override&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; OnNavigatedTo(NavigationEventArgs e)
+        {
+            &lt;span class="kwrd"&gt;base&lt;/span&gt;.OnNavigatedTo(e);
+            _count = _settings.SavedCount;
+            CountTextBlock.Text = _count.ToString(&lt;span class="str"&gt;&amp;quot;N0&amp;quot;&lt;/span&gt;);
+        }
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;Build and run and you will find that persistence is now working.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/TallyCapture_636829300668912849.jpg"&gt;&lt;img title="TallyCapture" style="border: 0px currentcolor; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="TallyCapture" src="http://www.bacardibryant.com/Posts/files/TallyCapture_thumb_636829300670478591.jpg" width="247" height="466" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;While this is a trivial fix for more experienced developers, one that they may not pursue even; for someone who is especially new to development, and may not know where to look to resolve the issue, I hope that this can be of some assistance.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>Programming</category>
+  </categories>
+  <comments></comments>
+</post>

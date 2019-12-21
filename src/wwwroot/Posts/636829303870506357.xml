@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Downloading and Installing NUnit</title>
+  <slug>downloading-and-installing-nunit</slug>
+  <pubDate>2008-04-17T01:16:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:51:37.362Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;To install the NUnit unit testing framework, download the &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=10749" target="_blank"&gt;NUnit.msi&lt;/a&gt; installation file from SourceForge. The latest version at the time of this writing is v2.4.7.&lt;/p&gt;  &lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/nunitsfdl_636829303840516781.gif"&gt;&lt;img title="nunitsfdl" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="nunitsfdl" src="http://www.bacardibryant.com/Posts/files/nunitsfdl_thumb_636829303842072378.gif" width="550" height="120" /&gt;&lt;/a&gt;&lt;/p&gt;  &lt;p&gt;After clicking &amp;quot;&lt;strong&gt;Download&lt;/strong&gt;&amp;quot; you will be redirected to a page with the screen below. Be sure to click the .msi file as we are going with the automatic installation for this tutorial.&lt;/p&gt;  &lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/nudlinst2_636829303853241480.gif"&gt;&lt;img title="nudlinst2" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="nudlinst2" src="http://www.bacardibryant.com/Posts/files/nudlinst2_thumb_636829303854768637.gif" width="549" height="133" /&gt;&lt;/a&gt;&lt;/p&gt;  &lt;p&gt;When done downloading, install the application &lt;strong&gt;accepting all of the default settings by clicking Next, Next, etc&lt;/strong&gt;.&lt;/p&gt;  &lt;p&gt;Quickly, to verify a proper installation. Lauch the NUnit GUI application. (NUnit must be run in &lt;strong&gt;Administrator context&lt;/strong&gt; for some tests to pass).&lt;/p&gt;  &lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/RAAdmin_636829303856982036.gif"&gt;&lt;img title="RAAdmin" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="RAAdmin" src="http://www.bacardibryant.com/Posts/files/RAAdmin_thumb_636829303858849369.gif" width="359" height="671" /&gt;&lt;/a&gt;&lt;/p&gt;  &lt;p&gt;When the application opens, go to the file menu, choose &amp;quot;&lt;strong&gt;Open Project&lt;/strong&gt;&amp;quot; and select the NUnitTests project.&lt;/p&gt;  &lt;pre&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/nunitopenproj_636829303860283791.gif"&gt;&lt;img width="412" height="368" title="nunitopenproj" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" alt="nunitopenproj" src="http://www.bacardibryant.com/Posts/files/nunitopenproj_thumb_636829303861747956.gif" border="0" /&gt;&lt;/a&gt;&lt;/pre&gt;
+
+&lt;p&gt;(For the first run, the FileOpen Dialog box should automatically open in the NUnit bin directory. &lt;/p&gt;
+
+&lt;p&gt;If not, the files should be located at &lt;strong&gt;&amp;quot;root_drive:\Program Files\NUnit 3.5.7\bin\&amp;quot;&lt;/strong&gt;). &lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/nunittestdialog_636829303863629005.gif"&gt;&lt;img title="nunittestdialog" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="nunittestdialog" src="http://www.bacardibryant.com/Posts/files/nunittestdialog_thumb_636829303865454327.gif" width="532" height="420" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;With the top most node in the tree selected, click &amp;quot;&lt;strong&gt;Run&lt;/strong&gt;&amp;quot;. All tests should pass. If you find IO related failures, then NUnit is not 
+
+  &lt;br /&gt;running in the context of an &lt;strong&gt;Administrator&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/nunitTestRun_636829303867645647.gif"&gt;&lt;img title="nunitTestRun" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="nunitTestRun" src="http://www.bacardibryant.com/Posts/files/nunitTestRun_thumb_636829303869138431.gif" width="520" height="326" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that NUnit is installed, you are ready for the next phase in TDD, writing code.&lt;/p&gt;
+
+&lt;br /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Downloading and Installing NUnit &lt;/li&gt;
+
+  &lt;li&gt;&lt;a href="http://www.bacardibryant.com/blog/creating-an-application-the-tdd-approach"&gt;Creating An Application, the TDD Approach&lt;/a&gt; &lt;/li&gt;
+
+  &lt;li&gt;TDD, Mocking with RhinoMocks[coming soon] &lt;/li&gt;
+
+  &lt;li&gt;TDD, Mocking with MoQ [coming soon] &lt;/li&gt;
+&lt;/ul&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

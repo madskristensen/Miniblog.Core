@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Modulo 43 - Check Digit Parsing in C#</title>
+  <slug>modulo-43---check-digit-parsing-in-c</slug>
+  <pubDate>2012-02-28T19:54:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:21:48.764Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;Recently I had to build a check digit parser using the Modulo 43 specification designed for use with Health Industry Barcode Standards (HIBC).&lt;/p&gt;  &lt;p&gt;In this post I’ll share my implementation of a parser, and while there are some areas where I know that it can be improved, I believe that this may be a good v0.0.1 release of the parser.&lt;/p&gt;  &lt;p&gt;Tell me what you think!&lt;/p&gt; &lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;  &lt;p&gt;First we have a class to represent the barcode that we are scanning:&lt;/p&gt;  &lt;div class="csharpcode"&gt;   &lt;pre class="alt"&gt;&lt;span class="rem"&gt;&lt;font size="1"&gt;/// &amp;lt;summary&amp;gt;&lt;/font&gt;&lt;/span&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;span class="rem"&gt;&lt;font size="1"&gt;/// Represents the barcode components.&lt;/font&gt;&lt;/span&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;span class="rem"&gt;&lt;font size="1"&gt;/// &amp;lt;/summary&amp;gt;&lt;/font&gt;&lt;/span&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt;&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; Barcode&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;font size="1"&gt;{&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; Data { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; Prefix { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; Message { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;char&lt;/span&gt; CheckDigit { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;char&lt;/span&gt; CalculatedDigit { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;int&lt;/span&gt; Sum { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;int&lt;/span&gt; Modulo { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre class="alt"&gt;&lt;font size="1"&gt;        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;bool&lt;/span&gt; IsValid { get; set; }&lt;/font&gt;&lt;/pre&gt;
+
+  &lt;pre&gt;&lt;font size="1"&gt; }&lt;/font&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre { font-size: small; color: black; font-family: consolas, "Courier New", courier, monospace; background-color: #ffffff; /*white-space: pre;*/ } .csharpcode pre { margin: 0em; } .csharpcode .rem { color: #008000; } .csharpcode .kwrd { color: #0000ff; } .csharpcode .str { color: #006080; } .csharpcode .op { color: #0000c0; } .csharpcode .preproc { color: #cc6633; } .csharpcode .asp { background-color: #ffff00; } .csharpcode .html { color: #800000; } .csharpcode .attr { color: #ff0000; } .csharpcode .alt { background-color: #f4f4f4; width: 100%; margin: 0em; } .csharpcode .lnum { color: #606060; } &lt;/style&gt;
+
+
+
+&lt;p&gt;Then we create the parser class which implements IDisposable:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;using&lt;/span&gt; System;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Collections.Generic;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Linq;
+
+&lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// Parses barcode (128 data format) text and validate using HIBC Modulo 43 Check Digit Calculation.&lt;/span&gt;
+&lt;span class="rem"&gt;/// Assumes scanned data is prefixed with one (1) leading and one (1) trailing space.&lt;/span&gt;
+&lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; Parser : IDisposable
+{
+        &lt;span class="rem"&gt;//Class body will go here!&lt;/span&gt;
+
+       &lt;span class="preproc"&gt;#region&lt;/span&gt; Implementation of IDisposable
+
+        &lt;span class="kwrd"&gt;protected&lt;/span&gt; &lt;span class="kwrd"&gt;virtual&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; Dispose(&lt;span class="kwrd"&gt;bool&lt;/span&gt; disposing)
+        {
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (!_disposed)
+            {
+                &lt;span class="kwrd"&gt;if&lt;/span&gt; (disposing)
+                {
+                    _data.Clear();
+                }
+                _disposed = &lt;span class="kwrd"&gt;true&lt;/span&gt;;
+            }
+        }
+
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; Dispose()
+        {
+            Dispose(&lt;span class="kwrd"&gt;true&lt;/span&gt;);
+            GC.SuppressFinalize(&lt;span class="kwrd"&gt;this&lt;/span&gt;);
+        }
+
+        &lt;span class="preproc"&gt;#endregion&lt;/span&gt;
+}&lt;/pre&gt;
+
+&lt;p&gt;Add our private fields below after the class declaration, but before the IDisposable implentation:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="preproc"&gt;#region&lt;/span&gt; Fields
+
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;bool&lt;/span&gt; _disposed;
+        
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// Dictionary repesentation of the Table of Numerical Value Assignments for Computing&lt;/span&gt;
+        &lt;span class="rem"&gt;/// HIBC LIC data format Check Digit. Read only access.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; Dictionary&amp;lt;&lt;span class="kwrd"&gt;char&lt;/span&gt;, &lt;span class="kwrd"&gt;int&lt;/span&gt;&amp;gt; Data { get { &lt;span class="kwrd"&gt;return&lt;/span&gt; _data; } }
+        
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// private dictionary which is populated dynamically on instantiation of the class&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;readonly&lt;/span&gt; Dictionary&amp;lt;&lt;span class="kwrd"&gt;char&lt;/span&gt;, &lt;span class="kwrd"&gt;int&lt;/span&gt;&amp;gt; _data = &lt;span class="kwrd"&gt;new&lt;/span&gt; Dictionary&amp;lt;&lt;span class="kwrd"&gt;char&lt;/span&gt;, &lt;span class="kwrd"&gt;int&lt;/span&gt;&amp;gt;();
+
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// The prefix that will be appended to the message. While I haven't tested all scenarios because it was out of scope this could be ommitted&lt;/span&gt;
+        &lt;span class="rem"&gt;/// in some implementations.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;readonly&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; _prefix = &lt;span class="str"&gt;&amp;quot;AC&amp;quot;&lt;/span&gt;;
+
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// array of possible characters from the HIBC LIC table of values.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// used to populate the dictionary as well as provide character access by index.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;readonly&lt;/span&gt; &lt;span class="kwrd"&gt;char&lt;/span&gt;[] _chars = &lt;span class="kwrd"&gt;new&lt;/span&gt;[]
+                                    {
+                                        &lt;span class="str"&gt;'0'&lt;/span&gt;,&lt;span class="str"&gt;'1'&lt;/span&gt;,&lt;span class="str"&gt;'2'&lt;/span&gt;,&lt;span class="str"&gt;'3'&lt;/span&gt;,&lt;span class="str"&gt;'4'&lt;/span&gt;,&lt;span class="str"&gt;'5'&lt;/span&gt;,&lt;span class="str"&gt;'6'&lt;/span&gt;,&lt;span class="str"&gt;'7'&lt;/span&gt;,&lt;span class="str"&gt;'8'&lt;/span&gt;,&lt;span class="str"&gt;'9'&lt;/span&gt;,&lt;span class="str"&gt;'A'&lt;/span&gt;, &lt;span class="str"&gt;'B'&lt;/span&gt;, &lt;span class="str"&gt;'C'&lt;/span&gt;, &lt;span class="str"&gt;'D'&lt;/span&gt;, &lt;span class="str"&gt;'E'&lt;/span&gt;, &lt;span class="str"&gt;'F'&lt;/span&gt;, &lt;span class="str"&gt;'G'&lt;/span&gt;, &lt;span class="str"&gt;'H'&lt;/span&gt;, &lt;span class="str"&gt;'I'&lt;/span&gt;, &lt;span class="str"&gt;'J'&lt;/span&gt;, &lt;span class="str"&gt;'K'&lt;/span&gt;, &lt;span class="str"&gt;'L'&lt;/span&gt;, &lt;span class="str"&gt;'M'&lt;/span&gt;, &lt;span class="str"&gt;'N'&lt;/span&gt;, &lt;span class="str"&gt;'O'&lt;/span&gt;, &lt;span class="str"&gt;'P'&lt;/span&gt;, &lt;span class="str"&gt;'Q'&lt;/span&gt;
+                                        , &lt;span class="str"&gt;'R'&lt;/span&gt;, &lt;span class="str"&gt;'S'&lt;/span&gt;, &lt;span class="str"&gt;'T'&lt;/span&gt;, &lt;span class="str"&gt;'U'&lt;/span&gt;, &lt;span class="str"&gt;'V'&lt;/span&gt;, &lt;span class="str"&gt;'W'&lt;/span&gt;, &lt;span class="str"&gt;'X'&lt;/span&gt;, &lt;span class="str"&gt;'Y'&lt;/span&gt;, &lt;span class="str"&gt;'Z'&lt;/span&gt;, &lt;span class="str"&gt;'-'&lt;/span&gt;, &lt;span class="str"&gt;'.'&lt;/span&gt;, &lt;span class="str"&gt;' '&lt;/span&gt;, &lt;span class="str"&gt;'$'&lt;/span&gt;, &lt;span class="str"&gt;'/'&lt;/span&gt;, &lt;span class="str"&gt;'+'&lt;/span&gt;, &lt;span class="str"&gt;'%'&lt;/span&gt;
+                                    };
+&lt;span class="preproc"&gt;#endregion&lt;/span&gt;&lt;/pre&gt;
+
+&lt;p&gt;I implemented an overloaded constructor so that a prefix can be passed to override the default.&amp;#160; In addition, the data dictionary is populated upon initiation. These constructors should follow the fields region, but again before the IDisposable implementations in the class.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// Default constructor&lt;/span&gt;
+&lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+ &lt;span class="kwrd"&gt;public&lt;/span&gt; Parser()
+{
+            &lt;span class="rem"&gt;//build data dictionary&lt;/span&gt;
+            BuildDictionary();
+ }
+        
+ &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+ &lt;span class="rem"&gt;/// Overloaded constructor which accepts an alternate prefix as a parameter&lt;/span&gt;
+ &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+ &lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;prefix&amp;quot;&amp;gt;string: Value that is prepended to the barcode data.&amp;lt;/param&amp;gt;&lt;/span&gt;
+ &lt;span class="kwrd"&gt;public&lt;/span&gt; Parser(&lt;span class="kwrd"&gt;string&lt;/span&gt; prefix)
+{
+            &lt;span class="rem"&gt;//override default prefix&lt;/span&gt;
+            _prefix = prefix;
+
+            &lt;span class="rem"&gt;//build data dictionary&lt;/span&gt;
+            BuildDictionary();
+ }
+&lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// Populates a dictionary collection from the character array. The position of each character in the character array also represents its&lt;/span&gt;
+&lt;span class="rem"&gt;/// corresponding value in the HIBC Table of values&lt;/span&gt;
+ &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+ &lt;span class="kwrd"&gt;private&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; BuildDictionary()
+ {
+            &lt;span class="kwrd"&gt;for&lt;/span&gt; (var i = 0; i &amp;lt; _chars.Length; i++)
+            {
+                _data.Add(_chars[i], i);
+            }
+ }&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+&lt;/style&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, the method the performs the parsing and matching:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// Returns the HIBC LIC Check Digit.&lt;/span&gt;
+&lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// &amp;lt;param name=&amp;quot;barcodeData&amp;quot;&amp;gt;string: The scanned barcode data in string format.&amp;lt;/param&amp;gt;&lt;/span&gt;
+&lt;span class="rem"&gt;/// &amp;lt;returns&amp;gt;char: The check digit character that is the result of the computed barcode data.&amp;lt;/returns&amp;gt;&lt;/span&gt;
+&lt;span class="kwrd"&gt;public&lt;/span&gt; Barcode Parse(&lt;span class="kwrd"&gt;string&lt;/span&gt; barcodeData)
+{
+            var barcode = &lt;span class="kwrd"&gt;new&lt;/span&gt; Barcode();
+
+            &lt;span class="rem"&gt;//string must not be null or empty.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt; (&lt;span class="kwrd"&gt;string&lt;/span&gt;.IsNullOrEmpty(barcodeData))
+            {
+                barcode.IsValid = &lt;span class="kwrd"&gt;false&lt;/span&gt;;
+                &lt;span class="kwrd"&gt;return&lt;/span&gt; barcode;
+            }
+
+            &lt;span class="rem"&gt;//TODO: Should not assume a leading and trailing space. Also the check digit could be a space.&lt;/span&gt;
+            &lt;span class="rem"&gt;//assuming a trailing space, retrieve the check digit value as second to the last&lt;/span&gt;
+            &lt;span class="rem"&gt;//value in the string. This is possible because a string is a character array where&lt;/span&gt;
+            &lt;span class="rem"&gt;//we can access individual characters by index.&lt;/span&gt;
+            var checkDigit = barcodeData[barcodeData.Length - 2];
+            
+            &lt;span class="rem"&gt;//cast string to character array, eliminating spaces and check digit character&lt;/span&gt;
+            &lt;span class="rem"&gt;//already retrieved. Although the string is an array of characters, casting it to the official&lt;/span&gt;
+            &lt;span class="rem"&gt;//types makes available array methods that are now available in string format.&lt;/span&gt;
+            var characters = barcodeData.ToCharArray(1, barcodeData.Length - 3);
+
+            &lt;span class="rem"&gt;//extract the prefix&lt;/span&gt;
+            var prefix = barcodeData.Substring(1, 2);
+
+            &lt;span class="rem"&gt;//if the prefix is not present, or doesn't match the set value, the barcode is invalid. Abort processing.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;if&lt;/span&gt;(!prefix.Equals(_prefix))
+            {
+                barcode.Data = barcodeData;
+                barcode.IsValid = &lt;span class="kwrd"&gt;false&lt;/span&gt;;
+                &lt;span class="kwrd"&gt;return&lt;/span&gt; barcode;
+            }
+
+            &lt;span class="rem"&gt;//extract the message&lt;/span&gt;
+            var message = &lt;span class="kwrd"&gt;new&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt;(characters).Substring(2);
+
+            &lt;span class="rem"&gt;//calculate the sum of the characters based on the dictionary of values&lt;/span&gt;
+            &lt;span class="rem"&gt;//and the characters in the array.&lt;/span&gt;
+            var total = characters.Sum(character =&amp;gt; _data[character]);
+
+            &lt;span class="rem"&gt;//calculate the modulo based on the total from above and the&lt;/span&gt;
+            &lt;span class="rem"&gt;//Modulo 43 constant of 43.&lt;/span&gt;
+            var modulo = total % 43;
+
+            &lt;span class="rem"&gt;//retrieve the value of the test digit (expected check digit)&lt;/span&gt;
+            &lt;span class="rem"&gt;//from the array of characters above based on the modulo value&lt;/span&gt;
+            &lt;span class="rem"&gt;//which should match the index for the corresponding digit.&lt;/span&gt;
+            var calculatedDigit = _chars[modulo];
+
+            &lt;span class="rem"&gt;//assign property values to the barcode object and return as the result.&lt;/span&gt;
+            barcode.Data = barcodeData;
+            barcode.Message = message;
+            barcode.Prefix = prefix;
+            barcode.CheckDigit = checkDigit;
+            barcode.Modulo = modulo;
+            barcode.Sum = total;
+            barcode.CalculatedDigit = calculatedDigit;
+            barcode.IsValid = calculatedDigit.Equals(checkDigit);
+
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; barcode;
+}&lt;/pre&gt;
+
+&lt;p&gt;Quite naturally a test method is in order. This is obviously in a unit testing project:&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;[TestMethod]
+ &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; ReturnsCorrectCheckDigit()
+{
+            &lt;span class="rem"&gt;//Arrange&lt;/span&gt;
+            var parser = &lt;span class="kwrd"&gt;new&lt;/span&gt; Parser();
+
+            &lt;span class="rem"&gt;//Act&lt;/span&gt;
+            var barcode = parser.Parse(&lt;span class="str"&gt;&amp;quot; AC0800500Z &amp;quot;&lt;/span&gt;);
+
+            &lt;span class="rem"&gt;//Assert&lt;/span&gt;
+            Assert.IsTrue(barcode.IsValid);
+}&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+&lt;/style&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally the test result:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/UnitTest_636829321082769438.png"&gt;&lt;img title="UnitTest" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="UnitTest" src="http://www.bacardibryant.com/Posts/files/UnitTest_thumb_636829321084698359.png" width="356" height="356" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;So if you find yourself needing to parse a barcode based on the HIBC Modulo 43 Standard, hopefully you will find this one useful.&lt;/p&gt;
+
+&lt;p&gt;Also, if you have any ideas on how the code can be improved, please comment, bash, or whatever. Happy coding!&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>

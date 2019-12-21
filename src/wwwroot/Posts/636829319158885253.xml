@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Overheating Laptop Issue</title>
+  <slug>overheating-laptop-issue</slug>
+  <pubDate>2008-05-04T01:34:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:18:35.888Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;First word of caution, &lt;strong&gt;Gateway MT6821&lt;/strong&gt; is probably not a good buy. I purchased this laptop about a year ago and was pretty excited as it was a major upgrade from my previous Compaq system. It was well equipped for my needs with a dual core processor, 2GB RAM, and most importantly, 2MB L2 cache.&lt;/p&gt;    &lt;p&gt;Often times overlooked, the L2 cache is a major player in overall system performance. While I won't go into the specifics, the next time you are out shopping, take some time to compare systems with varying cache capacities. The difference that 1MB of cache can make is shocking.&lt;/p&gt;    &lt;p&gt;Well anyways, back to the problem. As of late, my Gateway system has been shutting down unexpectedly. I would strike a key or spin it towards me on the table and the next thing I know, it has powered off. The system displayed no messages such as &amp;quot;Shutting Down...&amp;quot; or &amp;quot;Logging Off...&amp;quot;, just an immediate BLACK screen. I remember feeling worse than I did during the infamous BSOD days. At least with a blue screen, you had some reference to what may have happened.&lt;/p&gt;    &lt;p&gt;After great frustration and tons of hours of productivity lost, I began to search for these symptoms online and found some interesting threads that suggested that the system is overheating. In essence, the threads claim that some Gateway systems, namely those with larger on chip cache memory (L2), experience overheating and may shutdown unexpectedly. So if this is the case, then I should let my system cool down for a day or two each week in between use. So no more working on weekends I guess =P. My wife would love it.&lt;/p&gt;    &lt;p&gt;My system refresh cycle has historically been three years, but with last year's purchase of this Gateway, it appears that I will have to do an out-of-cycle refresh. So I guess it's back to DELL for me. Besides, the three year warranty fits my refresh cycle!&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>hardware</category>
+  </categories>
+  <comments></comments>
+</post>

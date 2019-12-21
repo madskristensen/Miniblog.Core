@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>New blog site up and running</title>
+  <slug>new-blog-site-up-and-running-2</slug>
+  <pubDate>2011-12-22T23:35:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:33:22.358Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;After an extended hiatus, I’ve decided to return to the blogosphere and share my explorations and experiences in application development, technology in general and the new connected millennium. First and foremost, hat’s off to the &lt;a href="http://www.orchardproject.net/" target="_blank"&gt;Orchard CMS&lt;/a&gt; team for such a solid application and framework. WordPress is a great blogging engine but I wanted to find something comparable written in ASP.NET. While I am not a re-invent the wheel person, I am curious and optimistic. In fact, initially I was tempted to run back to the familiar grounds of BlogEngine.NET and DasBlog. But as I once read, “change is constant…”, and so here I am exploring new ways to do an old trick. &lt;/p&gt;    &lt;p&gt;So far so good. I plan to also share my experiences with Orchard here. So here’s to the new beginning, happy coding!&lt;/p&gt;    &lt;p&gt;Powered by:&lt;/p&gt;  &lt;p&gt;&lt;a href="http://www.bacardibryant.com/Posts/files/orchard-cms_636829328020915870.jpg"&gt;&lt;img title="orchard-cms" style="border-width: 0px; padding-top: 0px; padding-right: 0px; padding-left: 0px; display: inline; background-image: none;" border="0" alt="orchard-cms" src="http://www.bacardibryant.com/Posts/files/orchard-cms_thumb_636829328022299198.jpg" width="244" height="74" /&gt;&lt;/a&gt;&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>blogging</category>
+    <category>hosting</category>
+  </categories>
+  <comments></comments>
+</post>

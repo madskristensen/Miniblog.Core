@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Working with Oracle Packages and Stored Procedures using .NET</title>
+  <slug>working-with-oracle-packages-and-stored-procedures-using-net</slug>
+  <pubDate>2012-03-13T22:12:00.000Z</pubDate>
+  <lastModified>2019-01-12T22:11:24.376Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;In this post I would like to talk about how to perform the same basic database programming that .NET developers quickly become familiar with in &lt;a href="http://www.microsoft.com/sqlserver/en/us/default.aspx" target="_blank"&gt;Microsoft SQL Server&lt;/a&gt; on an Oracle database.&lt;/p&gt;  &lt;p&gt;Currently I use both the &lt;a href="http://www.oracle.com/technetwork/database/windows/downloads/index-101290.html" target="_blank"&gt;Oracle Data Access Components and Developer Tools&lt;/a&gt; for .NET, as well as, &lt;a href="http://www.oracle.com/technetwork/developer-tools/sql-developer/downloads/index.html" target="_blank"&gt;Oracle SQL Developer&lt;/a&gt; (Oracle’s Java based database IDE) when working with Oracle databases. I find that Oracle’s SQL Developer, in comparison to the developer tools which are integrated into the Visual Studio IDE, provides the advanced database tools such as schema comparison and and richer view of the database objects across multiple schemas when necessary. But, for those times when you are primarily writing .NET code and PL/SQL scripts, then the developer tools are a big plus because you can perform all of these tasks directly within the Visual Studio IDE.&lt;/p&gt;  &lt;p&gt;So here’s the skinny…you have a table, a sequence, and a package, which contains stored procedures.&lt;/p&gt;  &lt;p&gt;Although it was &lt;a href="http://blogs.msdn.com/b/adonet/archive/2009/06/15/system-data-oracleclient-update.aspx" target="_blank"&gt;deprecated&lt;/a&gt; with the release of .NET 4.0, I am currently sill using the System.Data.OracleClient assembly because, well, it’s hard to sell refactoring on something that is working…but that’s another topic.&lt;/p&gt;  &lt;p&gt;PL/SQL (Oracle) and T-SQL (MS SQL Server) share most of the same syntax for normal CRUD operations. However, the two begin to differ with the built-in functions, types, and other things. So the database code for our CRUD operations should be readable, except for when we implement those objects foreign to T-SQL such as the sequence.&lt;/p&gt;  &lt;p&gt;&lt;strong&gt;The Database Table&lt;/strong&gt;&lt;/p&gt;  &lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;create&lt;/span&gt; &lt;span class="kwrd"&gt;table&lt;/span&gt; &amp;quot;XNODE&amp;quot;.&amp;quot;BOOKS&amp;quot;
+{
+    &amp;quot;BOOKID&amp;quot;        NUMBER &lt;span class="kwrd"&gt;NOT&lt;/span&gt; &lt;span class="kwrd"&gt;NULL&lt;/span&gt;,
+    &amp;quot;TITLE&amp;quot;        VARCHAR2(200 BYTE),
+    &amp;quot;CREATEDON&amp;quot;    &lt;span class="kwrd"&gt;DATE&lt;/span&gt; &lt;span class="kwrd"&gt;DEFAULT&lt;/span&gt; SYSDATE,
+    &amp;quot;ISACTIVE&amp;quot;    NUMBER &lt;span class="kwrd"&gt;DEFAULT&lt;/span&gt; 1
+}&lt;/pre&gt;
+&lt;style type="text/css"&gt;
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }&lt;/style&gt;
+
+&lt;p&gt;The primary differences between this create table script and one of the same written in T-SQL are the types. The focus of this post is not DBA level so I will not go into detail on database design, but I’ll mention that in a practice, you my not use such large data types for some of the fields.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Sequence&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;In case you didn’t notice, there isn’t an identity specification as we would normally find on an ID field in T-SQL. This is because Oracle uses a different method to provide auto-generated or should I say quasi-auto-generated and quasi-sequential numbers called sequences. A sequence is an object that increments in value each time that it’s “nextval” function is called. The sequence then returns the new value, and finally stores it as the last number used. While you may choose your own convention, sequences do not directly link to particular tables. They are independent objects, thus the id’s for multiple tables can be populated by one sequence.&amp;#160; &lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;create&lt;/span&gt; &lt;span class="kwrd"&gt;sequence&lt;/span&gt; &amp;quot;XNODE&amp;quot;.&amp;quot;SEQ_BOOKS&amp;quot;
+MINVALUE 1
+MAXVALUE 999999999999999999999999999
+INCREMENT &lt;span class="kwrd"&gt;BY&lt;/span&gt; 1
+&lt;span class="kwrd"&gt;START&lt;/span&gt; &lt;span class="kwrd"&gt;WITH&lt;/span&gt; 1
+CACHE 20
+&lt;span class="kwrd"&gt;ORDER&lt;/span&gt;
+NOCYCLE;&lt;/pre&gt;
+
+&lt;p&gt;You also have freedom with the naming convention that you choose however, remember that Oracle has a thirty-character limit on object names. I typically use the “SEQ_” prefix and the corresponding table name when creating sequences.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Stored Procedure Inside The Package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;PL/SQL (Oracle) stored procedures appear almost identical to those of SQL Server except that in Oracle result sets are returned via cursors. Packages are like containers for database objects. Packages consist of a package specification and a package body which from a programming perspective, may resemble C++ class definitions with function signatures and bodies. This is because all procedures that are defined in the package specification, must be implemented in the package body. In addition, the signatures of the procedures in the specification and the implementations in the body must be identical in order for the package to compile. Packages are convenient because instead of managing all of your stored procedures, functions, and types independently, you can package them and simply manage the package. Packages can also boost performance as when one method on the package is called, the entire package is compiled and stored in memory so a subsequent call to the same procedure or even a different procedure will not require compilation. On the downside, whenever the package is modified and has to be updated, it is locked for application access so modifications should be scheduled during off hours for large applications. The following package contains a type definition and two procedure specifications and implementations for our books table from earlier.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;create or replace PACKAGE BOOKAPP AS
+
+    TYPE t_cursor &lt;span class="kwrd"&gt;is&lt;/span&gt; &lt;span class="kwrd"&gt;ref&lt;/span&gt; cursor;
+
+    PROCEDURE BOOKS_FETCH(v_results &lt;span class="kwrd"&gt;out&lt;/span&gt; t_cursor);
+    PROCEDURE BOOKS_ADD(v_title &lt;span class="kwrd"&gt;in&lt;/span&gt; varchar2);
+
+END BOOKAPP&lt;/pre&gt;
+
+&lt;p&gt;&lt;style type="text/css"&gt;
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }&lt;/style&gt;As mentioned earlier, first there is simply the specification. Again, the package name is at your discretion and because result sets must be returned inside of a cursor, a variable of type ref cursor is defined in the specification. In the package we have two signatures, one for a procedure which will fetch all records from the books table and one that will simply add a new record to the table. Now for the package body.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;create&lt;/span&gt; &lt;span class="kwrd"&gt;or&lt;/span&gt; replace PACKAGE BODY BOOKAPP &lt;span class="kwrd"&gt;AS&lt;/span&gt;
+
+&lt;span class="kwrd"&gt;PROCEDURE&lt;/span&gt; BOOKS_FETCH(v_results &lt;span class="kwrd"&gt;out&lt;/span&gt; t_cursor)
+
+    &lt;span class="kwrd"&gt;IS&lt;/span&gt;
+
+        v_cursor t_cursor;
+
+    &lt;span class="kwrd"&gt;BEGIN&lt;/span&gt;
+
+        &lt;span class="kwrd"&gt;OPEN&lt;/span&gt; v_cursor &lt;span class="kwrd"&gt;FOR&lt;/span&gt;
+        &lt;span class="kwrd"&gt;SELECT&lt;/span&gt; * &lt;span class="kwrd"&gt;FROM&lt;/span&gt; XNODE.BOOKS;
+
+    v_results := v_cursor;
+
+&lt;span class="kwrd"&gt;END&lt;/span&gt; BOOKS_FETCH;
+
+&lt;span class="kwrd"&gt;PROCEDURE&lt;/span&gt; BOOKS_ADD(v_title &lt;span class="kwrd"&gt;in&lt;/span&gt; varchar2)
+    &lt;span class="kwrd"&gt;IS&lt;/span&gt;
+    &lt;span class="kwrd"&gt;BEGIN&lt;/span&gt;
+    
+        INSERT &lt;span class="kwrd"&gt;INTO&lt;/span&gt; XNODE.BOOKS(bookid, title)
+        &lt;span class="kwrd"&gt;VALUES&lt;/span&gt;(XNODE.SEQ_BOOKS.nextval, v_title);
+    
+    &lt;span class="kwrd"&gt;COMMIT&lt;/span&gt;;
+
+&lt;span class="kwrd"&gt;END&lt;/span&gt; BOOKS_ADD
+
+&lt;span class="kwrd"&gt;END&lt;/span&gt; BOOKAPP&lt;style type="text/css"&gt;.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+&lt;/style&gt;&lt;/pre&gt;
+
+&lt;p&gt;Spacing was added to the package body above for readability. As you can see, the first procedure implements the first signature by declaring a variable of our package type (cursor) then we have to “open” the cursor and select records into it. Then the output variable is set to the results and returned. The second procedure implements the “Books_Add” signature. Because the table definition has two fields which have defaults that are acceptable, we need only insert the bookid which is generated from the sequence and the title which is passed in from the call to the package. Finally, there is a call to commit the changes made. You will want to call commit on inserts and updates in order to have your changes committed to the database immediately.&lt;/p&gt;
+
+&lt;p&gt;And now finally, something familiar. For simplicity I’ve marked up a controller class to illustrate the .NET code.&lt;/p&gt;
+
+&lt;pre class="csharpcode"&gt;&lt;span class="kwrd"&gt;using&lt;/span&gt; System;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Data.OracleClient;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Web;
+&lt;span class="kwrd"&gt;using&lt;/span&gt; System.Data;
+
+
+&lt;span class="kwrd"&gt;namespace&lt;/span&gt; Xnode.Model.Controllers
+{
+    &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;class&lt;/span&gt; BookController
+    {
+        &lt;span class="rem"&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// Fetch all books from database.&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+        &lt;span class="rem"&gt;/// &amp;lt;returns&amp;gt;Dataset: Representing all books.&amp;lt;/returns&amp;gt;&lt;/span&gt;
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; DataSet Fetch()
+        {
+            &lt;span class="rem"&gt;// defaults&lt;/span&gt;
+            var results = &lt;span class="kwrd"&gt;new&lt;/span&gt; DataSet();
+
+            &lt;span class="rem"&gt;//The convention for the command text for packages is: SCHEMA.PACKAGE.PROCEDURE&lt;/span&gt;
+            &lt;span class="kwrd"&gt;const&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; commandText = &lt;span class="str"&gt;@&amp;quot;XNODE.BOOKAPP.BOOKS_FETCH&amp;quot;&lt;/span&gt;;
+            &lt;span class="kwrd"&gt;using&lt;/span&gt; (var connection = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleConnection(DatabaseHelper.Load(&lt;span class="kwrd"&gt;true&lt;/span&gt;, &lt;span class="str"&gt;&amp;quot;object&amp;quot;&lt;/span&gt;)))
+            {
+                &lt;span class="kwrd"&gt;using&lt;/span&gt; (var command = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleCommand(commandText, connection))
+                {
+                    var p1 = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleParameter(&lt;span class="str"&gt;&amp;quot;v_results&amp;quot;&lt;/span&gt;, OracleType.Cursor)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
+                    command.Parameters.Add(p1);
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    &lt;span class="kwrd"&gt;using&lt;/span&gt;(var adapter = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleDataAdapter(command))
+                    {
+                        adapter.Fill(results);
+                    }
+                }
+            }
+            &lt;span class="kwrd"&gt;return&lt;/span&gt; results;
+        }
+
+        &lt;span class="kwrd"&gt;public&lt;/span&gt; &lt;span class="kwrd"&gt;static&lt;/span&gt; &lt;span class="kwrd"&gt;void&lt;/span&gt; AddBook(&lt;span class="kwrd"&gt;string&lt;/span&gt; title)
+        {
+                       
+            &lt;span class="rem"&gt;//Add the book.&lt;/span&gt;
+            &lt;span class="kwrd"&gt;const&lt;/span&gt; &lt;span class="kwrd"&gt;string&lt;/span&gt; commandText = &lt;span class="str"&gt;@&amp;quot;XNODE.BOOKAPP.BOOKS_ADD&amp;quot;&lt;/span&gt;;
+            &lt;span class="kwrd"&gt;using&lt;/span&gt; (var connection = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleConnection(DatabaseHelper.Load(&lt;span class="kwrd"&gt;true&lt;/span&gt;, &lt;span class="str"&gt;&amp;quot;object&amp;quot;&lt;/span&gt;)))
+            {
+                &lt;span class="kwrd"&gt;using&lt;/span&gt; (var command = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleCommand(commandText, connection))
+                {
+                    var p1 = &lt;span class="kwrd"&gt;new&lt;/span&gt; OracleParameter(&lt;span class="str"&gt;&amp;quot;v_title&amp;quot;&lt;/span&gt;, OracleType.NVarChar)
+                    {
+                        Direction = ParameterDirection.Input,
+                        Value = title
+                    };
+
+                    command.Parameters.Add(p1);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+    }
+}&lt;/pre&gt;
+
+&lt;p&gt;So here we have a controller that makes calls to the Oracle backend. The DatabaseHelper class is simply a helper class that is used to retrieve the database connection string through an overloaded Load() method. You should substitute this code with the appropriate call to retrieve your connection string.&lt;/p&gt;
+
+&lt;p&gt;In any case, there you have it…working with Oracle stored procedures and packages using .NET.&lt;/p&gt;
+
+&lt;p&gt;I’ve read that there is a third party data access provider available that implements EF and works well. This is great news for those projects where you simply have no influence as to which database backend to use. &lt;style type="text/css"&gt;
+.csharpcode, .csharpcode pre
+{
+	font-size: small;
+	color: black;
+	font-family: consolas, "Courier New", courier, monospace;
+	background-color: #ffffff;
+	/*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+	background-color: #f4f4f4;
+	width: 100%;
+	margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }&lt;/style&gt;&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>Oracle</category>
+    <category>.NET</category>
+  </categories>
+  <comments></comments>
+</post>

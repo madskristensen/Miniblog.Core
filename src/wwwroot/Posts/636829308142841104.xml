@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Which SCM are you using?</title>
+  <slug>which-scm-are-you-using</slug>
+  <pubDate>2012-03-13T23:02:00.000Z</pubDate>
+  <lastModified>2019-01-12T23:00:14.284Z</lastModified>
+  <excerpt />
+  <content>&lt;p&gt;Recently I missed a talk on github given by a one of the most dedicated developer’s that I know Ben Schierman. When I say dedicated, I mean dedicated to the industry, to the field, to finding best practices and sharing them, and not simply in the sense of “I’m a programmer”. So hats off to Ben as always for his contribution to our field of work.&lt;/p&gt;  &lt;p&gt;I wanted to attend Ben’s talk because I see the traction behind github but without having made a part of my day in life as a coder, I was hoping to pick-up on some applied knowledge of the service. But it didn’t.&lt;/p&gt;  &lt;p&gt;So as a result I will talk about my current scm tool which has been my favorite thus far PlasticSCM. In relation to the two the only thing that I can say is that like git, Plastic is a distributed versioning system. Plastic is not open source but it is free for a small team of less than 15 developers. PlasticSCM features a server and a client component and integrates with the Windows Explorer shell and Visual Studio. This will not be a detailed how-to on using Plastic but I will point out some of my favorite features.&lt;/p&gt;  &lt;p&gt;As a .NET developer, I spend my life working within Visual Studio, therefore any VS integration is automatically a plus because its all right there.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories>
+    <category>programming</category>
+  </categories>
+  <comments></comments>
+</post>
