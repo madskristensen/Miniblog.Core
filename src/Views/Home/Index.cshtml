@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container">
+	<h2>@ViewData["Title"]</h2>
+
+	<p>Hello from our View Template!</p>
+	<p>This is stuff you should know about us!</p>
+	<p>And you should read our @Html.ActionLink("Blog", "", "Blog")</p>
+</div>
+
+@{await Html.RenderPartialAsync("_SocialSharing", ViewData["Title"]);}
