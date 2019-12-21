@@ -1,6 +1,6 @@
-# Blog engine for ASP.NET Core 2.0
+# Blog engine for ASP.NET Core 3.1
 
-A full-featured yet simple blog engine built on ASP.NET Core 2.0.
+A full-featured yet simple blog engine built on ASP.NET Core 3.1.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lwjrlpvmhg50wwbs?svg=true)](https://ci.appveyor.com/project/madskristensen/miniblog-core)
 [![NuGet](https://img.shields.io/nuget/v/MadsKristensen.AspNetCore.Miniblog.svg)](https://nuget.org/packages/MadsKristensen.AspNetCore.Miniblog/)

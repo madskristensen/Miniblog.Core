@@ -23,7 +23,7 @@ namespace Miniblog.Core.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly string _folder;
 
-        public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+        public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
         {
             _folder = Path.Combine(env.WebRootPath, POSTS);
             _contextAccessor = contextAccessor;
