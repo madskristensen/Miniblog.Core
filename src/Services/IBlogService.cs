@@ -11,6 +11,8 @@ namespace Miniblog.Core.Services
     {
         Task<IEnumerable<Post>> GetPosts(int count, int skip = 0);
 
+        Task<IEnumerable<Post>> GetAllPosts();
+
         Task<IEnumerable<Post>> GetPostsByCategory(string category);
 
         Task<Post> GetPostBySlug(string slug);
@@ -44,6 +46,16 @@ namespace Miniblog.Core.Services
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .Skip(skip)
                 .Take(count);
+
+            return Task.FromResult(posts);
+        }
+
+        public virtual Task<IEnumerable<Post>> GetAllPosts()
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = Cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin));
 
             return Task.FromResult(posts);
         }

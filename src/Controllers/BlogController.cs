@@ -30,6 +30,13 @@ namespace Miniblog.Core.Controllers
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            
+            // Pagination was not working properly because the number of pages were not being calculated.
+            // the total number of posts is needed, along with the number of posts per page in order to calculate the page count.
+            // adding a method to the FileBlogService and the corresponding interfaces (?) was the fastest solution, but I can envision a cleaner solution.
+            var allPosts = await _blog.GetAllPosts();
+            ViewData["TotalPostCount"] = allPosts.Count();
+
             ViewData["Title"] = _manifest.Name;
             ViewData["Description"] = _manifest.Description;
             ViewData["prev"] = $"/{page + 1}/";
@@ -42,6 +49,13 @@ namespace Miniblog.Core.Controllers
         public async Task<IActionResult> Category(string category, int page = 0)
         {
             var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+
+            // Pagination was not working properly because the number of pages were not being calculated.
+            // the total number of posts is needed, along with the number of posts per page in order to calculate the page count.
+            // adding a method to the FileBlogService and the corresponding interfaces (?) was the fastest solution, but I can envision a cleaner solution.
+            var allPosts = await _blog.GetAllPosts();
+            ViewData["TotalPostCount"] = allPosts.Count();
+
             ViewData["Title"] = _manifest.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";

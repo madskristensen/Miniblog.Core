@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<post>
+  <title>Second Post using Miniblog.Core</title>
+  <slug>second-post-using-miniblog-core</slug>
+  <pubDate>2019-12-21T16:57:37.556Z</pubDate>
+  <lastModified>2019-12-21T16:57:57.387Z</lastModified>
+  <excerpt>Second Post using Miniblog.Core</excerpt>
+  <content>&lt;p&gt;testing after update.&lt;/p&gt;</content>
+  <ispublished>true</ispublished>
+  <categories></categories>
+  <comments>
+    <comment isAdmin="true" id="22c8a569-f0f4-4b64-aea7-35154811924b">
+      <author>Bacardi Bryant</author>
+      <email>bacardi.bryant@outlook.com</email>
+      <date>2019-12-21T16:57:57.333Z</date>
+      <content>are comments working?</content>
+    </comment>
+  </comments>
+</post>

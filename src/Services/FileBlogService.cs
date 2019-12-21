@@ -43,6 +43,17 @@ namespace Miniblog.Core.Services
             return Task.FromResult(posts);
         }
 
+        // total post count is needed for paging. It would probably be better to put the cache in an object with a total count property and a post collection (List)
+        public virtual Task<IEnumerable<Post>> GetAllPosts()
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = _cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin));
+
+            return Task.FromResult(posts);
+        }
+
         public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category)
         {
             bool isAdmin = IsAdmin();
