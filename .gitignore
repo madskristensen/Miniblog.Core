@@ -18,6 +18,10 @@ src/wwwroot/Posts/*
 Posts/*
 wwwroot/Posts/*
 
+src/wwwroot/Posts/*
+Posts/*
+wwwroot/Posts/*
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
