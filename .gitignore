@@ -13,6 +13,10 @@ src/appsettings.Development.json
 appsettings.json
 appsettings.Development.json
 
+src/wwwroot/Posts/*
+Posts/*
+wwwroot/Posts/*
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
