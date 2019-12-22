@@ -31,6 +31,17 @@ namespace Miniblog.Core.Services
             Initialize();
         }
 
+        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        public virtual Task<IEnumerable<Post>> GetPosts()
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = _cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin));
+
+            return Task.FromResult(posts);
+        }
+
         public virtual Task<IEnumerable<Post>> GetPosts(int count, int skip = 0)
         {
             bool isAdmin = IsAdmin();

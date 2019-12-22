@@ -9,6 +9,9 @@ namespace Miniblog.Core.Services
 {
     public interface IBlogService
     {
+        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        Task<IEnumerable<Post>> GetPosts();
+
         Task<IEnumerable<Post>> GetPosts(int count, int skip = 0);
 
         Task<IEnumerable<Post>> GetPostsByCategory(string category);
@@ -34,7 +37,19 @@ namespace Miniblog.Core.Services
         }
 
         protected List<Post> Cache { get; set; }
+
         protected IHttpContextAccessor ContextAccessor { get; }
+
+        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        public virtual Task<IEnumerable<Post>> GetPosts()
+        {
+            bool isAdmin = IsAdmin();
+
+            var posts = Cache
+                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin));
+
+            return Task.FromResult(posts);
+        }
 
         public virtual Task<IEnumerable<Post>> GetPosts(int count, int skip = 0)
         {
