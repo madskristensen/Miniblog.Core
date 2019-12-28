@@ -9,7 +9,7 @@ namespace Miniblog.Core.Services
 {
     public interface IBlogService
     {
-        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        // overload for getPosts method to retrieve all posts.
         Task<IEnumerable<Post>> GetPosts();
 
         Task<IEnumerable<Post>> GetPosts(int count, int skip = 0);
@@ -40,7 +40,7 @@ namespace Miniblog.Core.Services
 
         protected IHttpContextAccessor ContextAccessor { get; }
 
-        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        // overload for getPosts method to retrieve all posts.
         public virtual Task<IEnumerable<Post>> GetPosts()
         {
             bool isAdmin = IsAdmin();

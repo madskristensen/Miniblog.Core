@@ -31,7 +31,7 @@ namespace Miniblog.Core.Services
             Initialize();
         }
 
-        // overload for getPosts method to retrieve all posts. @bacardibryant 12/21/2019
+        // overload for getPosts method to retrieve all posts.
         public virtual Task<IEnumerable<Post>> GetPosts()
         {
             bool isAdmin = IsAdmin();
