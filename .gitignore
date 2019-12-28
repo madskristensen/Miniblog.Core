@@ -9,13 +9,13 @@
 *.pubxml
 launchSettings.json
 
-# Ignore customizations on appsettings. Used to prevent changes to upstream file during pull requests.
+# Uncomment lines below to prevent pushing appsettings to repository
 # src/appsettings.json
 # src/appsettings.Development.json
 # appsettings.json
 # appsettings.Development.json
 
-# Ignore new posts used to prevent changes to upstream directory during pull requests.
+# Used to prevent blog post files from being pushed to the repository.
 src/wwwroot/Posts/*
 Posts/*
 wwwroot/Posts/*
