@@ -8,16 +8,14 @@
 *.sln.docstates
 *.pubxml
 launchSettings.json
-src/appsettings.json
-src/appsettings.Development.json
-appsettings.json
-appsettings.Development.json
-appsettings.Development.json
 
-src/wwwroot/Posts/*
-Posts/*
-wwwroot/Posts/*
+# Ignore customizations on appsettings. Used to prevent changes to upstream file during pull requests.
+# src/appsettings.json
+# src/appsettings.Development.json
+# appsettings.json
+# appsettings.Development.json
 
+# Ignore new posts used to prevent changes to upstream directory during pull requests.
 src/wwwroot/Posts/*
 Posts/*
 wwwroot/Posts/*
