@@ -8,11 +8,14 @@
 *.sln.docstates
 *.pubxml
 launchSettings.json
-src/appsettings.json
-src/appsettings.Development.json
-appsettings.json
-appsettings.Development.json
 
+# Uncomment lines below to prevent pushing appsettings to repository
+# src/appsettings.json
+# src/appsettings.Development.json
+# appsettings.json
+# appsettings.Development.json
+
+# Used to prevent blog post files from being pushed to the repository.
 src/wwwroot/Posts/*
 Posts/*
 wwwroot/Posts/*

@@ -1,6 +1,6 @@
 {
-  "name": "The Gist",
-  "short_name": "The Gist",
+  "name": "Miniblog.Core",
+  "short_name": "Miniblog.Core",
   "description": "A short description of the blog.",
   "icons": [
     {

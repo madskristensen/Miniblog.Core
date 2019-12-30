@@ -32,7 +32,7 @@ namespace Miniblog.Core.Controllers
 
             // get all posts so that we can obtain a count that will drive pagination.
             // there are cleaner methods to do this than making two calls to the blog service
-            // so this may be refactored later. @bacardibryant 12/21/2019
+            // so this may be refactored later.
             var allPosts = await _blog.GetPosts();
 
             var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
@@ -53,7 +53,7 @@ namespace Miniblog.Core.Controllers
 
             // get all posts so that we can obtain a count that will drive pagination.
             // there are cleaner methods to do this than making two calls to the blog service
-            // so this may be refactored later. @bacardibryant 12/21/2019
+            // so this may be refactored later.
             var allPosts = await _blog.GetPosts();
 
             var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
