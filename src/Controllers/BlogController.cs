@@ -29,13 +29,11 @@ namespace Miniblog.Core.Controllers
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
-
-            // get all posts so that we can obtain a count that will drive pagination.
-            // there are cleaner methods to do this than making two calls to the blog service
-            // so this may be refactored later.
+            // get all published posts.
             var allPosts = await _blog.GetPosts();
 
-            var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+            // apply paging filter.
+            var posts = allPosts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
 
             ViewData["TotalPostCount"] = allPosts.Count();
             ViewData["Title"] = _manifest.Name;
@@ -50,13 +48,11 @@ namespace Miniblog.Core.Controllers
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
+            // get all posts for the selected category.
+            var allPosts = await _blog.GetPostsByCategory(category);
 
-            // get all posts so that we can obtain a count that will drive pagination.
-            // there are cleaner methods to do this than making two calls to the blog service
-            // so this may be refactored later.
-            var allPosts = await _blog.GetPosts();
-
-            var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            // apply paging filter.
+            var posts = allPosts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
 
             ViewData["TotalPostCount"] = allPosts.Count();
             ViewData["Title"] = _manifest.Name + " " + category;
