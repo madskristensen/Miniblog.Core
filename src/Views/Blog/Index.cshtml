@@ -2,9 +2,7 @@
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
-    //int pageCount = Model.ToList().Count;
-
-    // fixed pagination issue. Model.Count() would always be equal to the number of posts per page not the actual page count.
+    
     int pageCount = int.Parse(ViewData["TotalPostCount"].ToString()) / 2; 
 }
 
