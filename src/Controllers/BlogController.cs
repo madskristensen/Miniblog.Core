@@ -29,37 +29,43 @@ namespace Miniblog.Core.Controllers
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Index([FromRoute]int page = 0)
         {
-            // get all published posts.
-            var allPosts = await _blog.GetPosts();
+            // get published posts.
+            var posts = await _blog.GetPosts();
 
             // apply paging filter.
-            var posts = allPosts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var filteredPosts = posts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
 
-            ViewData["TotalPostCount"] = allPosts.Count();
+            // set the view option
+            ViewData["ViewOption"] = _settings.Value.ListView;
+
+            ViewData["TotalPostCount"] = posts.Count();
             ViewData["Title"] = _manifest.Name;
             ViewData["Description"] = _manifest.Description;
             ViewData["prev"] = $"/{page + 1}/";
             ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
 
-            return View("~/Views/Blog/Index.cshtml", posts);
+            return View("~/Views/Blog/Index.cshtml", filteredPosts);
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
-            // get all posts for the selected category.
-            var allPosts = await _blog.GetPostsByCategory(category);
+            // get posts for the selected category.
+            var posts = await _blog.GetPostsByCategory(category);
 
             // apply paging filter.
-            var posts = allPosts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
+            var filteredPosts = posts.Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
 
-            ViewData["TotalPostCount"] = allPosts.Count();
+            // set the view option
+            ViewData["ViewOption"] = _settings.Value.ListView;
+
+            ViewData["TotalPostCount"] = posts.Count();
             ViewData["Title"] = _manifest.Name + " " + category;
             ViewData["Description"] = $"Articles posted in the {category} category";
             ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
             ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return View("~/Views/Blog/Index.cshtml", posts);
+            return View("~/Views/Blog/Index.cshtml", filteredPosts);
         }
 
         // This is for redirecting potential existing URLs from the old Miniblog URL format

@@ -23,8 +23,16 @@
     </header>
 
     <div itemprop="articleBody mainEntityOfPage" cdnify>
-        @Html.Raw(Model.RenderContent())
+        @if (showFullPost || settings.Value.ListView == PostListView.FullPosts)
+        {
+            @Html.Raw(Model.RenderContent())
+        }
+        else if (settings.Value.ListView == PostListView.TitlesAndExcerpts)
+        {
+            @Html.Raw(Model.Excerpt)
+        }
     </div>
+
 
     <footer>
         @if (Model.Categories.Any())
