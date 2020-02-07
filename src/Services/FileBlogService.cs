@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -14,20 +13,12 @@ using System.Xml.XPath;
 
 namespace Miniblog.Core.Services
 {
-    public class FileBlogService : IBlogService
+    public class FileBlogService : BaseBlogService, IBlogService
     {
-        private const string POSTS = "Posts";
-        private const string FILES = "files";
-
         private readonly List<Post> _cache = new List<Post>();
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly string _folder;
 
-        public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
+        public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor) : base(env, contextAccessor)
         {
-            _folder = Path.Combine(env.WebRootPath, POSTS);
-            _contextAccessor = contextAccessor;
-
             Initialize();
         }
 
@@ -172,30 +163,9 @@ namespace Miniblog.Core.Services
             return Task.CompletedTask;
         }
 
-        public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
-        {
-            suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString());
-
-            string ext = Path.GetExtension(fileName);
-            string name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
-
-            string fileNameWithSuffix = $"{name}_{suffix}{ext}";
-
-            string absolute = Path.Combine(_folder, FILES, fileNameWithSuffix);
-            string dir = Path.GetDirectoryName(absolute);
-
-            Directory.CreateDirectory(dir);
-            using (var writer = new FileStream(absolute, FileMode.CreateNew))
-            {
-                await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-            }
-
-            return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
-        }
-
         private string GetFilePath(Post post)
         {
-            return Path.Combine(_folder, post.ID + ".xml");
+            return Path.Combine(PostDir, post.ID + ".xml");
         }
 
         private void Initialize()
@@ -206,11 +176,11 @@ namespace Miniblog.Core.Services
 
         private void LoadPosts()
         {
-            if (!Directory.Exists(_folder))
-                Directory.CreateDirectory(_folder);
+            if (!Directory.Exists(PostDir))
+                Directory.CreateDirectory(PostDir);
 
             // Can this be done in parallel to speed it up?
-            foreach (string file in Directory.EnumerateFiles(_folder, "*.xml", SearchOption.TopDirectoryOnly))
+            foreach (string file in Directory.EnumerateFiles(PostDir, "*.xml", SearchOption.TopDirectoryOnly))
             {
                 XElement doc = XElement.Load(file);
 
@@ -287,16 +257,6 @@ namespace Miniblog.Core.Services
             return defaultValue;
         }
 
-        private static string CleanFromInvalidChars(string input)
-        {
-            // ToDo: what we are doing here if we switch the blog from windows
-            // to unix system or vice versa? we should remove all invalid chars for both systems
-
-            var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
-            var r = new Regex($"[{regexSearch}]");
-            return r.Replace(input, "");
-        }
-        
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
@@ -309,11 +269,6 @@ namespace Miniblog.Core.Services
         protected void SortCache()
         {
             _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
-        }
-
-        protected bool IsAdmin()
-        {
-            return _contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
         }
     }
 }
