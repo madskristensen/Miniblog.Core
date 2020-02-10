@@ -276,3 +276,7 @@ paket-files/
 __pycache__/
 *.pyc
 *.db
+*.yml
+
+# App setting that contain blog secrets
+appsettings.json

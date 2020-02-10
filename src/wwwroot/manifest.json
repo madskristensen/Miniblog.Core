@@ -1,7 +1,7 @@
 {
-  "name": "Miniblog.Core",
-  "short_name": "Miniblog.Core",
-  "description": "A short description of the blog.",
+  "name": "Felony",
+  "short_name": "MT",
+  "description": "My podium where I share my interests.",
   "icons": [
     {
       "src": "/img/icon192x192.png",
