@@ -17,42 +17,18 @@ namespace Miniblog.Core.Services
     using System.Xml.Linq;
     using System.Xml.XPath;
 
-    /// <summary>
-    /// The FileBlogService class. Implements the <see cref="Miniblog.Core.Services.IBlogService" />
-    /// </summary>
-    /// <seealso cref="Miniblog.Core.Services.IBlogService" />
     public class FileBlogService : IBlogService
     {
-        /// <summary>
-        /// The files
-        /// </summary>
         private const string FILES = "files";
 
-        /// <summary>
-        /// The posts
-        /// </summary>
         private const string POSTS = "Posts";
 
-        /// <summary>
-        /// The cache
-        /// </summary>
         private readonly List<Post> cache = new List<Post>();
 
-        /// <summary>
-        /// The context accessor
-        /// </summary>
         private readonly IHttpContextAccessor contextAccessor;
 
-        /// <summary>
-        /// The folder
-        /// </summary>
         private readonly string folder;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileBlogService" /> class.
-        /// </summary>
-        /// <param name="env">The Web host environment.</param>
-        /// <param name="contextAccessor">The context accessor.</param>
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
@@ -70,11 +46,6 @@ namespace Miniblog.Core.Services
             this.Initialize();
         }
 
-        /// <summary>
-        /// Deletes the post.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>Task.</returns>
         public Task DeletePost(Post post)
         {
             if (post is null)
@@ -97,11 +68,6 @@ namespace Miniblog.Core.Services
             return Task.CompletedTask;
         }
 
-
-        /// <summary>
-        /// Gets the categories.
-        /// </summary>
-        /// <returns>Task&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         [SuppressMessage(
             "Globalization",
             "CA1308:Normalize strings to uppercase",
@@ -120,11 +86,6 @@ namespace Miniblog.Core.Services
             return categories;
         }
 
-        /// <summary>
-        /// Gets the post by identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Task&lt;Post&gt;.</returns>
         public virtual Task<Post> GetPostById(string id)
         {
             var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
@@ -138,11 +99,6 @@ namespace Miniblog.Core.Services
             return Task.FromResult<Post>(null);
         }
 
-        /// <summary>
-        /// Gets the post by slug.
-        /// </summary>
-        /// <param name="slug">The slug.</param>
-        /// <returns>Task&lt;Post&gt;.</returns>
         public virtual Task<Post> GetPostBySlug(string slug)
         {
             var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
@@ -156,11 +112,7 @@ namespace Miniblog.Core.Services
             return Task.FromResult<Post>(null);
         }
 
-        // overload for getPosts method to retrieve all posts.
-        /// <summary>
-        /// Gets the posts.
-        /// </summary>
-        /// <returns>Task&lt;IEnumerable&lt;Post&gt;&gt;.</returns>
+        /// <remarks>Overload for getPosts method to retrieve all posts.</remarks>
         public virtual IAsyncEnumerable<Post> GetPosts()
         {
             var isAdmin = this.IsAdmin();
@@ -172,12 +124,6 @@ namespace Miniblog.Core.Services
             return posts;
         }
 
-        /// <summary>
-        /// Gets the posts.
-        /// </summary>
-        /// <param name="count">The count.</param>
-        /// <param name="skip">The skip.</param>
-        /// <returns>Task&lt;IEnumerable&lt;Post&gt;&gt;.</returns>
         public virtual IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
         {
             var isAdmin = this.IsAdmin();
@@ -191,11 +137,6 @@ namespace Miniblog.Core.Services
             return posts;
         }
 
-        /// <summary>
-        /// Gets the posts by category.
-        /// </summary>
-        /// <param name="category">The category.</param>
-        /// <returns>Task&lt;IEnumerable&lt;Post&gt;&gt;.</returns>
         public virtual IAsyncEnumerable<Post> GetPostsByCategory(string category)
         {
             var isAdmin = this.IsAdmin();
@@ -208,14 +149,6 @@ namespace Miniblog.Core.Services
             return posts.ToAsyncEnumerable();
         }
 
-
-        /// <summary>
-        /// Saves the file.
-        /// </summary>
-        /// <param name="bytes">The bytes.</param>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="suffix">The suffix.</param>
-        /// <returns>Task&lt;System.String&gt;.</returns>
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
@@ -246,11 +179,6 @@ namespace Miniblog.Core.Services
             return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
         }
 
-        /// <summary>
-        /// Saves the post.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>Task.</returns>
         public async Task SavePost(Post post)
         {
             if (post is null)
@@ -306,22 +234,10 @@ namespace Miniblog.Core.Services
             }
         }
 
-        /// <summary>
-        /// Determines whether this instance is admin.
-        /// </summary>
-        /// <returns><c>true</c> if this instance is admin; otherwise, <c>false</c>.</returns>
         protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
 
-        /// <summary>
-        /// Sorts the cache.
-        /// </summary>
         protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 
-        /// <summary>
-        /// Cleans from invalid chars.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>System.String.</returns>
         private static string CleanFromInvalidChars(string input)
         {
             // ToDo: what we are doing here if we switch the blog from windows to unix system or
@@ -332,11 +248,6 @@ namespace Miniblog.Core.Services
             return r.Replace(input, string.Empty);
         }
 
-        /// <summary>
-        /// Formats the date time.
-        /// </summary>
-        /// <param name="dateTime">The date time.</param>
-        /// <returns>System.String.</returns>
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
@@ -346,11 +257,6 @@ namespace Miniblog.Core.Services
                 : dateTime.ToUniversalTime().ToString(UTC, CultureInfo.InvariantCulture);
         }
 
-        /// <summary>
-        /// Loads the categories.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <param name="doc">The document.</param>
         private static void LoadCategories(Post post, XElement doc)
         {
             var categories = doc.Element("categories");
@@ -363,11 +269,6 @@ namespace Miniblog.Core.Services
             categories.Elements("category").Select(node => node.Value).ToList().ForEach(post.Categories.Add);
         }
 
-        /// <summary>
-        /// Loads the comments.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <param name="doc">The document.</param>
         private static void LoadComments(Post post, XElement doc)
         {
             var comments = doc.Element("comments");
@@ -393,50 +294,24 @@ namespace Miniblog.Core.Services
             }
         }
 
-        /// <summary>
-        /// Reads the attribute.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>System.String.</returns>
         private static string ReadAttribute(XElement element, XName name, string defaultValue = "") =>
             element.Attribute(name) is null ? defaultValue : element.Attribute(name)?.Value;
 
-        /// <summary>
-        /// Reads the value.
-        /// </summary>
-        /// <param name="doc">The document.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>System.String.</returns>
         private static string ReadValue(XElement doc, XName name, string defaultValue = "") =>
             doc.Element(name) is null ? defaultValue : doc.Element(name)?.Value;
 
-
-        /// <summary>
-        /// Gets the file path.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>System.String.</returns>
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
             Justification = "Path not derived from user input.")]
         private string GetFilePath(Post post) => Path.Combine(this.folder, $"{post.ID}.xml");
 
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
         private void Initialize()
         {
             this.LoadPosts();
             this.SortCache();
         }
-        
-        /// <summary>
-        /// Loads the posts.
-        /// </summary>
+
         [SuppressMessage(
             "Globalization",
             "CA1308:Normalize strings to uppercase",

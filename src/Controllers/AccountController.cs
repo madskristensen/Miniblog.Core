@@ -11,29 +11,13 @@ namespace Miniblog.Core.Controllers
     using System.Security.Claims;
     using System.Threading.Tasks;
 
-    /// <summary>
-    /// The AccountController class. Implements the <see cref="Microsoft.AspNetCore.Mvc.Controller" />
-    /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     [Authorize]
     public class AccountController : Controller
     {
-        /// <summary>
-        /// The user services
-        /// </summary>
         private readonly IUserServices userServices;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountController" /> class.
-        /// </summary>
-        /// <param name="userServices">The user services.</param>
         public AccountController(IUserServices userServices) => this.userServices = userServices;
 
-        /// <summary>
-        /// Logins the specified return URL.
-        /// </summary>
-        /// <param name="returnUrl">The return URL.</param>
-        /// <returns>IActionResult.</returns>
         [Route("/login")]
         [AllowAnonymous]
         [HttpGet]
@@ -43,12 +27,6 @@ namespace Miniblog.Core.Controllers
             return this.View();
         }
 
-        /// <summary>
-        /// login as an asynchronous operation.
-        /// </summary>
-        /// <param name="returnUrl">The return URL.</param>
-        /// <param name="model">The model.</param>
-        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/login")]
         [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginAsync(string returnUrl, LoginViewModel model)
@@ -71,10 +49,6 @@ namespace Miniblog.Core.Controllers
             return this.View("Login", model);
         }
 
-        /// <summary>
-        /// log out as an asynchronous operation.
-        /// </summary>
-        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/logout")]
         public async Task<IActionResult> LogOutAsync()
         {
