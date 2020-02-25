@@ -17,33 +17,14 @@
 
     using WebEssentials.AspNetCore.Pwa;
 
-    /// <summary>
-    /// The RobotsController class. Implements the <see cref="Microsoft.AspNetCore.Mvc.Controller" />
-    /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     public class RobotsController : Controller
     {
-        /// <summary>
-        /// The blog
-        /// </summary>
         private readonly IBlogService blog;
 
-        /// <summary>
-        /// The manifest
-        /// </summary>
         private readonly WebManifest manifest;
 
-        /// <summary>
-        /// The settings
-        /// </summary>
         private readonly IOptionsSnapshot<BlogSettings> settings;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RobotsController" /> class.
-        /// </summary>
-        /// <param name="blog">The blog.</param>
-        /// <param name="settings">The settings.</param>
-        /// <param name="manifest">The manifest.</param>
         public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
         {
             this.blog = blog;
@@ -51,10 +32,6 @@
             this.manifest = manifest;
         }
 
-        /// <summary>
-        /// Robotses the text.
-        /// </summary>
-        /// <returns>System.String.</returns>
         [Route("/robots.txt")]
         [OutputCache(Profile = "default")]
         public string RobotsTxt()
@@ -71,9 +48,6 @@
             return sb.ToString();
         }
 
-        /// <summary>
-        /// RSDs the XML.
-        /// </summary>
         [Route("/rsd.xml")]
         public void RsdXml()
         {
@@ -106,10 +80,6 @@
             xml.WriteEndElement(); // rsd
         }
 
-        /// <summary>
-        /// RSSs the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
         [Route("/feed/{type}")]
         public async Task Rss(string type)
         {
@@ -149,9 +119,6 @@
             }
         }
 
-        /// <summary>
-        /// Sitemaps the XML.
-        /// </summary>
         [Route("/sitemap.xml")]
         public async Task SitemapXml()
         {
@@ -178,13 +145,6 @@
             xml.WriteEndElement();
         }
 
-        /// <summary>
-        /// Gets the writer.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="xmlWriter">The XML writer.</param>
-        /// <param name="updated">The updated.</param>
-        /// <returns>Task&lt;ISyndicationFeedWriter&gt;.</returns>
         private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter, DateTime updated)
         {
             var host = $"{this.Request.Scheme}://{this.Request.Host}/";

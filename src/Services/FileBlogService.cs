@@ -76,12 +76,12 @@
         /// <param name="post">The post.</param>
         /// <returns>Task.</returns>
         public Task DeletePost(Post post)
-            bool isAdmin = IsAdmin();
+        {
+            if (post is null)
             {
                 throw new ArgumentNullException(nameof(post));
             }
 
-            }
             var filePath = this.GetFilePath(post);
 
             if (File.Exists(filePath))
