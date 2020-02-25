@@ -1,4 +1,4 @@
-namespace Miniblog.Core
+﻿namespace Miniblog.Core
 {
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -22,12 +22,28 @@ namespace Miniblog.Core
     using MetaWeblogService = Miniblog.Core.Services.MetaWeblogService;
     using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
+    /// <summary>
+    /// The Startup class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup" /> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Creates the host builder.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        /// <returns>An <see cref="IHostBuilder" />.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(
@@ -38,8 +54,17 @@ namespace Miniblog.Core
                             .ConfigureKestrel(options => options.AddServerHeader = false);
                     });
 
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 
+        /// <summary>
+        /// Configures the specified application.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        /// <param name="env">The Web hosting environment.</param>
         /// <remarks>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</remarks>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -88,6 +113,10 @@ namespace Miniblog.Core
                 });
         }
 
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        /// <param name="services">The services.</param>
         /// <remarks>This method gets called by the runtime. Use this method to add services to the container.</remarks>
         public void ConfigureServices(IServiceCollection services)
         {

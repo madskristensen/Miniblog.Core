@@ -1,4 +1,4 @@
-namespace Miniblog.Core.Services
+﻿namespace Miniblog.Core.Services
 {
     using Microsoft.AspNetCore.Cryptography.KeyDerivation;
     using Microsoft.Extensions.Configuration;

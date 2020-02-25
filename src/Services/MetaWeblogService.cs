@@ -1,4 +1,4 @@
-namespace Miniblog.Core.Services
+﻿namespace Miniblog.Core.Services
 {
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Http;
@@ -11,16 +11,40 @@ namespace Miniblog.Core.Services
 
     using WilderMinds.MetaWeblog;
 
+    /// <summary>
+    /// The MetaWeblogService class. Implements the <see
+    /// cref="IMetaWeblogProvider" />
+    /// </summary>
+    /// <seealso cref="IMetaWeblogProvider" />
     public class MetaWeblogService : IMetaWeblogProvider
     {
+        /// <summary>
+        /// The blog
+        /// </summary>
         private readonly IBlogService blog;
 
+        /// <summary>
+        /// The configuration
+        /// </summary>
         private readonly IConfiguration config;
 
+        /// <summary>
+        /// The context
+        /// </summary>
         private readonly IHttpContextAccessor context;
 
+        /// <summary>
+        /// The user services
+        /// </summary>
         private readonly IUserServices userServices;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetaWeblogService" /> class.
+        /// </summary>
+        /// <param name="blog">The blog.</param>
+        /// <param name="config">The configuration.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="userServices">The user services.</param>
         public MetaWeblogService(
             IBlogService blog,
             IConfiguration config,
@@ -33,6 +57,15 @@ namespace Miniblog.Core.Services
             this.context = context;
         }
 
+        /// <summary>
+        /// Adds the category.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="category">The category.</param>
+        /// <returns>Task&lt;System.Int32&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
         {
             this.ValidateUser(username, password);
@@ -40,6 +73,16 @@ namespace Miniblog.Core.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds the page.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
         {
             this.ValidateUser(username, password);
@@ -47,6 +90,15 @@ namespace Miniblog.Core.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds the post.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="post">The post.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns>Task&lt;System.String&gt;.</returns>
         public async Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
         {
             this.ValidateUser(username, password);
@@ -77,6 +129,15 @@ namespace Miniblog.Core.Services
             return newPost.ID;
         }
 
+        /// <summary>
+        /// Deletes the page.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="pageid">The page identifier.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
         {
             this.ValidateUser(username, password);
@@ -84,6 +145,15 @@ namespace Miniblog.Core.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Deletes the post.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="postid">The post identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
         public async Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
         {
             this.ValidateUser(username, password);
@@ -98,6 +168,17 @@ namespace Miniblog.Core.Services
             return true;
         }
 
+        /// <summary>
+        /// Edits the page.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="pageid">The page identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
         {
             this.ValidateUser(username, password);
@@ -105,6 +186,15 @@ namespace Miniblog.Core.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Edits the post.
+        /// </summary>
+        /// <param name="postid">The post identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="post">The post.</param>
+        /// <param name="publish">if set to <c>true</c> [publish].</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
         public async Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
         {
             this.ValidateUser(username, password);
@@ -134,9 +224,24 @@ namespace Miniblog.Core.Services
             return true;
         }
 
+        /// <summary>
+        /// Gets the authors.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;Author[]&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<Author[]> GetAuthorsAsync(string blogid, string username, string password) =>
             throw new NotImplementedException();
 
+        /// <summary>
+        /// Gets the categories.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;CategoryInfo[]&gt;.</returns>
         public async Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
         {
             this.ValidateUser(username, password);
@@ -152,12 +257,37 @@ namespace Miniblog.Core.Services
                 .ToArrayAsync();
         }
 
+        /// <summary>
+        /// Gets the page.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="pageid">The page identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;Page&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<Page> GetPageAsync(string blogid, string pageid, string username, string password) =>
             throw new NotImplementedException();
 
+        /// <summary>
+        /// Gets the pages.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="numPages">The number pages.</param>
+        /// <returns>Task&lt;Page[]&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages) =>
             throw new NotImplementedException();
 
+        /// <summary>
+        /// Gets the specified post for the user.
+        /// </summary>
+        /// <param name="postid">The post identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;Post&gt;.</returns>
         public async Task<Post?> GetPostAsync(string postid, string username, string password)
         {
             this.ValidateUser(username, password);
@@ -167,6 +297,14 @@ namespace Miniblog.Core.Services
             return post is null ? null : this.ToMetaWebLogPost(post);
         }
 
+        /// <summary>
+        /// Gets the recent posts for the specified user.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="numberOfPosts">The number of posts.</param>
+        /// <returns>Task&lt;Post[]&gt;.</returns>
         public async Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
         {
             this.ValidateUser(username, password);
@@ -176,6 +314,14 @@ namespace Miniblog.Core.Services
                 .ToArrayAsync();
         }
 
+        /// <summary>
+        /// Gets the specified user information.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;UserInfo&gt;.</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
         {
             this.ValidateUser(username, password);
@@ -183,6 +329,13 @@ namespace Miniblog.Core.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets the specified user's blogs.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;BlogInfo[]&gt;.</returns>
         public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
         {
             this.ValidateUser(username, password);
@@ -202,6 +355,14 @@ namespace Miniblog.Core.Services
                 });
         }
 
+        /// <summary>
+        /// Creates a new media object.
+        /// </summary>
+        /// <param name="blogid">The blog identifier.</param>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="mediaObject">The media object.</param>
+        /// <returns>Task&lt;MediaObjectInfo&gt;.</returns>
         public async Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
         {
             this.ValidateUser(username, password);
@@ -217,6 +378,11 @@ namespace Miniblog.Core.Services
             return new MediaObjectInfo { url = path };
         }
 
+        /// <summary>
+        /// Converts to metaweblogpost.
+        /// </summary>
+        /// <param name="post">The post.</param>
+        /// <returns>WilderMinds.MetaWeblog.Post.</returns>
         private Post ToMetaWebLogPost(Models.Post post)
         {
             var request = this.context.HttpContext.Request;
@@ -235,6 +401,12 @@ namespace Miniblog.Core.Services
             };
         }
 
+        /// <summary>
+        /// Validates the user.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <exception cref="MetaWeblogException">Unauthorized</exception>
         private void ValidateUser(string username, string password)
         {
             if (this.userServices.ValidateUser(username, password) == false)

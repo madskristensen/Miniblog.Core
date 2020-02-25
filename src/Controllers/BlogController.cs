@@ -1,4 +1,4 @@
-namespace Miniblog.Core.Controllers
+﻿namespace Miniblog.Core.Controllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -16,14 +16,33 @@ namespace Miniblog.Core.Controllers
 
     using WebEssentials.AspNetCore.Pwa;
 
+    /// <summary>
+    /// The BlogController class. Implements the <see cref="Microsoft.AspNetCore.Mvc.Controller" />
+    /// </summary>
+    /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
     public class BlogController : Controller
     {
+        /// <summary>
+        /// The blog
+        /// </summary>
         private readonly IBlogService blog;
 
+        /// <summary>
+        /// The manifest
+        /// </summary>
         private readonly WebManifest manifest;
 
+        /// <summary>
+        /// The settings
+        /// </summary>
         private readonly IOptionsSnapshot<BlogSettings> settings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlogController" /> class.
+        /// </summary>
+        /// <param name="blog">The blog.</param>
+        /// <param name="settings">The settings.</param>
+        /// <param name="manifest">The manifest.</param>
         public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
         {
             this.blog = blog;
@@ -31,11 +50,17 @@ namespace Miniblog.Core.Controllers
             this.manifest = manifest;
         }
 
+        /// <summary>
+        /// Adds the comment.
+        /// </summary>
+        /// <param name="postId">The post identifier.</param>
+        /// <param name="comment">The comment.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/comment/{postId}")]
         [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
-            var post = await this.blog.GetPostById(postId).ConfigureAwait(true);
+            var post = await this.blog.GetPostById(postId).ConfigureAwait(false);
 
             if (!this.ModelState.IsValid)
             {
@@ -68,6 +93,12 @@ namespace Miniblog.Core.Controllers
             return this.Redirect($"{post.GetEncodedLink()}#{comment.ID}");
         }
 
+        /// <summary>
+        /// Categories the specified category.
+        /// </summary>
+        /// <param name="category">The category.</param>
+        /// <param name="page">The page.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/category/{category}/{page:int?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
@@ -89,6 +120,12 @@ namespace Miniblog.Core.Controllers
             return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
         }
 
+        /// <summary>
+        /// Deletes the comment.
+        /// </summary>
+        /// <param name="postId">The post identifier.</param>
+        /// <param name="commentId">The comment identifier.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
         public async Task<IActionResult> DeleteComment(string postId, string commentId)
@@ -113,6 +150,11 @@ namespace Miniblog.Core.Controllers
             return this.Redirect($"{post.GetEncodedLink()}#comments");
         }
 
+        /// <summary>
+        /// Deletes the post.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/deletepost/{id}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeletePost(string id)
@@ -127,6 +169,11 @@ namespace Miniblog.Core.Controllers
             return this.Redirect("/");
         }
 
+        /// <summary>
+        /// Edits the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/edit/{id?}")]
         [HttpGet, Authorize]
         public async Task<IActionResult> Edit(string? id)
@@ -145,6 +192,11 @@ namespace Miniblog.Core.Controllers
             return post is null ? this.NotFound() : (IActionResult)this.View(post);
         }
 
+        /// <summary>
+        /// Indexes the specified page.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/{page:int?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Index([FromRoute]int page = 0)
@@ -167,11 +219,16 @@ namespace Miniblog.Core.Controllers
             return this.View("~/Views/Blog/Index.cshtml", filteredPosts);
         }
 
+        /// <summary>
+        /// Posts the specified slug.
+        /// </summary>
+        /// <param name="slug">The slug.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/{slug?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Post(string slug)
         {
-            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(true);
+            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(false);
 
             return post is null ? this.NotFound() : (IActionResult)this.View(post);
         }
@@ -181,6 +238,11 @@ namespace Miniblog.Core.Controllers
         [HttpGet]
         public IActionResult Redirects(string slug) => this.LocalRedirectPermanent($"/blog/{slug}");
 
+        /// <summary>
+        /// Updates the post.
+        /// </summary>
+        /// <param name="post">The post.</param>
+        /// <returns>Task&lt;IActionResult&gt;.</returns>
         [Route("/blog/{slug?}")]
         [HttpPost, Authorize, AutoValidateAntiforgeryToken]
         [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Consumer preference.")]
@@ -217,6 +279,10 @@ namespace Miniblog.Core.Controllers
             return this.Redirect(post.GetEncodedLink());
         }
 
+        /// <summary>
+        /// Saves the files to disk.
+        /// </summary>
+        /// <param name="post">The post.</param>
         private async Task SaveFilesToDisk(Post post)
         {
             var imgRegex = new Regex("<img[^>]+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
