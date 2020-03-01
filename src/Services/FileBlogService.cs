@@ -17,46 +17,22 @@
     using System.Xml.Linq;
     using System.Xml.XPath;
 
-    /// <summary>
-    /// The FileBlogService class. Implements the <see cref="Miniblog.Core.Services.IBlogService" />
-    /// </summary>
-    /// <seealso cref="Miniblog.Core.Services.IBlogService" />
     public class FileBlogService : IBlogService
     {
-        /// <summary>
-        /// The files
-        /// </summary>
         private const string FILES = "files";
 
-        /// <summary>
-        /// The posts
-        /// </summary>
         private const string POSTS = "Posts";
 
-        /// <summary>
-        /// The cache
-        /// </summary>
         private readonly List<Post> cache = new List<Post>();
 
-        /// <summary>
-        /// The context accessor
-        /// </summary>
         private readonly IHttpContextAccessor contextAccessor;
 
-        /// <summary>
-        /// The folder
-        /// </summary>
         private readonly string folder;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileBlogService" /> class.
-        /// </summary>
-        /// <param name="env">The Web host environment.</param>
-        /// <param name="contextAccessor">The context accessor.</param>
         [SuppressMessage(
-            "Usage",
-            "SecurityIntelliSenseCS:MS Security rules violation",
-            Justification = "Path not derived from user input.")]
+                "Usage",
+                "SecurityIntelliSenseCS:MS Security rules violation",
+                Justification = "Path not derived from user input.")]
         public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
         {
             if (env is null)
@@ -70,11 +46,6 @@
             this.Initialize();
         }
 
-        /// <summary>
-        /// Deletes the post.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>Task.</returns>
         public Task DeletePost(Post post)
         {
             if (post is null)
@@ -97,10 +68,6 @@
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Gets the categories.
-        /// </summary>
-        /// <returns>Task&lt;IEnumerable&lt;System.String&gt;&gt;.</returns>
         [SuppressMessage(
             "Globalization",
             "CA1308:Normalize strings to uppercase",
@@ -117,11 +84,6 @@
                 .ToAsyncEnumerable();
         }
 
-        /// <summary>
-        /// Gets the post by identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>Task&lt;Post&gt;.</returns>
         public virtual Task<Post?> GetPostById(string id)
         {
             var isAdmin = this.IsAdmin();
@@ -133,12 +95,6 @@
                 : post);
         }
 
-
-        /// <summary>
-        /// Gets the post by slug.
-        /// </summary>
-        /// <param name="slug">The slug.</param>
-        /// <returns>Task&lt;Post&gt;.</returns>
         public virtual Task<Post?> GetPostBySlug(string slug)
         {
             var isAdmin = this.IsAdmin();
@@ -162,12 +118,6 @@
             return posts;
         }
 
-        /// <summary>
-        /// Gets the posts.
-        /// </summary>
-        /// <param name="count">The count.</param>
-        /// <param name="skip">The skip.</param>
-        /// <returns>Task&lt;IEnumerable&lt;Post&gt;&gt;.</returns>
         public virtual IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
         {
             var isAdmin = this.IsAdmin();
@@ -181,11 +131,6 @@
             return posts;
         }
 
-        /// <summary>
-        /// Gets the posts by category.
-        /// </summary>
-        /// <param name="category">The category.</param>
-        /// <returns>Task&lt;IEnumerable&lt;Post&gt;&gt;.</returns>
         public virtual IAsyncEnumerable<Post> GetPostsByCategory(string category)
         {
             var isAdmin = this.IsAdmin();
@@ -198,13 +143,6 @@
             return posts.ToAsyncEnumerable();
         }
 
-        /// <summary>
-        /// Saves the file.
-        /// </summary>
-        /// <param name="bytes">The bytes.</param>
-        /// <param name="fileName">Name of the file.</param>
-        /// <param name="suffix">The suffix.</param>
-        /// <returns>Task&lt;System.String&gt;.</returns>
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
@@ -235,11 +173,6 @@
             return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
         }
 
-        /// <summary>
-        /// Saves the post.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>Task.</returns>
         public async Task SavePost(Post post)
         {
             if (post is null)
@@ -295,22 +228,10 @@
             }
         }
 
-        /// <summary>
-        /// Determines whether this instance is admin.
-        /// </summary>
-        /// <returns><c>true</c> if this instance is admin; otherwise, <c>false</c>.</returns>
         protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
 
-        /// <summary>
-        /// Sorts the cache.
-        /// </summary>
         protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 
-        /// <summary>
-        /// Cleans from invalid chars.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>System.String.</returns>
         private static string CleanFromInvalidChars(string input)
         {
             // ToDo: what we are doing here if we switch the blog from windows to unix system or
@@ -321,11 +242,6 @@
             return r.Replace(input, string.Empty);
         }
 
-        /// <summary>
-        /// Formats the date time.
-        /// </summary>
-        /// <param name="dateTime">The date time.</param>
-        /// <returns>System.String.</returns>
         private static string FormatDateTime(DateTime dateTime)
         {
             const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
@@ -335,11 +251,6 @@
                 : dateTime.ToUniversalTime().ToString(UTC, CultureInfo.InvariantCulture);
         }
 
-        /// <summary>
-        /// Loads the categories.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <param name="doc">The document.</param>
         private static void LoadCategories(Post post, XElement doc)
         {
             var categories = doc.Element("categories");
@@ -352,11 +263,6 @@
             categories.Elements("category").Select(node => node.Value).ToList().ForEach(post.Categories.Add);
         }
 
-        /// <summary>
-        /// Loads the comments.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <param name="doc">The document.</param>
         private static void LoadComments(Post post, XElement doc)
         {
             var comments = doc.Element("comments");
@@ -375,57 +281,31 @@
                     Email = ReadValue(node, "email"),
                     IsAdmin = bool.Parse(ReadAttribute(node, "isAdmin", "false")),
                     Content = ReadValue(node, "content"),
-                    PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01"),
-                        CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
+                    PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01"), CultureInfo.InvariantCulture),
                 };
 
                 post.Comments.Add(comment);
             }
         }
 
-        /// <summary>
-        /// Reads the attribute.
-        /// </summary>
-        /// <param name="element">The element.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>System.String.</returns>
         private static string ReadAttribute(XElement element, XName name, string defaultValue = "") =>
             element.Attribute(name) is null ? defaultValue : element.Attribute(name)?.Value ?? defaultValue;
 
-        /// <summary>
-        /// Reads the value.
-        /// </summary>
-        /// <param name="doc">The document.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns>System.String.</returns>
         private static string ReadValue(XElement doc, XName name, string defaultValue = "") =>
             doc.Element(name) is null ? defaultValue : doc.Element(name)?.Value ?? defaultValue;
 
-        /// <summary>
-        /// Gets the file path.
-        /// </summary>
-        /// <param name="post">The post.</param>
-        /// <returns>System.String.</returns>
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
             Justification = "Path not derived from user input.")]
         private string GetFilePath(Post post) => Path.Combine(this.folder, $"{post.ID}.xml");
 
-        /// <summary>
-        /// Initializes this instance.
-        /// </summary>
         private void Initialize()
         {
             this.LoadPosts();
             this.SortCache();
         }
-        
-        /// <summary>
-        /// Loads the posts.
-        /// </summary>
+
         [SuppressMessage(
             "Globalization",
             "CA1308:Normalize strings to uppercase",
@@ -449,14 +329,13 @@
                     Excerpt = ReadValue(doc, "excerpt"),
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture,
-                        DateTimeStyles.AdjustToUniversal),
+                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
                     LastModified = DateTime.Parse(
                         ReadValue(
                             doc,
                             "lastModified",
                             DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                        CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
+                        CultureInfo.InvariantCulture),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 

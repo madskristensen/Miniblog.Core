@@ -35,7 +35,7 @@
         [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
-            var post = await this.blog.GetPostById(postId).ConfigureAwait(false);
+            var post = await this.blog.GetPostById(postId).ConfigureAwait(true);
 
             if (!this.ModelState.IsValid)
             {
@@ -86,7 +86,7 @@
             this.ViewData[Constants.Description] = $"Articles posted in the {category} category";
             this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
             this.ViewData[Constants.next] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
+            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
         }
 
         [Route("/blog/comment/{postId}/{commentId}")]
@@ -171,7 +171,7 @@
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Post(string slug)
         {
-            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(false);
+            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(true);
 
             return post is null ? this.NotFound() : (IActionResult)this.View(post);
         }

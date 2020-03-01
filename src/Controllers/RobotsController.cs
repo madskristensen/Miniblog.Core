@@ -145,7 +145,7 @@
             xml.WriteEndElement();
         }
 
-        private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter, DateTime updated)
+        private async Task<ISyndicationFeedWriter> GetWriter(string? type, XmlWriter xmlWriter, DateTime updated)
         {
             var host = $"{this.Request.Scheme}://{this.Request.Host}/";
 
