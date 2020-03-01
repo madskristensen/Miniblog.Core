@@ -4,6 +4,16 @@ end_of_line = crlf
 [*.xml]
 indent_style = space
 
+[*.{cshtml,razor}]
+charset = utf-8
+end_of_line = crlf
+indent_style = tab
+indent_size = tab
+insert_final_newline = true
+tab_width = 4
+trim_trailing_whitespace = true
+max_line_length = 100
+
 [*.cs]
 charset = utf-8
 end_of_line = crlf
