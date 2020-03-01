@@ -19,9 +19,9 @@
                     image.alt = file.name;
                     image.onload = function (e) {
                         image.setAttribute("data-filename", file.name);
-                        image.setAttribute("width", image.width);
-                        image.setAttribute("height", image.height);
-                        tinymce.activeEditor.execCommand('mceInsertContent', false, image.outerHTML);
+                        image.setAttribute("width", image.width.toString());
+                        image.setAttribute("height", image.height.toString());
+                        window.tinymce.activeEditor.execCommand('mceInsertContent', false, image.outerHTML);
                     };
                     image.src = this.result;
 
@@ -53,7 +53,7 @@
     if (edit && editPost) {
 
         if (typeof window.orientation !== "undefined" || navigator.userAgent.indexOf('IEMobile') !== -1) {
-            tinymce.init({
+            window.tinymce.init({
                 selector: '#Content',
                 theme: 'modern',
                 mobile: {
@@ -63,7 +63,7 @@
                 }
             });
         } else {
-            tinymce.init({
+            window.tinymce.init({
                 selector: '#Content',
                 autoresize_min_height: 200,
                 plugins: 'autosave preview searchreplace visualchars image link media fullscreen code codesample table hr pagebreak autoresize nonbreaking anchor insertdatetime advlist lists textcolor wordcount imagetools colorpicker',

@@ -46,12 +46,12 @@
     requestAnimationFrame(function () {
         for (var i = 0; i < comments.length; i++) {
             var comment = comments[i];
-            comment.innerHTML = urlify(comment.textContent);
+            comment.innerHTML = urlify(comment.textContent) || "";
         }
     });
 
     function urlify(text) {
-        return text.replace(/(((https?:\/\/)|(www\.))[^\s]+)/g, function (url, b, c) {
+        return text && text.replace(/(((https?:\/\/)|(www\.))[^\s]+)/g, function (url, b, c) {
             var url2 = c === 'www.' ? 'http://' + url : url;
             return '<a href="' + url2 + '" rel="nofollow noreferrer">' + url + '</a>';
         });
