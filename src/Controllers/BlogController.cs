@@ -35,11 +35,11 @@ namespace Miniblog.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
-            var post = await this.blog.GetPostById(postId).ConfigureAwait(false);
+            var post = await this.blog.GetPostById(postId).ConfigureAwait(true);
 
             if (!this.ModelState.IsValid)
             {
-                return this.View("Post", post);
+                return this.View(nameof(Post), post);
             }
 
             if (post is null || !post.AreCommentsOpen(this.settings.Value.CommentsCloseAfterDays))
@@ -81,11 +81,11 @@ namespace Miniblog.Core.Controllers
             // set the view option
             this.ViewData["ViewOption"] = this.settings.Value.ListView;
 
-            this.ViewData["TotalPostCount"] = await posts.CountAsync();
-            this.ViewData["Title"] = $"{this.manifest.Name} {category}";
-            this.ViewData["Description"] = $"Articles posted in the {category} category";
-            this.ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
-            this.ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
+            this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.Title] = $"{this.manifest.Name} {category}";
+            this.ViewData[Constants.Description] = $"Articles posted in the {category} category";
+            this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
+            this.ViewData[Constants.next] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
             return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
         }
 
@@ -129,9 +129,11 @@ namespace Miniblog.Core.Controllers
 
         [Route("/blog/edit/{id?}")]
         [HttpGet, Authorize]
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string? id)
         {
-            this.ViewData["AllCats"] = await this.blog.GetCategories().ToListAsync();
+            var categories = await this.blog.GetCategories().ToListAsync();
+            categories.Sort();
+            this.ViewData[Constants.AllCats] = categories;
 
             if (string.IsNullOrEmpty(id))
             {
@@ -154,22 +156,22 @@ namespace Miniblog.Core.Controllers
             var filteredPosts = posts.Skip(this.settings.Value.PostsPerPage * page).Take(this.settings.Value.PostsPerPage);
 
             // set the view option
-            this.ViewData["ViewOption"] = this.settings.Value.ListView;
+            this.ViewData[Constants.ViewOption] = this.settings.Value.ListView;
 
-            this.ViewData["TotalPostCount"] = await posts.CountAsync();
-            this.ViewData["Title"] = this.manifest.Name;
-            this.ViewData["Description"] = this.manifest.Description;
-            this.ViewData["prev"] = $"/{page + 1}/";
-            this.ViewData["next"] = $"/{(page <= 1 ? null : page - 1 + "/")}";
+            this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.Title] = this.manifest.Name;
+            this.ViewData[Constants.Description] = this.manifest.Description;
+            this.ViewData[Constants.prev] = $"/{page + 1}/";
+            this.ViewData[Constants.next] = $"/{(page <= 1 ? null : $"{page - 1}/")}";
 
-            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
+            return this.View("~/Views/Blog/Index.cshtml", filteredPosts);
         }
 
         [Route("/blog/{slug?}")]
         [OutputCache(Profile = "default")]
         public async Task<IActionResult> Post(string slug)
         {
-            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(false);
+            var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(true);
 
             return post is null ? this.NotFound() : (IActionResult)this.View(post);
         }
@@ -186,7 +188,7 @@ namespace Miniblog.Core.Controllers
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View("Edit", post);
+                return this.View(nameof(Edit), post);
             }
 
             if (post is null)
@@ -195,7 +197,7 @@ namespace Miniblog.Core.Controllers
             }
 
             var existing = await this.blog.GetPostById(post.ID).ConfigureAwait(false) ?? post;
-            string categories = this.Request.Form["categories"];
+            string categories = this.Request.Form[Constants.categories];
 
             existing.Categories.Clear();
             categories.Split(",", StringSplitOptions.RemoveEmptyEntries)
@@ -227,8 +229,13 @@ namespace Miniblog.Core.Controllers
               ".webp"
             };
 
-            foreach (Match match in imgRegex.Matches(post.Content))
+            foreach (Match? match in imgRegex.Matches(post.Content))
             {
+                if (match is null)
+                {
+                    continue;
+                }
+
                 var doc = new XmlDocument();
                 doc.LoadXml($"<root>{match.Value}</root>");
 
@@ -238,7 +245,7 @@ namespace Miniblog.Core.Controllers
 
                 // The HTML editor creates base64 DataURIs which we'll have to convert to image
                 // files on disk
-                if (srcNode == null || fileNameNode == null)
+                if (srcNode is null || fileNameNode is null)
                 {
                     continue;
                 }

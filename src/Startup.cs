@@ -28,10 +28,8 @@ namespace Miniblog.Core
 
         public IConfiguration Configuration { get; }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host
-                .CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(
                     webBuilder =>
                     {
@@ -39,7 +37,6 @@ namespace Miniblog.Core
                             .UseStartup<Startup>()
                             .ConfigureKestrel(options => options.AddServerHeader = false);
                     });
-        }
 
         public static void Main(string[] args) => CreateHostBuilder(args).Build().Run();
 

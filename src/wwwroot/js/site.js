@@ -106,7 +106,6 @@
 
                     timer = null;
                 });
-
             }, delay);
         }
 
@@ -134,7 +133,6 @@
                     window.setTimeout(callback, 1000 / 60);
                 };
         })();
-
 
         window.addEventListener("scroll", scroll);
         window.addEventListener("resize", init);

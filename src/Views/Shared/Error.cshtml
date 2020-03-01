@@ -1,33 +1,33 @@
 ﻿@model int
 @{
     var statusCode = Model;
-    var statusmessage = "";
+    var statusmessage = string.Empty;
     switch (statusCode)
     {
         case 400:
-            statusmessage = "Bad request: The request cannot be fulfilled due to bad syntax";
+            statusmessage = Miniblog.Core.Properties.Resources.BadRequestTheRequestCannotBeFulfilledDueToBadSyntax;
             break;
         case 403:
-            statusmessage = "Forbidden";
+            statusmessage = Miniblog.Core.Properties.Resources.Forbidden;
             break;
         case 404:
-            statusmessage = "Page not found";
+            statusmessage = Miniblog.Core.Properties.Resources.PageNotFound;
             break;
         case 408:
-            statusmessage = "The server timed out waiting for the request";
+            statusmessage = Miniblog.Core.Properties.Resources.TheServerTimedOutWaitingForTheRequest;
             break;
         case 500:
-            statusmessage = "Internal Server Error - server was unable to finish processing the request";
+            statusmessage = Miniblog.Core.Properties.Resources.InternalServerErrorServerWasUnableToFinishProcessingTheRequest;
             break;
         default:
-            statusmessage = "That’s odd... Something we didn't expect happened";
+            statusmessage = Miniblog.Core.Properties.Resources.ThatsOddSomethingWeDidntExpectHappened;
             break;
     }
 
-    ViewData["Title"] = statusmessage;
+    ViewData[Constants.Title] = statusmessage;
 }
 
 <div class="container">
-    <h1>Error @Model</h1>
+    <h1>@Miniblog.Core.Properties.Resources.Error @Model</h1>
     <p>@statusmessage</p>
 </div>

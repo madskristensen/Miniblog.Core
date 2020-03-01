@@ -117,7 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BadRequestTheRequestCannotBeFulfilledDueToBadSyntax" xml:space="preserve">
+    <value>Bad request: The request cannot be fulfilled due to bad syntax</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Forbidden" xml:space="preserve">
+    <value>Forbidden</value>
+  </data>
+  <data name="InternalServerErrorServerWasUnableToFinishProcessingTheRequest" xml:space="preserve">
+    <value>Internal Server Error - server was unable to finish processing the request</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="MiniblogCore" xml:space="preserve">
+    <value>Miniblog.Core</value>
+  </data>
+  <data name="NewPost" xml:space="preserve">
+    <value>New post</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Offline</value>
+  </data>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Page not found</value>
+  </data>
+  <data name="PoweredBy" xml:space="preserve">
+    <value>Powered by</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="SignInAsAdministrator" xml:space="preserve">
+    <value>Sign in as administrator</value>
+  </data>
+  <data name="SignInToTheWebsite" xml:space="preserve">
+    <value>Sign in to the website</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="SignOutAsAdministrator" xml:space="preserve">
+    <value>Sign out as administrator</value>
+  </data>
+  <data name="SomeFeaturesOfThisWebsiteDoNotWorkAsExpectedWhenJavaScriptIsDisabled" xml:space="preserve">
+    <value>Some features of this website do not work as expected when JavaScript is disabled</value>
+  </data>
+  <data name="ThatsOddSomethingWeDidntExpectHappened" xml:space="preserve">
+    <value>That’s odd... Something we didn't expect happened</value>
+  </data>
+  <data name="ThePageYouRequestedCanNotBeShownBecauseYouAreOffline" xml:space="preserve">
+    <value>The page you requested can not be shown because you are offline.</value>
+  </data>
+  <data name="TheServerTimedOutWaitingForTheRequest" xml:space="preserve">
+    <value>The server timed out waiting for the request</value>
+  </data>
   <data name="Unauthorized" xml:space="preserve">
     <value>Unauthorized</value>
+  </data>
+  <data name="UsernameOrPasswordIsInvalid" xml:space="preserve">
+    <value>Username or password is invalid.</value>
   </data>
 </root>

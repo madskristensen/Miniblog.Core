@@ -11,9 +11,9 @@ namespace Miniblog.Core.Services
 
         IAsyncEnumerable<string> GetCategories();
 
-        Task<Post> GetPostById(string id);
+        Task<Post?> GetPostById(string id);
 
-        Task<Post> GetPostBySlug(string slug);
+        Task<Post?> GetPostBySlug(string slug);
 
         IAsyncEnumerable<Post> GetPosts();
 
@@ -21,7 +21,7 @@ namespace Miniblog.Core.Services
 
         IAsyncEnumerable<Post> GetPostsByCategory(string category);
 
-        Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null);
+        Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null);
 
         Task SavePost(Post post);
     }

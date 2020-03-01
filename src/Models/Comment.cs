@@ -10,18 +10,18 @@ namespace Miniblog.Core.Models
     public class Comment
     {
         [Required]
-        public string Author { get; set; }
+        public string Author { get; set; } = string.Empty;
 
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         [Required, EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         public string ID { get; set; } = Guid.NewGuid().ToString();
 
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin { get; set; } = false;
 
         [Required]
         public DateTime PubDate { get; set; } = DateTime.UtcNow;

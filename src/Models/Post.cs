@@ -15,10 +15,10 @@ namespace Miniblog.Core.Models
         public IList<Comment> Comments { get; } = new List<Comment>();
 
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         [Required]
-        public string Excerpt { get; set; }
+        public string Excerpt { get; set; } = string.Empty;
 
         [Required]
         public string ID { get; set; } = DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -29,15 +29,16 @@ namespace Miniblog.Core.Models
 
         public DateTime PubDate { get; set; } = DateTime.UtcNow;
 
-        public string Slug { get; set; }
+        public string Slug { get; set; } = string.Empty;
 
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "The slug should be lower case.")]
         public static string CreateSlug(string title)
         {
-            title = title?.ToLowerInvariant().Replace(" ", "-", StringComparison.OrdinalIgnoreCase);
+            title = title?.ToLowerInvariant().Replace(
+                Constants.Space, Constants.Dash, StringComparison.OrdinalIgnoreCase) ?? string.Empty;
             title = RemoveDiacritics(title);
             title = RemoveReservedUrlCharacters(title);
 
@@ -50,6 +51,8 @@ namespace Miniblog.Core.Models
         public string GetEncodedLink() => $"/blog/{System.Net.WebUtility.UrlEncode(this.Slug)}/";
 
         public string GetLink() => $"/blog/{this.Slug}/";
+
+        public bool IsVisible() => this.PubDate <= DateTime.UtcNow && this.IsPublished;
 
         public string RenderContent()
         {

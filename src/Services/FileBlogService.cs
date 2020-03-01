@@ -30,9 +30,9 @@ namespace Miniblog.Core.Services
         private readonly string folder;
 
         [SuppressMessage(
-            "Usage",
-            "SecurityIntelliSenseCS:MS Security rules violation",
-            Justification = "Path not derived from user input.")]
+                "Usage",
+                "SecurityIntelliSenseCS:MS Security rules violation",
+                Justification = "Path not derived from user input.")]
         public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
         {
             if (env is null)
@@ -76,40 +76,34 @@ namespace Miniblog.Core.Services
         {
             var isAdmin = this.IsAdmin();
 
-            var categories = this.cache
+            return this.cache
                 .Where(p => p.IsPublished || isAdmin)
                 .SelectMany(post => post.Categories)
                 .Select(cat => cat.ToLowerInvariant())
                 .Distinct()
                 .ToAsyncEnumerable();
-
-            return categories;
         }
 
-        public virtual Task<Post> GetPostById(string id)
+        public virtual Task<Post?> GetPostById(string id)
         {
+            var isAdmin = this.IsAdmin();
             var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
-            var isAdmin = this.IsAdmin();
 
-            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
-            {
-                return Task.FromResult(post);
-            }
-
-            return Task.FromResult<Post>(null);
+            return Task.FromResult(
+                post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
+                ? null
+                : post);
         }
 
-        public virtual Task<Post> GetPostBySlug(string slug)
+        public virtual Task<Post?> GetPostBySlug(string slug)
         {
-            var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
             var isAdmin = this.IsAdmin();
+            var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
-            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
-            {
-                return Task.FromResult(post);
-            }
-
-            return Task.FromResult<Post>(null);
+            return Task.FromResult(
+                post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
+                ? null
+                : post);
         }
 
         /// <remarks>Overload for getPosts method to retrieve all posts.</remarks>
@@ -153,7 +147,7 @@ namespace Miniblog.Core.Services
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
             Justification = "Caller must review file name.")]
-        public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
+        public async Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null)
         {
             if (bytes is null)
             {
@@ -280,7 +274,7 @@ namespace Miniblog.Core.Services
 
             foreach (var node in comments.Elements("comment"))
             {
-                var comment = new Comment()
+                var comment = new Comment
                 {
                     ID = ReadAttribute(node, "id"),
                     Author = ReadValue(node, "author"),
@@ -295,10 +289,10 @@ namespace Miniblog.Core.Services
         }
 
         private static string ReadAttribute(XElement element, XName name, string defaultValue = "") =>
-            element.Attribute(name) is null ? defaultValue : element.Attribute(name)?.Value;
+            element.Attribute(name) is null ? defaultValue : element.Attribute(name)?.Value ?? defaultValue;
 
         private static string ReadValue(XElement doc, XName name, string defaultValue = "") =>
-            doc.Element(name) is null ? defaultValue : doc.Element(name)?.Value;
+            doc.Element(name) is null ? defaultValue : doc.Element(name)?.Value ?? defaultValue;
 
         [SuppressMessage(
             "Usage",
