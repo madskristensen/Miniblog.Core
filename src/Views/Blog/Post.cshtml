@@ -1,10 +1,10 @@
 ﻿@model Post
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
-    ViewData["Title"] = Model.Title;
-    ViewData["Description"] = Model.Excerpt;
-    bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
-    string host = Context.Request.Scheme + "://" + Context.Request.Host;
+    ViewData[Constants.Title] = Model.Title;
+    ViewData[Constants.Description] = Model.Excerpt;
+    bool showFullPost = ViewContext.RouteData.Values.ContainsKey(Constants.slug);
+    string host = $"{Context.Request.Scheme}://{Context.Request.Host}";
     bool isCodePreview = Model.Content.Contains("</code>");
 }
 
@@ -32,7 +32,6 @@
             @Html.Raw(Model.Excerpt)
         }
     </div>
-
 
     <footer>
         @if (Model.Categories.Any())

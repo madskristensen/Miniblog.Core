@@ -36,12 +36,14 @@ namespace Miniblog.Core.Services
         public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
         {
             this.ValidateUser(username, password);
+
             throw new NotImplementedException();
         }
 
         public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
         {
             this.ValidateUser(username, password);
+
             throw new NotImplementedException();
         }
 
@@ -77,6 +79,7 @@ namespace Miniblog.Core.Services
         public Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
         {
             this.ValidateUser(username, password);
+
             throw new NotImplementedException();
         }
 
@@ -97,6 +100,7 @@ namespace Miniblog.Core.Services
         public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
         {
             this.ValidateUser(username, password);
+
             throw new NotImplementedException();
         }
 
@@ -152,7 +156,7 @@ namespace Miniblog.Core.Services
         public Task<Page[]> GetPagesAsync(string blogid, string username, string password, int numPages) =>
             throw new NotImplementedException();
 
-        public async Task<Post> GetPostAsync(string postid, string username, string password)
+        public async Task<Post?> GetPostAsync(string postid, string username, string password)
         {
             this.ValidateUser(username, password);
 
@@ -173,6 +177,7 @@ namespace Miniblog.Core.Services
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
         {
             this.ValidateUser(username, password);
+
             throw new NotImplementedException();
         }
 
@@ -189,7 +194,7 @@ namespace Miniblog.Core.Services
                     new BlogInfo
                     {
                         blogid ="1",
-                        blogName = this.config["blog:name"] ?? nameof(MetaWeblogService),
+                        blogName = this.config[Constants.Config.Blog.Name] ?? nameof(MetaWeblogService),
                         url = url
                     }
                 });

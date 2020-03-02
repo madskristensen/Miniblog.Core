@@ -1,37 +1,38 @@
-﻿@model IEnumerable<Post>
+﻿@model IAsyncEnumerable<Post>
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
-    int currentPage = int.Parse(ViewContext.RouteData.Values["page"] as string ?? "0");
-    
-    int pageCount = int.Parse(ViewData["TotalPostCount"].ToString()) / 2; 
+    int currentPage = int.Parse(ViewContext.RouteData.Values[Constants.page] as string ?? "0");
+
+    int pageCount;
+    pageCount = int.TryParse(ViewData[Constants.TotalPostCount].ToString(), out pageCount) ? 0 : pageCount / 2;
 }
 
-@foreach (var post in Model)
+@await foreach (var post in Model)
 {
     await Html.RenderPartialAsync("Post.cshtml", post);
 }
 
 <nav class="pagination container" aria-label="Pagination">
-    @if (Model.Any() && currentPage < pageCount)
+    @if ((await Model.AnyAsync()) && currentPage < pageCount)
     {
-        <a rel="prev" href="@ViewData["prev"]" title="Older posts">&laquo; Older</a>
+        <a rel="prev" href="@ViewData[Constants.prev]" title="Older posts">&laquo; Older</a>
     }
     @if (currentPage > 0)
     {
-        <a rel="next" href="@ViewData["next"]" title="Newer posts">Newer &raquo;</a>
+        <a rel="next" href="@ViewData[Constants.next]" title="Newer posts">Newer &raquo;</a>
     }
     <br /><br />
 
     @section Head {
-        @if (Model.Any() && currentPage < pageCount)
+        @if ((await Model.AnyAsync()) && currentPage < pageCount)
         {
-            <link rel="prev" href="@ViewData["prev"]" />
+            <link rel="prev" href="@ViewData[Constants.prev]" />
         }
         @if (currentPage > 0)
         {
-            <link rel="next" href="@ViewData["next"]" />
+            <link rel="next" href="@ViewData[Constants.next]" />
         }
     }
 </nav>
 
-@{await Html.RenderPartialAsync("_SocialSharing", ViewData["Title"]);}
+@{await Html.RenderPartialAsync("_SocialSharing", ViewData[Constants.Title]);}

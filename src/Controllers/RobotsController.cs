@@ -145,11 +145,11 @@ namespace Miniblog.Core.Controllers
             xml.WriteEndElement();
         }
 
-        private async Task<ISyndicationFeedWriter> GetWriter(string type, XmlWriter xmlWriter, DateTime updated)
+        private async Task<ISyndicationFeedWriter> GetWriter(string? type, XmlWriter xmlWriter, DateTime updated)
         {
             var host = $"{this.Request.Scheme}://{this.Request.Host}/";
 
-            if (type.Equals("rss", StringComparison.OrdinalIgnoreCase))
+            if (type?.Equals("rss", StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 var rss = new RssFeedWriter(xmlWriter);
                 await rss.WriteTitle(this.manifest.Name).ConfigureAwait(false);

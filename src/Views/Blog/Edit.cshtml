@@ -1,13 +1,12 @@
 ﻿@model Post
 @{
-    bool isNew = string.IsNullOrEmpty(Model.Title);
-    ViewData["Title"] = "Edit " + (Model.Title ?? "new post");
+    var isNew = string.IsNullOrEmpty(Model.Title);
+    ViewData[Constants.Title] = "Edit " + (Model.Title ?? "new post");
     var host = Context.Request.Host.ToString();
-    List<string> allCats = ViewData["AllCats"] as List<string> ?? new List<string>();
-    allCats.Sort();
+    var allCats = ViewData[Constants.AllCats] as List<string> ?? new List<string>();
 }
 
-@section Head{
+@section Head {
     <link rel="stylesheet" href="~/css/admin.scss" />
 }
 

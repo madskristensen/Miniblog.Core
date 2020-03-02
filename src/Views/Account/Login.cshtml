@@ -1,14 +1,14 @@
 ﻿@model LoginViewModel
 @{
-    ViewData["Title"] = "Login";
-    ViewData["Description"] = $"Sign in to the website";
+    ViewData[Constants.Title] = Miniblog.Core.Properties.Resources.Login;
+    ViewData[Constants.Description] = Miniblog.Core.Properties.Resources.SignInToTheWebsite;
 }
 
 @section head {
     <link rel="stylesheet" href="~/css/login.scss" />
 }
 
-<form method="post" id="login" aria-labelledby="legend" asp-route-returnUrl="@ViewData["ReturnUrl"]">
+<form method="post" id="login" aria-labelledby="legend" asp-route-returnUrl="@ViewData[Constants.ReturnUrl]">
     <div asp-validation-summary="All"></div>
     <fieldset>
         <legend id="legend">Sign in</legend>
