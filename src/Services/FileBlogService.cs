@@ -281,7 +281,8 @@ namespace Miniblog.Core.Services
                     Email = ReadValue(node, "email"),
                     IsAdmin = bool.Parse(ReadAttribute(node, "isAdmin", "false")),
                     Content = ReadValue(node, "content"),
-                    PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01"), CultureInfo.InvariantCulture),
+                    PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01"),
+                        CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
                 };
 
                 post.Comments.Add(comment);
@@ -329,13 +330,14 @@ namespace Miniblog.Core.Services
                     Excerpt = ReadValue(doc, "excerpt"),
                     Content = ReadValue(doc, "content"),
                     Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
+                    PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture,
+                        DateTimeStyles.AdjustToUniversal),
                     LastModified = DateTime.Parse(
                         ReadValue(
                             doc,
                             "lastModified",
                             DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                        CultureInfo.InvariantCulture),
+                        CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal),
                     IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
                 };
 
