@@ -90,7 +90,7 @@ namespace Miniblog.Core.Services
             var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
 
             return Task.FromResult(
-                post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
+                post is null || post.PubDate.ToUniversalTime() > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
                 ? null
                 : post);
         }
@@ -101,7 +101,7 @@ namespace Miniblog.Core.Services
             var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
             return Task.FromResult(
-                post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
+                post is null || post.PubDate.ToUniversalTime() > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
                 ? null
                 : post);
         }
@@ -112,7 +112,7 @@ namespace Miniblog.Core.Services
             var isAdmin = this.IsAdmin();
 
             var posts = this.cache
-                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+                .Where(p => p.PubDate.ToUniversalTime() <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .ToAsyncEnumerable();
 
             return posts;
@@ -123,7 +123,7 @@ namespace Miniblog.Core.Services
             var isAdmin = this.IsAdmin();
 
             var posts = this.cache
-                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+                .Where(p => p.PubDate.ToUniversalTime() <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .Skip(skip)
                 .Take(count)
                 .ToAsyncEnumerable();
@@ -136,7 +136,7 @@ namespace Miniblog.Core.Services
             var isAdmin = this.IsAdmin();
 
             var posts = from p in this.cache
-                        where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                        where p.PubDate.ToUniversalTime() <= DateTime.UtcNow && (p.IsPublished || isAdmin)
                         where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
                         select p;
 
