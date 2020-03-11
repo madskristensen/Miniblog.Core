@@ -86,7 +86,7 @@ namespace Miniblog.Core.Controllers
             this.ViewData[Constants.Description] = $"Articles posted in the {category} category";
             this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
             this.ViewData[Constants.next] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
+            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
         }
 
         [Route("/blog/comment/{postId}/{commentId}")]
