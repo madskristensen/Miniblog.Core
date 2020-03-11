@@ -112,7 +112,7 @@ namespace Miniblog.Core.Services
             var isAdmin = this.IsAdmin();
 
             var posts = this.cache
-                .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+                .Where(p => p.PubDate.ToUniversalTime() <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                 .ToAsyncEnumerable();
 
             return posts;
