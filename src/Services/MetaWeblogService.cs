@@ -60,6 +60,7 @@ namespace Miniblog.Core.Services
             {
                 Title = post.title,
                 Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
+                Excerpt = post.mt_excerpt,
                 Content = post.description,
                 IsPublished = publish
             };
@@ -117,6 +118,7 @@ namespace Miniblog.Core.Services
 
             existing.Title = post.title;
             existing.Slug = post.wp_slug;
+            existing.Excerpt = post.mt_excerpt;
             existing.Content = post.description;
             existing.IsPublished = publish;
             existing.Categories.Clear();
@@ -227,6 +229,7 @@ namespace Miniblog.Core.Services
                 wp_slug = post.Slug,
                 permalink = url + post.GetLink(),
                 dateCreated = post.PubDate,
+                mt_excerpt = post.Excerpt,
                 description = post.Content,
                 categories = post.Categories.ToArray()
             };

@@ -8,7 +8,7 @@
     <supportsNewCategoriesInline>Yes</supportsNewCategoriesInline>
     <supportsCommentPolicy>No</supportsCommentPolicy>
     <supportsSlug>Yes</supportsSlug>
-    <supportsExcerpt>No</supportsExcerpt>
+    <supportsExcerpt>Yes</supportsExcerpt>
     <supportsPages>No</supportsPages>
     <supportsPageParent>No</supportsPageParent>
     <supportsAuthor>No</supportsAuthor>
