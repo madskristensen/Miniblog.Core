@@ -1,10 +1,12 @@
 ﻿@model IAsyncEnumerable<Post>
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
-    int currentPage = int.Parse(ViewContext.RouteData.Values[Constants.page] as string ?? "0");
+	int currentPage = int.Parse(ViewContext.RouteData.Values[Constants.page] as string ?? "0");
 
-    int pageCount;
-    pageCount = int.TryParse(ViewData[Constants.TotalPostCount].ToString(), out pageCount) ? 0 : pageCount / 2;
+	int postsPerPage;
+	postsPerPage = (int.TryParse(ViewData[Constants.PostsPerPage].ToString(), out postsPerPage) && (postsPerPage > 0)) ? postsPerPage : 4;
+	int pageCount;
+	pageCount = int.TryParse(ViewData[Constants.TotalPostCount].ToString(), out pageCount) ? pageCount / postsPerPage : 0;
 }
 
 @await foreach (var post in Model)
