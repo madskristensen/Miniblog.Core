@@ -3,7 +3,7 @@
 @{
 	int currentPage = int.Parse(ViewContext.RouteData.Values[Constants.page] as string ?? "0");
 
-	int postsPerPage;
+	int postsPerPage; //added issue 262 
 	postsPerPage = (int.TryParse(ViewData[Constants.PostsPerPage].ToString(), out postsPerPage) && (postsPerPage > 0)) ? postsPerPage : 4;
 	int pageCount;
 	pageCount = int.TryParse(ViewData[Constants.TotalPostCount].ToString(), out pageCount) ? pageCount / postsPerPage : 0;
