@@ -4,12 +4,16 @@ namespace Miniblog.Core
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.ResponseCompression;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
 
     using Miniblog.Core.Services;
+
+    using System.IO.Compression;
+    using System.Linq;
 
     using WebEssentials.AspNetCore.OutputCaching;
 
@@ -53,6 +57,7 @@ namespace Miniblog.Core
                 app.UseExceptionHandler("/Shared/Error");
                 app.UseHsts();
             }
+            app.UseResponseCompression();
 
             app.Use(
                 (context, next) =>
@@ -86,6 +91,7 @@ namespace Miniblog.Core
                 {
                     endpoints.MapControllerRoute("default", "{controller=Blog}/{action=Index}/{id?}");
                 });
+
         }
 
         /// <remarks>This method gets called by the runtime. Use this method to add services to the container.</remarks>
@@ -151,6 +157,25 @@ namespace Miniblog.Core
                     pipeline.CompileScssFiles()
                             .InlineImages(1);
                 });
+
+            // Compress HTTP response
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.EnableForHttps = true;
+                options.MimeTypes =
+                    ResponseCompressionDefaults.MimeTypes.Concat(
+                        new[] { "application/json" });
+            });
+            services.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Fastest;
+            });
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Fastest;
+            });
         }
     }
 }
