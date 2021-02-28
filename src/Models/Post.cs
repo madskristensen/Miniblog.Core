@@ -29,7 +29,7 @@ namespace Miniblog.Core.Models
 
         public DateTime PubDate { get; set; } = DateTime.UtcNow;
 
-        public string Slug { get; set; } = string.Empty;
+        public string Slug { get; set; } = GenerateRandomSlug();
 
         [Required]
         public string Title { get; set; } = string.Empty;
@@ -104,6 +104,21 @@ namespace Miniblog.Core.Models
             }
 
             return text;
+        }
+
+        private static string GenerateRandomSlug()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            var finalString = new String(stringChars);
+            return finalString;
         }
     }
 }
