@@ -172,11 +172,9 @@ namespace Miniblog.Core.Services
             this.ValidateUser(username, password);
 
             return await this.blog.GetPosts(numberOfPosts)
-                                  .Select(this.ToMetaWebLogPost)
-                                  .ToArrayAsync();
+                .Select(this.ToMetaWebLogPost)
+                .ToArrayAsync();
         }
-
-        public Task<Tag[]> GetTagsAsync(string blogid, string username, string password) => Task.FromResult(Array.Empty<Tag>());
 
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
         {
