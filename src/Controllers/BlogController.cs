@@ -82,6 +82,7 @@ namespace Miniblog.Core.Controllers
             this.ViewData["ViewOption"] = this.settings.Value.ListView;
 
             this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.PostsPerPage] = this.settings.Value.PostsPerPage;
             this.ViewData[Constants.Title] = $"{this.manifest.Name} {category}";
             this.ViewData[Constants.Description] = $"Articles posted in the {category} category";
             this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
@@ -159,6 +160,7 @@ namespace Miniblog.Core.Controllers
             this.ViewData[Constants.ViewOption] = this.settings.Value.ListView;
 
             this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.PostsPerPage] = this.settings.Value.PostsPerPage;
             this.ViewData[Constants.Title] = this.manifest.Name;
             this.ViewData[Constants.Description] = this.manifest.Description;
             this.ViewData[Constants.prev] = $"/{page + 1}/";

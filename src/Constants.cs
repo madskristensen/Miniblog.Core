@@ -19,6 +19,7 @@ namespace Miniblog.Core
         public static readonly string Space = " ";
         public static readonly string Title = "Title";
         public static readonly string TotalPostCount = "TotalPostCount";
+        public static readonly string PostsPerPage = "PostsPerPage";
         public static readonly string ViewOption = "ViewOption";
 
         [SuppressMessage(
