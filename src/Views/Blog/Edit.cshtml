@@ -1,4 +1,4 @@
-﻿@model Post
+@model Post
 @{
     var isNew = string.IsNullOrEmpty(Model.Title);
     ViewData[Constants.Title] = "Edit " + (Model.Title ?? "new post");
@@ -24,11 +24,11 @@
         <span class="desc" id="desc_slug">The part of the URL that identifies this blog post</span>
         <br />
 
-        <label for="categories" class="label">Tags</label>
-        <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)"  />
+        <label for="categories" class="label">Categories</label>
+        <input type="text" name="selectcat" id="selectcat" aria-describedby="desc_categories" list="catlist" placeholder="@string.Join(", ", Model.Categories)"  />
         <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
         <span class="desc" id="desc_categories">Select, or build a comma separated list of keywords - to remove double the keyword</span>
-        <datalist id="taglist">
+        <datalist id="catlist">
             @foreach (var cat in allCats)
             {
                 <option value="@cat"/>

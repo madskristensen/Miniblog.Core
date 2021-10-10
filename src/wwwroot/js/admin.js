@@ -119,15 +119,15 @@
         }
     }
 
-    // Tag input enhancement - using autocomplete input
-    var selecttag = document.getElementById("selecttag");
+    // Category input enhancement - using autocomplete input
+    var selectcat = document.getElementById("selectcat");
     var categories = document.getElementById("categories");
-    if (selecttag && categories) {
+    if (selectcat && categories) {
 
-        selecttag.onchange = function () {
+        selectcat.onchange = function () {
 
-            var phv = selecttag.placeholder;
-            var val = selecttag.value.toLowerCase();
+            var phv = selectcat.placeholder;
+            var val = selectcat.value.toLowerCase();
 
             var phv_array = phv.split(",").map(function (item) {
                 return removeEmpty(item);
@@ -151,9 +151,9 @@
                 }
             }
 
-            selecttag.placeholder = phv_array.join(", ");
-            categories.value = selecttag.placeholder;
-            selecttag.value = "";
+            selectcat.placeholder = phv_array.join(", ");
+            categories.value = selectcat.placeholder;
+            selectcat.value = "";
         };
     }
 
