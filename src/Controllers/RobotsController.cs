@@ -1,5 +1,6 @@
 namespace Miniblog.Core.Controllers
 {
+    using Microsoft.AspNetCore.Http.Features;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Microsoft.SyndicationFeed;
@@ -51,6 +52,8 @@ namespace Miniblog.Core.Controllers
         [Route("/rsd.xml")]
         public void RsdXml()
         {
+            EnableHttpBodySyncIO();
+
             var host = $"{this.Request.Scheme}://{this.Request.Host}";
 
             this.Response.ContentType = "application/xml";
@@ -83,6 +86,8 @@ namespace Miniblog.Core.Controllers
         [Route("/feed/{type}")]
         public async Task Rss(string type)
         {
+            EnableHttpBodySyncIO();
+
             this.Response.ContentType = "application/xml";
             var host = $"{this.Request.Scheme}://{this.Request.Host}";
 
@@ -126,6 +131,8 @@ namespace Miniblog.Core.Controllers
         [Route("/sitemap.xml")]
         public async Task SitemapXml()
         {
+            EnableHttpBodySyncIO();
+
             var host = $"{this.Request.Scheme}://{this.Request.Host}";
 
             this.Response.ContentType = "application/xml";
@@ -170,6 +177,12 @@ namespace Miniblog.Core.Controllers
             await atom.WriteGenerator("Miniblog.Core", "https://github.com/madskristensen/Miniblog.Core", "1.0").ConfigureAwait(false);
             await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)).ConfigureAwait(false);
             return atom;
+        }
+
+        private void EnableHttpBodySyncIO()
+        {
+            var body = HttpContext.Features.Get<IHttpBodyControlFeature>();
+            body.AllowSynchronousIO = true;
         }
     }
 }
