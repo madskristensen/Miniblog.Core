@@ -4,6 +4,7 @@
     ViewData[Constants.Title] = "Edit " + (Model.Title ?? "new post");
     var host = Context.Request.Host.ToString();
     var allCats = ViewData[Constants.AllCats] as List<string> ?? new List<string>();
+    var allTags = ViewData[Constants.AllTags] as List<string> ?? new List<string>();
 }
 
 @section Head {
@@ -32,6 +33,18 @@
             @foreach (var cat in allCats)
             {
                 <option value="@cat"/>
+            }
+            </datalist>
+        <br />
+
+        <label for="tags" class="label">Tags</label>
+        <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_tags" list="taglist" placeholder="@string.Join(", ", Model.Tags)"  />
+        <input type="text" name="tags" id="tags" value="@string.Join(", ", Model.Tags)" hidden />
+        <span class="desc" id="desc_tags">Select, or build a comma separated list of keywords - to remove double the keyword</span>
+        <datalist id="taglist">
+            @foreach (var tag in allTags)
+            {
+                <option value="@tag"/>
             }
             </datalist>
         <br />

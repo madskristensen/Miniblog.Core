@@ -157,4 +157,42 @@
         };
     }
 
+    // Tag input enhancement - using autocomplete input
+    var selecttag = document.getElementById("selecttag");
+    var tags = document.getElementById("tags");
+    if (selecttag && tags) {
+
+        selecttag.onchange = function () {
+
+            var phv = selecttag.placeholder;
+            var val = selecttag.value.toLowerCase();
+
+            var phv_array = phv.split(",").map(function (item) {
+                return removeEmpty(item);
+            });
+
+            var val_array = val.split(",").map(function (item) {
+                return removeEmpty(item);
+            });
+
+            for (var j = val_array.length - 1; j >= 0; j--) {
+                var v = val_array[j];
+                var flag = false;
+                for (var i = phv_array.length - 1; i >= 0; i--) {
+                    if (phv_array[i] === v) {
+                        phv_array.splice(i, 1);
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    phv_array.push(v);
+                }
+            }
+
+            selecttag.placeholder = phv_array.join(", ");
+            tags.value = selecttag.placeholder;
+            selecttag.value = "";
+        };
+    }
+
 })();
