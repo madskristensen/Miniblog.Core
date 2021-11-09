@@ -66,6 +66,7 @@ namespace Miniblog.Core.Services
             };
 
             post.categories.ToList().ForEach(newPost.Categories.Add);
+            post.mt_keywords.Split(',').ToList().ForEach(newPost.Tags.Add);
 
             if (post.dateCreated != DateTime.MinValue)
             {
@@ -123,6 +124,8 @@ namespace Miniblog.Core.Services
             existing.IsPublished = publish;
             existing.Categories.Clear();
             post.categories.ToList().ForEach(existing.Categories.Add);
+            existing.Tags.Clear();
+            post.mt_keywords.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(existing.Tags.Add);
 
             if (post.dateCreated != DateTime.MinValue)
             {
@@ -173,6 +176,20 @@ namespace Miniblog.Core.Services
 
             return await this.blog.GetPosts(numberOfPosts)
                 .Select(this.ToMetaWebLogPost)
+                .ToArrayAsync();
+        }
+
+        public async Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
+        {
+            this.ValidateUser(username, password);
+
+            return await this.blog.GetTags()
+                .Select(
+                    tag =>
+                        new Tag
+                        {
+                            name = tag
+                        })
                 .ToArrayAsync();
         }
 
@@ -231,7 +248,8 @@ namespace Miniblog.Core.Services
                 dateCreated = post.PubDate,
                 mt_excerpt = post.Excerpt,
                 description = post.Content,
-                categories = post.Categories.ToArray()
+                categories = post.Categories.ToArray(),
+                mt_keywords = string.Join(',', post.Tags)
             };
         }
 

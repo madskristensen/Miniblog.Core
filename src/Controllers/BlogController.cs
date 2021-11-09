@@ -89,6 +89,27 @@ namespace Miniblog.Core.Controllers
             return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
         }
 
+        [Route("/blog/tag/{tag}/{page:int?}")]
+        [OutputCache(Profile = "default")]
+        public async Task<IActionResult> Tag(string tag, int page = 0)
+        {
+            // get posts for the selected tag.
+            var posts = this.blog.GetPostsByTag(tag);
+
+            // apply paging filter.
+            var filteredPosts = posts.Skip(this.settings.Value.PostsPerPage * page).Take(this.settings.Value.PostsPerPage);
+
+            // set the view option
+            this.ViewData["ViewOption"] = this.settings.Value.ListView;
+
+            this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.Title] = $"{this.manifest.Name} {tag}";
+            this.ViewData[Constants.Description] = $"Articles posted in the {tag} tag";
+            this.ViewData[Constants.prev] = $"/blog/tag/{tag}/{page + 1}/";
+            this.ViewData[Constants.next] = $"/blog/tag/{tag}/{(page <= 1 ? null : page - 1 + "/")}";
+            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
+        }
+
         [Route("/blog/comment/{postId}/{commentId}")]
         [Authorize]
         public async Task<IActionResult> DeleteComment(string postId, string commentId)
@@ -134,6 +155,10 @@ namespace Miniblog.Core.Controllers
             var categories = await this.blog.GetCategories().ToListAsync();
             categories.Sort();
             this.ViewData[Constants.AllCats] = categories;
+
+            var tags = await this.blog.GetTags().ToListAsync();
+            tags.Sort();
+            this.ViewData[Constants.AllTags] = tags;
 
             if (string.IsNullOrEmpty(id))
             {
@@ -198,12 +223,18 @@ namespace Miniblog.Core.Controllers
 
             var existing = await this.blog.GetPostById(post.ID).ConfigureAwait(false) ?? post;
             string categories = this.Request.Form[Constants.categories];
+            string tags = this.Request.Form[Constants.tags];
 
             existing.Categories.Clear();
             categories.Split(",", StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => c.Trim().ToLowerInvariant())
                 .ToList()
                 .ForEach(existing.Categories.Add);
+            existing.Tags.Clear();
+            tags.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim().ToLowerInvariant())
+                .ToList()
+                .ForEach(existing.Tags.Add);
             existing.Title = post.Title.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
             existing.IsPublished = post.IsPublished;

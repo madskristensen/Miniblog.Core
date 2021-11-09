@@ -111,6 +111,10 @@ namespace Miniblog.Core.Controllers
                 {
                     item.AddCategory(new SyndicationCategory(category));
                 }
+                foreach (var tag in post.Tags)
+                {
+                    item.AddCategory(new SyndicationCategory(tag));
+                }
 
                 item.AddContributor(new SyndicationPerson("test@example.com", this.settings.Value.Owner));
                 item.AddLink(new SyndicationLink(new Uri(item.Id)));

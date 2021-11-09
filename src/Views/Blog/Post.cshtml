@@ -1,4 +1,4 @@
-﻿@model Post
+@model Post
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
     ViewData[Constants.Title] = Model.Title;
@@ -33,29 +33,53 @@
         }
     </div>
 
-    <footer>
-        @if (Model.Categories.Any())
-        {
-            <ul class="categories">
-                <li> Posted in </li>
-                @foreach (string cat in Model.Categories)
-                {
-                    <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()" asp-route-page="">@cat</a></li>
-                }
-            </ul>
-        }
-        @if (settings.Value.DisplayComments)
-        {
-            <text>and has</text>
-            <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
-                <span itemprop="commentCount">@Model.Comments.Count</span> @(Model.Comments.Count == 1 ? "comment" : "comments")
-            </a>
-        }
+	<footer>
+		@if (Model.Categories.Any())
+		{
+			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_cats-@Model.ID" focusable="false" viewBox="0 0 24 24">
+				<title id="_cats-@Model.ID">Categories</title>
+				<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="gray"></path>
+				<path d="M0 0h24v24H0z" fill="none"></path>
+			</svg>
+			<ul class="categories">
+				@foreach (string cat in Model.Categories)
+				{
+					<li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()" asp-route-page="">@cat</a></li>
+				}
+			</ul>
+		}
 
-        <meta itemprop="author" content="@settings.Value.Owner" />
-        <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
-        <meta itemprop="mainEntityOfPage" content="@(host + Model.GetLink())" />
-    </footer>
+		@if (Model.Tags.Any())
+		{
+			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_tags-@Model.ID" focusable="false" viewBox="0 0 24 24">
+				<title id="_tags-@Model.ID">Tags</title>
+				<path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" fill="gray"></path>
+				<path d="M0 0h24v24H0z" fill="none"></path>
+			</svg>
+			<ul class="tags">
+				@foreach (string tag in Model.Tags)
+				{
+					<li itemprop="articleSection"><a asp-controller="Blog" asp-action="Tag" asp-route-tag="@tag.ToLowerInvariant()" asp-route-page="">@tag</a></li>
+				}
+			</ul>
+		}
+
+		@if (settings.Value.DisplayComments)
+		{
+			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_comments-@Model.ID" focusable="false" viewBox="0 0 24 24">
+				<title id="_comments-@Model.ID">Comments</title>
+				<path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z" fill="gray"></path>
+				<path d="M0 0h24v24H0z" fill="none"></path>
+			</svg>
+			<a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
+				<span itemprop="commentCount">@Model.Comments.Count</span> @(Model.Comments.Count == 1 ? "comment" : "comments")
+			</a>
+		}
+
+		<meta itemprop="author" content="@settings.Value.Owner" />
+		<meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
+		<meta itemprop="mainEntityOfPage" content="@(host + Model.GetLink())" />
+	</footer>
 </article>
 
 @if (showFullPost)

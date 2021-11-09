@@ -50,15 +50,16 @@ noscript p {
     }
 }
 
-.categories {
+.categories, .tags {
     list-style: none;
     display: inline;
     padding: 0;
+    margin-right: 20px;
 
     li {
         display: inline-block;
 
-        &:not(:first-child):not(:last-child):after {
+        &:not(:last-child):after {
             content: ", ";
         }
     }

@@ -84,6 +84,22 @@ namespace Miniblog.Core.Services
                 .ToAsyncEnumerable();
         }
 
+        [SuppressMessage(
+            "Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Consumer preference.")]
+        public virtual IAsyncEnumerable<string> GetTags()
+        {
+            var isAdmin = this.IsAdmin();
+
+            return this.cache
+                .Where(p => p.IsPublished || isAdmin)
+                .SelectMany(post => post.Tags)
+                .Select(tag => tag.ToLowerInvariant())
+                .Distinct()
+                .ToAsyncEnumerable();
+        }
+
         public virtual Task<Post?> GetPostById(string id)
         {
             var isAdmin = this.IsAdmin();
@@ -143,6 +159,18 @@ namespace Miniblog.Core.Services
             return posts.ToAsyncEnumerable();
         }
 
+        public IAsyncEnumerable<Post> GetPostsByTag(string tag)
+        {
+            var isAdmin = this.IsAdmin();
+
+            var posts = from p in this.cache
+                        where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                        where p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)
+                        select p;
+
+            return posts.ToAsyncEnumerable();
+        }
+
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
@@ -193,6 +221,7 @@ namespace Miniblog.Core.Services
                                 new XElement("content", post.Content),
                                 new XElement("ispublished", post.IsPublished),
                                 new XElement("categories", string.Empty),
+                                new XElement("tags", string.Empty),
                                 new XElement("comments", string.Empty)
                             ));
 
@@ -200,6 +229,12 @@ namespace Miniblog.Core.Services
             foreach (var category in post.Categories)
             {
                 categories.Add(new XElement("category", category));
+            }
+
+            var tags = doc.XPathSelectElement("post/tags");
+            foreach (var tag in post.Tags)
+            {
+                tags.Add(new XElement("tag", tag));
             }
 
             var comments = doc.XPathSelectElement("post/comments");
@@ -261,6 +296,18 @@ namespace Miniblog.Core.Services
 
             post.Categories.Clear();
             categories.Elements("category").Select(node => node.Value).ToList().ForEach(post.Categories.Add);
+        }
+
+        private static void LoadTags(Post post, XElement doc)
+        {
+            var tags = doc.Element("tags");
+            if (tags is null)
+            {
+                return;
+            }
+
+            post.Tags.Clear();
+            tags.Elements("tag").Select(node => node.Value).ToList().ForEach(post.Tags.Add);
         }
 
         private static void LoadComments(Post post, XElement doc)
@@ -342,6 +389,7 @@ namespace Miniblog.Core.Services
                 };
 
                 LoadCategories(post, doc);
+                LoadTags(post, doc);
                 LoadComments(post, doc);
                 this.cache.Add(post);
             }

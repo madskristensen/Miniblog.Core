@@ -3,7 +3,7 @@
   <options>
     <clientType>Metaweblog</clientType>
     <supportsEmbeds>Yes</supportsEmbeds>
-    <supportsKeywords>No</supportsKeywords>
+    <supportsKeywords>Yes</supportsKeywords>
     <supportsNewCategories>Yes</supportsNewCategories>
     <supportsNewCategoriesInline>Yes</supportsNewCategoriesInline>
     <supportsCommentPolicy>No</supportsCommentPolicy>
@@ -12,7 +12,7 @@
     <supportsPages>No</supportsPages>
     <supportsPageParent>No</supportsPageParent>
     <supportsAuthor>No</supportsAuthor>
-    <supportsGetTags>No</supportsGetTags>
+    <supportsGetTags>Yes</supportsGetTags>
     <requiresHtmlTitles>No</requiresHtmlTitles>
     <supportsEmptyTitles>No</supportsEmptyTitles>
     <requiresXHTML>Yes</requiresXHTML>
