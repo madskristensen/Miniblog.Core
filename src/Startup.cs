@@ -13,7 +13,7 @@ namespace Miniblog.Core
 
     using WebEssentials.AspNetCore.OutputCaching;
 
-    using WebMarkupMin.AspNetCore2;
+    using WebMarkupMin.AspNetCore6;
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
