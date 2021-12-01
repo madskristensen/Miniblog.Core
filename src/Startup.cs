@@ -4,11 +4,13 @@ namespace Miniblog.Core
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
 
+    using Miniblog.Core.Database;
     using Miniblog.Core.Services;
 
     using WebEssentials.AspNetCore.OutputCaching;
@@ -47,6 +49,7 @@ namespace Miniblog.Core
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -93,6 +96,9 @@ namespace Miniblog.Core
         {
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddDbContext<BlogContext>(options =>
+                options.UseSqlServer(this.Configuration.GetConnectionString("BlogContext")));
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<IUserServices, BlogUserServices>();
             services.AddSingleton<IBlogService, FileBlogService>();
