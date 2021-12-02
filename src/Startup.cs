@@ -101,7 +101,7 @@ namespace Miniblog.Core
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<IUserServices, BlogUserServices>();
-            services.AddSingleton<IBlogService, FileBlogService>();
+            services.AddScoped<IBlogService, DbBlogService>();
             services.Configure<BlogSettings>(this.Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();

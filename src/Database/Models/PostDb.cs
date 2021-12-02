@@ -7,8 +7,6 @@ namespace Miniblog.Core.Database.Models
     {
         public Guid ID { get; set; }
 
-        public ICollection<CommentDb>? Comments { get; set; }
-
         public string? Content { get; set; }
 
         public string? Excerpt { get; set; }
@@ -22,6 +20,8 @@ namespace Miniblog.Core.Database.Models
         public string? Slug { get; set; }
 
         public string? Title { get; set; }
+
+        public ICollection<CommentDb>? Comments { get; set; }
 
         public virtual ICollection<CategoryDb>? Categories { get; set; }
 
