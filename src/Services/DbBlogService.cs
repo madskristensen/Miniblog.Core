@@ -1,6 +1,5 @@
 namespace Miniblog.Core.Services
 {
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
 
     using Miniblog.Core.Database;
@@ -14,20 +13,13 @@ namespace Miniblog.Core.Services
 
     public class DbBlogService : IBlogService
     {
-        private readonly IWebHostEnvironment env;
         private readonly IHttpContextAccessor contextAccessor;
         private readonly BlogContext blogContext;
 
         public DbBlogService(
-            IWebHostEnvironment env,
             IHttpContextAccessor contextAccessor,
             BlogContext blogContext)
         {
-            if (env is null)
-            {
-                throw new ArgumentNullException(nameof(env));
-            }
-            this.env = env;
             this.contextAccessor = contextAccessor;
             this.blogContext = blogContext;
         }
@@ -93,11 +85,11 @@ namespace Miniblog.Core.Services
         public Task<Post?> GetPostBySlug(string slug)
         {
             var isAdmin = this.IsAdmin();
-
+            var decodedSlug = System.Net.WebUtility.UrlDecode(slug).ToLower();
             var post = this.blogContext
                 .Posts
                 .FirstOrDefault(p =>
-                p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase)
+                p.Slug.ToLower().Equals(decodedSlug)
                 && ((p.PubDate < DateTime.UtcNow && p.IsPublished)
                     || isAdmin));
 
@@ -113,7 +105,8 @@ namespace Miniblog.Core.Services
                 .Where(p => (p.PubDate < DateTime.UtcNow && p.IsPublished)
                             || isAdmin)
                 .Select(p => MapEntityToPost(p))
-                .ToAsyncEnumerable();
+                .ToAsyncEnumerable()
+                .OrderByDescending(p => p.PubDate);
         }
 
         public IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
@@ -159,6 +152,7 @@ namespace Miniblog.Core.Services
             {
                 this.blogContext.Posts.Update(entity);
             }
+            await this.blogContext.SaveChangesAsync();
         }
 
         protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true;
