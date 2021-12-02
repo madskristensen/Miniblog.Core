@@ -1,6 +1,7 @@
 namespace Miniblog.Core.Services
 {
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
 
     using Miniblog.Core.Database;
     using Miniblog.Core.Database.Models;
@@ -74,6 +75,8 @@ namespace Miniblog.Core.Services
             _ = Guid.TryParse(id, out var postId);
             var post = this.blogContext
                 .Posts
+                .Include(nameof(PostDb.Categories))
+                .Include(nameof(PostDb.Tags))
                 .FirstOrDefault(p =>
                 p.ID == postId
                 && ((p.PubDate < DateTime.UtcNow && p.IsPublished)
@@ -88,6 +91,8 @@ namespace Miniblog.Core.Services
             var decodedSlug = System.Net.WebUtility.UrlDecode(slug).ToLower();
             var post = this.blogContext
                 .Posts
+                .Include(nameof(PostDb.Categories))
+                .Include(nameof(PostDb.Tags))
                 .FirstOrDefault(p =>
                 p.Slug.ToLower().Equals(decodedSlug)
                 && ((p.PubDate < DateTime.UtcNow && p.IsPublished)
@@ -102,6 +107,8 @@ namespace Miniblog.Core.Services
 
             return this.blogContext
                 .Posts
+                .Include(nameof(PostDb.Categories))
+                .Include(nameof(PostDb.Tags))
                 .Where(p => (p.PubDate < DateTime.UtcNow && p.IsPublished)
                             || isAdmin)
                 .Select(p => MapEntityToPost(p))
@@ -115,6 +122,8 @@ namespace Miniblog.Core.Services
 
             return this.blogContext
                 .Posts
+                .Include(nameof(PostDb.Categories))
+                .Include(nameof(PostDb.Tags))
                 .Where(p => (p.PubDate < DateTime.UtcNow && p.IsPublished)
                             || isAdmin)
                 .Skip(skip)
@@ -139,7 +148,12 @@ namespace Miniblog.Core.Services
             _ = Guid.TryParse(post.ID, out var postId);
 
 
-            var entity = this.blogContext.Posts.Find(postId) ?? new PostDb();
+            var entity = this.blogContext
+                .Posts
+                .Include(nameof(PostDb.Categories))
+                .Include(nameof(PostDb.Tags))
+                .FirstOrDefault(p=>p.ID == postId) ?? new PostDb();
+
             post.LastModified = DateTime.UtcNow;
 
             BindPostToEntity(post, entity);
@@ -166,6 +180,22 @@ namespace Miniblog.Core.Services
             entity.PubDate = post.PubDate;
             entity.Slug = post.Slug;
             entity.Title = post.Title;
+
+            entity.Tags = entity.Tags ?? new List<TagDb>();
+            entity.Categories = entity.Categories ?? new List<CategoryDb>();
+
+            entity.Tags = entity.Tags.IntersectBy(post.Tags.ToList(), x => x.Name).ToList();
+
+            foreach (var cat in post.Categories)
+            {
+                if(entity.Categories.Any(c=>c.Name.ToLower() == cat.ToLower()))
+                {
+                    entity.Categories.Add(new CategoryDb
+                    {
+                        Name = cat
+                    });
+                }
+            }
         }
 
         private static Post MapEntityToPost(PostDb post)
@@ -175,7 +205,7 @@ namespace Miniblog.Core.Services
                 return null;
             }
 
-            return new Post
+            var postDto = new Post
             {
                 ID = post.ID.ToString(),
                 Content = post.Content,
@@ -186,6 +216,18 @@ namespace Miniblog.Core.Services
                 Slug = post.Slug,
                 Title = post.Title
             };
+
+            foreach (var tag in post.Tags)
+            {
+                postDto.Tags.Add(tag.Name);
+            }
+
+            foreach (var cat in post.Categories)
+            {
+                postDto.Categories.Add(cat.Name);
+            }
+
+            return postDto;
         }
     }
 }
