@@ -24,7 +24,7 @@ In search for custom designed themes for MiniBlog.Core? [Click here](https://fra
 - User comments
 - Search engine optimized
 - All major browsers fully supported (IE 9+)
-- Social media integration (Facebook, Twitter, Google+)
+- Social media integration (Facebook, Twitter)
 - Lazy loads images for better performance
 - Easy YouTube video embedding
 - Looks great when printed
