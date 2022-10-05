@@ -1,6 +1,6 @@
-# Blog engine for ASP.NET Core 3.1
+# Blog engine for ASP.NET Core 7 (3.1 and above)
 
-A full-featured yet simple blog engine built on ASP.NET Core 3.1.
+A full-featured yet simple blog engine built on ASP.NET Core 7 (3.1 and above).
 
 Please be aware that [Mads is taking pull requests, but is not actively working on it](https://github.com/madskristensen/Miniblog.Core/issues/159#issuecomment-765629584).
 
