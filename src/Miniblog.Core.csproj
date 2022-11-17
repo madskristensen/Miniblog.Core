@@ -9,20 +9,20 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.ImageOptimizer" Version="1.1.0.39" />
-    <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.330" />
-    <PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.40-beta" />
+    <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.372" />
+    <PackageReference Include="LigerShark.WebOptimizer.Sass" Version="3.0.91" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-    <PackageReference Include="WebEssentials.AspNetCore.OutputCaching" Version="1.0.38" />
+    <PackageReference Include="WebEssentials.AspNetCore.OutputCaching" Version="1.0.43" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.65" />
     <PackageReference Include="WebEssentials.AspNetCore.StaticFilesWithCache" Version="1.0.3" />
-    <PackageReference Include="WebMarkupMin.AspNetCore6" Version="2.11.0" />
+    <PackageReference Include="WebMarkupMin.AspNetCore7" Version="2.13.1" />
     <PackageReference Include="WilderMinds.MetaWeblog" Version="5.0.0" />
   </ItemGroup>
 

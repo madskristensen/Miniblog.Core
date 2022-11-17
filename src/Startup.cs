@@ -13,13 +13,13 @@ namespace Miniblog.Core
 
     using WebEssentials.AspNetCore.OutputCaching;
 
-    using WebMarkupMin.AspNetCore6;
+    using WebMarkupMin.AspNetCore7;
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
 
     using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
-    using MetaWeblogService = Miniblog.Core.Services.MetaWeblogService;
+    using MetaWeblogService = Services.MetaWeblogService;
     using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
     public class Startup
