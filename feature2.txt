@@ -1,1 +1,2 @@
 this is feature 2
+New line aded in feature 2
