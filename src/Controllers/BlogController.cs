@@ -222,6 +222,13 @@ namespace Miniblog.Core.Controllers
             }
 
             var existing = await this.blog.GetPostById(post.ID).ConfigureAwait(false) ?? post;
+            var existingPostWithSameSlug = await this.blog.GetPostBySlug(existing.Slug).ConfigureAwait(true);
+
+            if (existingPostWithSameSlug != null && existingPostWithSameSlug.ID != post.ID)
+            {
+
+                existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"));
+            }
             string categories = this.Request.Form[Constants.categories];
             string tags = this.Request.Form[Constants.tags];
 
