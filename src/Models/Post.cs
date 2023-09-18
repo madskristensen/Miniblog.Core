@@ -38,12 +38,19 @@ namespace Miniblog.Core.Models
         public string Title { get; set; } = string.Empty;
 
         [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "The slug should be lower case.")]
-        public static string CreateSlug(string title)
+        public static string CreateSlug(string title, int maxLength = 50)
         {
+
             title = title?.ToLowerInvariant().Replace(
                 Constants.Space, Constants.Dash, StringComparison.OrdinalIgnoreCase) ?? string.Empty;
             title = RemoveDiacritics(title);
             title = RemoveReservedUrlCharacters(title);
+
+            // control of character limitations
+            if (title.Length > maxLength)
+            {
+                title = title.Substring(0, maxLength);
+            }
 
             return title.ToLowerInvariant();
         }

@@ -227,7 +227,7 @@ namespace Miniblog.Core.Controllers
             if (existingPostWithSameSlug != null && existingPostWithSameSlug.ID != post.ID)
             {
 
-                existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"));
+                existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"),50);
             }
             string categories = this.Request.Form[Constants.categories];
             string tags = this.Request.Form[Constants.tags];
