@@ -126,7 +126,7 @@ namespace Miniblog.Core.Services
 
         public abstract Task SavePost(Post post);
 
-        protected bool IsAdmin() => this.ContextAccessor.HttpContext?.User?.Identity.IsAuthenticated ?? false;
+        protected bool IsAdmin() => this.ContextAccessor.HttpContext?.User?.Identity!.IsAuthenticated ?? false;
 
         protected void SortCache() => this.Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
     }

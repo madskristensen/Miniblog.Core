@@ -18,7 +18,8 @@ namespace Miniblog.Core
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
-
+    using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+    using JavaScriptEngineSwitcher.V8;
     using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
     using MetaWeblogService = Services.MetaWeblogService;
     using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
@@ -148,7 +149,10 @@ namespace Miniblog.Core
                     });
             services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
-            // Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
+            // Bundling, minification and Sass transpiration (https://github.com/ligershark/WebOptimizer)
+            services.AddJsEngineSwitcher(options =>
+               options.DefaultEngineName = V8JsEngine.EngineName
+           ).AddV8();
             services.AddWebOptimizer(
                 pipeline =>
                 {
