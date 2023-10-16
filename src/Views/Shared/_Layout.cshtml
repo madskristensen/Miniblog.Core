@@ -1,4 +1,4 @@
-﻿@inject IOptionsSnapshot<BlogSettings> settings
+@inject IOptionsSnapshot<BlogSettings> settings
 @inject WebManifest manifest
 @{
     var host = $"{Context.Request.Scheme}://{Context.Request.Host}";
@@ -62,7 +62,7 @@
                     @{
                         string path = Context.Request.Path;
 
-                        if (User.Identity.IsAuthenticated)
+                        if (User.Identity!.IsAuthenticated)
                         {
                             <li><a asp-controller="Blog" asp-action="Edit" asp-route-id="">@Miniblog.Core.Properties.Resources.NewPost</a></li>
                             <li><a href="~/logout/" title="@Miniblog.Core.Properties.Resources.SignOutAsAdministrator">@Miniblog.Core.Properties.Resources.SignOut</a></li>

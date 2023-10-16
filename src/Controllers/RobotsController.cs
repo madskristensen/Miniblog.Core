@@ -182,7 +182,7 @@ namespace Miniblog.Core.Controllers
         private void EnableHttpBodySyncIO()
         {
             var body = HttpContext.Features.Get<IHttpBodyControlFeature>();
-            body.AllowSynchronousIO = true;
+            body!.AllowSynchronousIO = true;
         }
     }
 }

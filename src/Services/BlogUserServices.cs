@@ -17,7 +17,7 @@ namespace Miniblog.Core.Services
 
         private bool VerifyHashedPassword(string password, IConfiguration config)
         {
-            var saltBytes = Encoding.UTF8.GetBytes(config[Constants.Config.User.Salt]);
+            var saltBytes = Encoding.UTF8.GetBytes(config[Constants.Config.User.Salt]!);
 
             var hashBytes = KeyDerivation.Pbkdf2(
                 password: password,

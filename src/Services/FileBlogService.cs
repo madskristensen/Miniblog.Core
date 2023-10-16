@@ -190,7 +190,7 @@ namespace Miniblog.Core.Services
             var fileNameWithSuffix = $"{name}_{suffix}{ext}";
 
             var absolute = Path.Combine(this.folder, FILES, fileNameWithSuffix);
-            var dir = Path.GetDirectoryName(absolute);
+            var dir = Path.GetDirectoryName(absolute)!;
 
             Directory.CreateDirectory(dir);
             using (var writer = new FileStream(absolute, FileMode.CreateNew))
@@ -228,19 +228,19 @@ namespace Miniblog.Core.Services
             var categories = doc.XPathSelectElement("post/categories");
             foreach (var category in post.Categories)
             {
-                categories.Add(new XElement("category", category));
+                categories!.Add(new XElement("category", category));
             }
 
             var tags = doc.XPathSelectElement("post/tags");
             foreach (var tag in post.Tags)
             {
-                tags.Add(new XElement("tag", tag));
+                tags!.Add(new XElement("tag", tag));
             }
 
             var comments = doc.XPathSelectElement("post/comments");
             foreach (var comment in post.Comments)
             {
-                comments.Add(
+                comments!.Add(
                     new XElement("comment",
                         new XElement("author", comment.Author),
                         new XElement("email", comment.Email),
@@ -263,7 +263,7 @@ namespace Miniblog.Core.Services
             }
         }
 
-        protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
+        protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity!.IsAuthenticated == true;
 
         protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 

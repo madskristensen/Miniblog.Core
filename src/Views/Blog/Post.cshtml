@@ -1,44 +1,44 @@
 @model Post
 @inject IOptionsSnapshot<BlogSettings> settings
 @{
-    ViewData[Constants.Title] = Model.Title;
-    ViewData[Constants.Description] = Model.Excerpt;
-    bool showFullPost = ViewContext.RouteData.Values.ContainsKey(Constants.slug);
-    string host = $"{Context.Request.Scheme}://{Context.Request.Host}";
-    bool isCodePreview = Model.Content.Contains("</code>");
+	ViewData[Constants.Title] = Model.Title;
+	ViewData[Constants.Description] = Model.Excerpt;
+	bool showFullPost = ViewContext.RouteData.Values.ContainsKey(Constants.slug);
+	string host = $"{Context.Request.Scheme}://{Context.Request.Host}";
+	bool isCodePreview = Model.Content.Contains("</code>");
 }
 
 @section Head {
-    <link rel="canonical" href="@(host + Model.GetLink())" />
+	<link rel="canonical" href="@(host + Model.GetLink())" />
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-    <header>
-        <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
-        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
-        }
-    </header>
+	<header>
+		<h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
+		<time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
+		@if (User.Identity!.IsAuthenticated)
+		{
+			<a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
+		}
+	</header>
 
-    <div itemprop="articleBody mainEntityOfPage" cdnify>
-        @if (showFullPost || settings.Value.ListView == PostListView.FullPosts)
-        {
-            @Html.Raw(Model.RenderContent())
-        }
-        else if (settings.Value.ListView == PostListView.TitlesAndExcerpts)
-        {
-            @Html.Raw(Model.Excerpt)
-        }
-    </div>
+	<div itemprop="articleBody mainEntityOfPage" cdnify>
+		@if (showFullPost || settings.Value.ListView == PostListView.FullPosts)
+		{
+			@Html.Raw(Model.RenderContent())
+		}
+		else if (settings.Value.ListView == PostListView.TitlesAndExcerpts)
+		{
+			@Html.Raw(Model.Excerpt)
+		}
+	</div>
 
 	<footer>
 		@if (Model.Categories.Any())
 		{
 			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_cats-@Model.ID" focusable="false" viewBox="0 0 24 24">
 				<title id="_cats-@Model.ID">Categories</title>
-				<path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="gray"></path>
+				<path d="M 19.25 11.625 L 8.867188 11.625 C 8.539062 11.625 8.25 11.835938 8.152344 12.144531 L 6.503906 17.25 C 6.632812 17.25 6.792969 17.25 6.910156 17.25 L 17.449219 17.25 C 17.613281 17.25 17.757812 17.144531 17.804688 16.988281 L 19.425781 11.863281 C 19.445312 11.804688 19.429688 11.746094 19.398438 11.699219 C 19.363281 11.65625 19.3125 11.625 19.25 11.625 Z M 18 7.5 L 10.914062 7.5 C 10.234375 7.5 9.570312 7.265625 9.039062 6.84375 L 8.398438 6.328125 C 8.132812 6.117188 7.800781 6 7.460938 6 L 6 6 C 5.585938 6 5.25 6.335938 5.25 6.75 L 5.25 15.699219 C 5.25 15.867188 5.25 16.09375 5.25 16.257812 L 6.722656 11.683594 C 7.023438 10.75 7.882812 10.125 8.867188 10.125 L 18.75 10.125 L 18.75 8.25 C 18.75 7.835938 18.414062 7.5 18 7.5 Z M 18 6 C 19.242188 6 20.25 7.007812 20.25 8.25 L 20.25 10.328125 C 20.425781 10.433594 20.585938 10.570312 20.710938 10.738281 C 20.992188 11.121094 21.074219 11.621094 20.929688 12.078125 L 19.238281 17.4375 C 18.988281 18.222656 18.269531 18.75 17.449219 18.75 L 6 18.75 C 4.757812 18.75 3.75 17.742188 3.75 16.5 L 3.75 6.75 C 3.75 5.507812 4.757812 4.5 6 4.5 L 7.460938 4.5 C 8.140625 4.5 8.804688 4.734375 9.335938 5.15625 L 9.976562 5.671875 C 10.242188 5.882812 10.574219 6 10.914062 6 Z M 18 6 " fill="gray"></path>
 				<path d="M0 0h24v24H0z" fill="none"></path>
 			</svg>
 			<ul class="categories">
@@ -68,7 +68,7 @@
 		{
 			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_comments-@Model.ID" focusable="false" viewBox="0 0 24 24">
 				<title id="_comments-@Model.ID">Comments</title>
-				<path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z" fill="gray"></path>
+                <path d="M 19.996094 3.613281 L 4.003906 3.613281 C 3.117188 3.613281 2.402344 4.332031 2.402344 5.214844 L 2.402344 15.617188 C 2.402344 16.5 3.121094 17.214844 4.003906 17.214844 L 15.226562 17.214844 L 18.398438 20.386719 L 18.398438 17.214844 L 19.996094 17.214844 C 20.882812 17.214844 21.597656 16.5 21.597656 15.617188 L 21.597656 5.214844 C 21.597656 4.332031 20.882812 3.613281 19.996094 3.613281 Z M 20.796875 15.617188 C 20.796875 16.058594 20.4375 16.414062 19.996094 16.414062 L 17.597656 16.414062 L 17.597656 18.453125 L 15.558594 16.414062 L 4.003906 16.414062 C 3.5625 16.414062 3.203125 16.058594 3.203125 15.617188 L 3.203125 5.214844 C 3.203125 4.773438 3.5625 4.414062 4.003906 4.414062 L 19.996094 4.414062 C 20.4375 4.414062 20.796875 4.773438 20.796875 5.214844 Z M 20.796875 15.617188 " fill="gray"></path>
 				<path d="M0 0h24v24H0z" fill="none"></path>
 			</svg>
 			<a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
@@ -84,31 +84,31 @@
 
 @if (showFullPost)
 {
-    await Html.RenderPartialAsync("_SocialSharing", Model.Title);
-    @if (settings.Value.DisplayComments)
-    {
-        await Html.RenderPartialAsync("Comments"); 
-    }
+	await Html.RenderPartialAsync("_SocialSharing", Model.Title);
+	@if (settings.Value.DisplayComments)
+	{
+		await Html.RenderPartialAsync("Comments"); 
+	}
 
-    @section Preload {
-        @* This lazy loads the stylesheet in a non-render blocking way *@
-        @if (settings.Value.DisplayComments)
-        {
-            <link rel="preload" href="~/css/comments.scss" as="style" />
-            <noscript><link rel="stylesheet" href="~/css/comments.scss" /></noscript>
-        }
-        @if (isCodePreview)
-        {
-            <link rel="preload" href="~/lib/prism/prism.scss" as="style" />
-            <script src="~/lib/prism/prism.js" async defer></script>
-        }
-    }
+	@section Preload {
+		@* This lazy loads the stylesheet in a non-render blocking way *@
+		@if (settings.Value.DisplayComments)
+		{
+			<link rel="preload" href="~/css/comments.scss" as="style" />
+			<noscript><link rel="stylesheet" href="~/css/comments.scss" /></noscript>
+		}
+		@if (isCodePreview)
+		{
+			<link rel="preload" href="~/lib/prism/prism.scss" as="style" />
+			<script src="~/lib/prism/prism.js" async defer></script>
+		}
+	}
 }
 
 @if (User.Identity.IsAuthenticated)
 {
-    @section Scripts {
-        <script src="~/js/admin.js" async defer></script>
-        <link rel="stylesheet" href="~/css/admin.scss" />
-    }
+	@section Scripts {
+		<script src="~/js/admin.js" async defer></script>
+		<link rel="stylesheet" href="~/css/admin.scss" />
+	}
 }
