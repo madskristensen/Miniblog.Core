@@ -2,6 +2,7 @@ namespace Miniblog.Core.Controllers
 {
     using Microsoft.AspNetCore.Http.Features;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.OutputCaching;
     using Microsoft.Extensions.Options;
     using Microsoft.SyndicationFeed;
     using Microsoft.SyndicationFeed.Atom;
@@ -34,7 +35,7 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/robots.txt")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public string RobotsTxt()
         {
             var sb = new StringBuilder();

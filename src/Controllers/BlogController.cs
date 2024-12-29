@@ -2,6 +2,7 @@ namespace Miniblog.Core.Controllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.OutputCaching;
     using Microsoft.Extensions.Options;
 
     using Miniblog.Core.Models;
@@ -69,7 +70,7 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
             // get posts for the selected category.
@@ -90,7 +91,7 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/blog/tag/{tag}/{page:int?}")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public async Task<IActionResult> Tag(string tag, int page = 0)
         {
             // get posts for the selected tag.
@@ -171,8 +172,8 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/{page:int?}")]
-        [OutputCache(Profile = "default")]
-        public async Task<IActionResult> Index([FromRoute]int page = 0)
+        [OutputCache(PolicyName = "default")]
+        public async Task<IActionResult> Index([FromRoute] int page = 0)
         {
             // get published posts.
             var posts = this.blog.GetPosts();
@@ -193,7 +194,7 @@ namespace Miniblog.Core.Controllers
         }
 
         [Route("/blog/{slug?}")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public async Task<IActionResult> Post(string slug)
         {
             var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(true);

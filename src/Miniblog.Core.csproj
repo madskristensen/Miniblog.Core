@@ -22,8 +22,8 @@
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
-    <PackageReference Include="WebEssentials.AspNetCore.OutputCaching" Version="1.0.43" />
     <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.85" />
     <PackageReference Include="WebEssentials.AspNetCore.StaticFilesWithCache" Version="1.0.3" />
     <PackageReference Include="WebMarkupMin.AspNetCore7" Version="2.18.1" />
