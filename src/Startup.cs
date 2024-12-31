@@ -17,7 +17,7 @@ namespace Miniblog.Core
 
     using System;
 
-    using WebMarkupMin.AspNetCore7;
+    using WebMarkupMin.AspNetCoreLatest;
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
