@@ -68,7 +68,7 @@
 		{
 			<svg width="24" height="24" aria-hidden="true" role="img" aria-labelledby="_comments-@Model.ID" focusable="false" viewBox="0 0 24 24">
 				<title id="_comments-@Model.ID">Comments</title>
-                <path d="M 19.996094 3.613281 L 4.003906 3.613281 C 3.117188 3.613281 2.402344 4.332031 2.402344 5.214844 L 2.402344 15.617188 C 2.402344 16.5 3.121094 17.214844 4.003906 17.214844 L 15.226562 17.214844 L 18.398438 20.386719 L 18.398438 17.214844 L 19.996094 17.214844 C 20.882812 17.214844 21.597656 16.5 21.597656 15.617188 L 21.597656 5.214844 C 21.597656 4.332031 20.882812 3.613281 19.996094 3.613281 Z M 20.796875 15.617188 C 20.796875 16.058594 20.4375 16.414062 19.996094 16.414062 L 17.597656 16.414062 L 17.597656 18.453125 L 15.558594 16.414062 L 4.003906 16.414062 C 3.5625 16.414062 3.203125 16.058594 3.203125 15.617188 L 3.203125 5.214844 C 3.203125 4.773438 3.5625 4.414062 4.003906 4.414062 L 19.996094 4.414062 C 20.4375 4.414062 20.796875 4.773438 20.796875 5.214844 Z M 20.796875 15.617188 " fill="gray"></path>
+				<path d="M 19.996094 3.613281 L 4.003906 3.613281 C 3.117188 3.613281 2.402344 4.332031 2.402344 5.214844 L 2.402344 15.617188 C 2.402344 16.5 3.121094 17.214844 4.003906 17.214844 L 15.226562 17.214844 L 18.398438 20.386719 L 18.398438 17.214844 L 19.996094 17.214844 C 20.882812 17.214844 21.597656 16.5 21.597656 15.617188 L 21.597656 5.214844 C 21.597656 4.332031 20.882812 3.613281 19.996094 3.613281 Z M 20.796875 15.617188 C 20.796875 16.058594 20.4375 16.414062 19.996094 16.414062 L 17.597656 16.414062 L 17.597656 18.453125 L 15.558594 16.414062 L 4.003906 16.414062 C 3.5625 16.414062 3.203125 16.058594 3.203125 15.617188 L 3.203125 5.214844 C 3.203125 4.773438 3.5625 4.414062 4.003906 4.414062 L 19.996094 4.414062 C 20.4375 4.414062 20.796875 4.773438 20.796875 5.214844 Z M 20.796875 15.617188 " fill="gray"></path>
 				<path d="M0 0h24v24H0z" fill="none"></path>
 			</svg>
 			<a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
@@ -99,8 +99,22 @@
 		}
 		@if (isCodePreview)
 		{
-			<link rel="preload" href="~/lib/prism/prism.scss" as="style" />
-			<script src="~/lib/prism/prism.js" async defer></script>
+			<link href="~/lib/highlightjs/default.min.css" as="style" />
+			<link href="~/lib/highlightjs/github-dark.min.css" as="style" />
+			<link href="~/lib/highlightjs/highlightjs-copy.min.css" as="style" />
+
+			<script src="~/lib/highlightjs/highlight.min.js"></script>
+			<script src="~/lib/highlightjs/highlightjs-line-numbers.min.js"></script>
+			<script src="~/lib/highlightjs/highlightjs-copy.min.js"></script>
+			<script src="~/lib/highlightjs/languages/bash.min.js"></script>
+			<script src="~/lib/highlightjs/languages/csharp.min.js"></script>
+			<script src="~/lib/highlightjs/languages/typescript.min.js"></script>
+			<script src="~/lib/highlightjs/languages/json.min.js"></script>
+			<script>
+				hljs.highlightAll();
+				hljs.initLineNumbersOnLoad();
+				hljs.addPlugin(new CopyButtonPlugin());
+			</script>
 		}
 	}
 }

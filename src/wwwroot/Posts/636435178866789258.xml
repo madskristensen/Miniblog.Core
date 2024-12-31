@@ -1,87 +1,89 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <post>
-  <title>Welcome to your new blog</title>
-  <slug>welcome</slug>
-  <pubDate>2017-10-13 18:59:01</pubDate>
-  <lastModified>2017-10-19 21:59:29</lastModified>
-  <excerpt>Congratulations on your new blog</excerpt>
-  <content>&lt;p&gt;Congratulations on installing your new blog!&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://github.com/madskristensen/Miniblog.Core"&gt;Miniblog.Core&lt;/a&gt; is optimized to give your visitors a fantastic reading experience on all types of devices. It is built to be fast and responsive so your visitors never have to wait for the content to load.&lt;/p&gt;
-&lt;h2&gt;Fonts and layout&lt;/h2&gt;
-&lt;p&gt;Instead of using custom fonts that visitors need to download, Miniblog.Core uses fonts native to each device and operating system. This ensures that the blog loads very fast and the fonts feel natural and beautiful on all devices.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Common text layouts are being styled to look great. This is an example of what a blockquote looks like.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Here is a list of just some of the features:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Social media integration&lt;/li&gt;
-&lt;li&gt;User comments&lt;/li&gt;
-&lt;li&gt;Passing &lt;a href="http://webdevchecklist.com/"&gt;Web Developer Checklist&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Search engine optimized&lt;/li&gt;
-&lt;li&gt;Supported in all major browsers&lt;/li&gt;
-&lt;li&gt;Phone and tablet support&lt;/li&gt;
-&lt;li&gt;Fast and responsive&lt;/li&gt;
-&lt;li&gt;RSS/ATOM feeds&lt;/li&gt;
-&lt;li&gt;Windows/Open Live Writer/Markdown Monster support&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2&gt;Special formatting&lt;/h2&gt;
-&lt;p&gt;Pre-formatted text such as what is commonly used to display code syntax is styled beautifully.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;function code() {
-   var msg = "This is what a code snippet looks like";
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And tables are formatted nicely with headings and alternative background color for rows.&lt;/p&gt;
-&lt;table&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;th&gt;And tables&lt;/th&gt;
-&lt;th&gt;look&lt;/th&gt;
-&lt;th&gt;rally&lt;/th&gt;
-&lt;th&gt;nice&lt;/th&gt;
-&lt;th&gt;too&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Numbers&lt;/td&gt;
-&lt;td&gt;2&lt;/td&gt;
-&lt;td&gt;3&lt;/td&gt;
-&lt;td&gt;4&lt;/td&gt;
-&lt;td&gt;5&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Alphabet&lt;/td&gt;
-&lt;td&gt;b&lt;/td&gt;
-&lt;td&gt;c&lt;/td&gt;
-&lt;td&gt;d&lt;/td&gt;
-&lt;td&gt;e&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Symbols&lt;/td&gt;
-&lt;td&gt;?&lt;/td&gt;
-&lt;td&gt;$&lt;/td&gt;
-&lt;td&gt;*&lt;/td&gt;
-&lt;td&gt;%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;Enjoy!&lt;/p&gt;</content>
-  <ispublished>true</ispublished>
-  <categories>
-    <category>welcome</category>
-    <category>miniblog</category>
-  </categories>
-  <comments>
-    <comment isAdmin="false" id="cd58dea4-a4d5-498a-b164-6a5b7c3f2f62">
-      <author>John Doe</author>
-      <email>john@gmail.com</email>
-      <date>2017-10-13 20:15:23</date>
-      <content>This is a comment made by a visitor</content>
-    </comment>
-    <comment isAdmin="true" id="13d7cd7d-6336-4c42-8c91-27f27d6bf648">
-      <author>Mads Kristensen</author>
-      <email>post@madskristensen.net</email>
-      <date>2017-10-13 20:15:48</date>
-      <content>This is a comment made by the owner of the blog while logged in.
+    <title>Welcome to your new blog</title>
+    <slug>welcome</slug>
+    <pubDate>2024-12-31T09:00:00.000Z</pubDate>
+    <lastModified>2024-12-31T12:00:47.155Z</lastModified>
+    <excerpt>Congratulations on your new blog</excerpt>
+    <content>
+        &lt;p class="whitespace-pre-wrap break-words"&gt;🌱 &lt;strong&gt;Welcome to Your New Blog!&lt;/strong&gt;&lt;/p&gt;
+        &lt;p class="whitespace-pre-wrap break-words"&gt;MiniBlog.Core represents the evolution of MiniBlog, a pioneering minimal blog engine launched in 2013 by &lt;a title="Mads Kristensen" href="https://www.madskristensen.net/"&gt;Mads Kristensen&lt;/a&gt;. Its commitment remains unchanged: delivering an exceptional blogging experience through minimalist design and optimized performance.&lt;/p&gt;
+        &lt;p class="whitespace-pre-wrap break-words"&gt;Modern Features:&lt;/p&gt;
+        &lt;ul class="-mt-1 [li&amp;gt;&amp;amp;]:mt-2 list-disc space-y-2 pl-8"&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Seamless social media integration for broader reach&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Built-in comment system for community engagement&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;SEO-optimized structure for better visibility&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Comprehensive RSS/ATOM feed support&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Cross-platform compatibility (Windows, Mac, Linux)&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Mobile-first responsive design&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Advanced content editor support (Live Writer, Markdown Monster)&lt;/li&gt;
+        &lt;li class="whitespace-normal break-words"&gt;Web Developer Checklist compliance&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;p class="whitespace-pre-wrap break-words"&gt;Security &amp;amp; Standards Built on modern web standards, MiniBlog.Core includes robust security features and follows best practices for web development. It's regularly updated to maintain compatibility with the latest browser technologies and security requirements.&lt;/p&gt;
+        &lt;p class="whitespace-pre-wrap break-words"&gt;Developer-Friendly For developers, MiniBlog.Core offers a clean, well-documented codebase that's easy to customize and extend. Whether you're looking to add new features or modify existing ones, the platform's architecture makes it straightforward to implement your changes.&lt;/p&gt;
+        &lt;p class="whitespace-pre-wrap break-words"&gt;Getting Started Your blog is now ready for content! Start by customizing your settings and creating your first post. If you need assistance, our documentation and community resources are available to help you make the most of MiniBlog.Core's features.&lt;/p&gt;
+        &lt;h2&gt;Special formatting&lt;/h2&gt;
+        &lt;p&gt;Pre-formatted text such as what is commonly used to display code syntax is styled beautifully.&lt;/p&gt;
+        &lt;pre&gt;&lt;code&gt;function code() {
+        var msg = "This is what a code snippet looks like";
+        }&lt;/code&gt;&lt;/pre&gt;
+        &lt;p&gt;And tables are formatted nicely with headings and alternative background color for rows.&lt;/p&gt;
+        &lt;table&gt;
+        &lt;tbody&gt;
+        &lt;tr&gt;
+        &lt;th&gt;And tables&lt;/th&gt;
+        &lt;th&gt;look&lt;/th&gt;
+        &lt;th&gt;rally&lt;/th&gt;
+        &lt;th&gt;nice&lt;/th&gt;
+        &lt;th&gt;too&lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+        &lt;td&gt;Numbers&lt;/td&gt;
+        &lt;td&gt;2&lt;/td&gt;
+        &lt;td&gt;3&lt;/td&gt;
+        &lt;td&gt;4&lt;/td&gt;
+        &lt;td&gt;5&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+        &lt;td&gt;Alphabet&lt;/td&gt;
+        &lt;td&gt;b&lt;/td&gt;
+        &lt;td&gt;c&lt;/td&gt;
+        &lt;td&gt;d&lt;/td&gt;
+        &lt;td&gt;e&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+        &lt;td&gt;Symbols&lt;/td&gt;
+        &lt;td&gt;?&lt;/td&gt;
+        &lt;td&gt;$&lt;/td&gt;
+        &lt;td&gt;*&lt;/td&gt;
+        &lt;td&gt;%&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/tbody&gt;
+        &lt;/table&gt;
+        &lt;p&gt;Enjoy!&lt;/p&gt;
+    </content>
+    <ispublished>true</ispublished>
+    <categories>
+        <category>welcome</category>
+        <category>miniblog</category>
+    </categories>
+    <tags></tags>
+    <comments>
+        <comment isAdmin="false" id="cd58dea4-a4d5-498a-b164-6a5b7c3f2f62">
+            <author>John Doe</author>
+            <email>john@gmail.com</email>
+            <date>2024-12-31T10:00:00.000Z</date>
+            <content>This is a comment made by a visitor</content>
+        </comment>
+        <comment isAdmin="true" id="13d7cd7d-6336-4c42-8c91-27f27d6bf648">
+            <author>Mads Kristensen</author>
+            <email>post@madskristensen.net</email>
+            <date>2024-12-31T10:10:00.000Z</date>
+            <content>
+                This is a comment made by the owner of the blog while logged in.
 
-It looks slightly different to make it clear that this is a response from the owner.</content>
-    </comment>
-  </comments>
+                It looks slightly different to make it clear that this is a response from the owner.
+            </content>
+        </comment>
+    </comments>
 </post>

@@ -65,6 +65,8 @@
     input {
         max-width: 400px;
         text-indent: 5px;
+        border-radius: 5px;
+        box-shadow: $comments_border-shadow-color 0px 6px 24px 0px, $comments_border-color 0px 0px 0px 1px;
 
         &[type=submit] {
             width: auto;
@@ -75,6 +77,8 @@
 
     textarea {
         padding: 5px;
+        border-radius: 5px;
+        box-shadow: $comments_border-shadow-color 0px 6px 24px 0px, $comments_border-color 0px 0px 0px 1px;
     }
 
     article {
@@ -82,13 +86,13 @@
 
         &.admin .content,
         &.admin .gravatar {
-            box-shadow: 5px 5px 5px darken($comments_border-color, 30%);
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
     }
 
     .gravatar {
         float: left;
-        box-shadow: 5px 5px 5px $comments_border-color;
+        box-shadow: $comments_border-shadow-color 0px 6px 24px 0px, $comments_border-color 0px 0px 0px 1px;
         background: url("../img/avatar.svg?inline") no-repeat $comments_border-color;
         background-size: cover;
         height: 60px;
@@ -104,7 +108,8 @@
         margin-left: calc(60px + .6em);
         background: $comments_bg_color;
         border: 1px solid $comments_border-color;
-        box-shadow: 5px 5px 5px $comments_border-color;
+        box-shadow: $comments_border-shadow-color 0px 6px 24px 0px, $comments_border-color 0px 0px 0px 1px;
+        border-radius: 5px;
         padding: 0 .4em;
 
         p {

@@ -163,18 +163,11 @@ time {
     }
 
     pre {
-        font-size: .9em;
-        line-height: 1.3;
-        overflow: auto;
-        padding: 5px 10px;
-        -ms-word-wrap: normal;
-        word-wrap: normal;
-        background: $light-bg-color;
-        box-shadow: 5px 5px 5px $comments_border-color;
+        border-radius: 5px !important;
+        box-shadow: $comments_border-shadow-color 0px 6px 24px 0px, $comments_border-color 0px 0px 0px 1px;
     }
 
     code {
-        background: $light-bg-color;
         font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     }
 
@@ -187,11 +180,11 @@ time {
         white-space: nowrap;
     }
 
-    tr:nth-child(2n) {
+    tr:nth-child(2n):not(pre tr):not(code tr) {
         background: $light-bg-color;
     }
 
-    th {
+    th:not(pre tr):not(code tr) {
         border-bottom: 1px solid $comments_border-color;
         text-align: left;
     }
