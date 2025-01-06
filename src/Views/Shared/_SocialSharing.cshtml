@@ -1,4 +1,4 @@
-﻿@model string
+@model string
 @{
     string currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
     string enc = System.Net.WebUtility.UrlEncode(currentUrl);
@@ -13,8 +13,14 @@
     </a>
     <a href="https://twitter.com/intent/tweet?url=@enc&text=@text" target="_blank" rel="noopener noreferrer nofollow">
         <svg role="img" aria-labelledby="_tw">
-            <title id="_tw">Share on Twitter</title>
+            <title id="_tw">Share on X</title>
             <path d="M26.37,26l-8.795-12.822l0.015,0.012L25.52,4h-2.65l-6.46,7.48L11.28,4H4.33l8.211,11.971L12.54,15.97L3.88,26h2.65 l7.182-8.322L19.42,26H26.37z M10.23,6l12.34,18h-2.1L8.12,6H10.23z" />
+        </svg>
+    </a>
+    <a href="https://bsky.app/intent/compose?text=@enc" target="_blank" rel="noopener noreferrer nofollow">
+        <svg role="img" aria-labelledby="_bs">
+            <title id="_bs">Share on BlueSky</title>
+            <path d="M6.335 5.144c-1.654 -1.199 -4.335 -2.127 -4.335 .826c0 .59 .35 4.953 .556 5.661c.713 2.463 3.13 2.75 5.444 2.369c-4.045 .665 -4.889 3.208 -2.667 5.41c1.03 1.018 1.913 1.59 2.667 1.59c2 0 3.134 -2.769 3.5 -3.5c.333 -.667 .5 -1.167 .5 -1.5c0 .333 .167 .833 .5 1.5c.366 .731 1.5 3.5 3.5 3.5c.754 0 1.637 -.571 2.667 -1.59c2.222 -2.203 1.378 -4.746 -2.667 -5.41c2.314 .38 4.73 .094 5.444 -2.369c.206 -.708 .556 -5.072 .556 -5.661c0 -2.953 -2.68 -2.025 -4.335 -.826c-2.293 1.662 -4.76 5.048 -5.665 6.856c-.905 -1.808 -3.372 -5.194 -5.665 -6.856z" />
         </svg>
     </a>
     <a href="mailto:?subject=@Model.Replace(Constants.Space, "%20")&amp;body=@enc" target="_blank" rel="noopener noreferrer nofollow">

@@ -1,5 +1,8 @@
 namespace Miniblog.Core
 {
+    using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+    using JavaScriptEngineSwitcher.V8;
+
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -12,14 +15,13 @@ namespace Miniblog.Core
 
     using Miniblog.Core.Services;
 
-    using WebEssentials.AspNetCore.OutputCaching;
+    using System;
 
-    using WebMarkupMin.AspNetCore7;
+    using WebMarkupMin.AspNetCoreLatest;
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
-    using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
-    using JavaScriptEngineSwitcher.V8;
+
     using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
     using MetaWeblogService = Services.MetaWeblogService;
     using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
@@ -80,7 +82,6 @@ namespace Miniblog.Core
             app.UseMetaWeblog("/metaweblog");
             app.UseAuthentication();
 
-            app.UseOutputCaching();
             app.UseWebMarkupMin();
 
             app.UseRouting();
@@ -113,15 +114,14 @@ namespace Miniblog.Core
                     OfflineRoute = "/shared/offline/"
                 });
 
-            // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
-            services.AddOutputCaching(
-                options =>
-                {
-                    options.Profiles["default"] = new OutputCacheProfile
-                    {
-                        Duration = 3600
-                    };
-                });
+            // Output caching
+            services.AddOutputCache(options =>
+            {
+                options.AddBasePolicy(builder => builder.Cache());
+                options.AddPolicy("default", policy => policy
+                    .Expire(TimeSpan.FromSeconds(3600)));
+            });
+
 
             // Cookie authentication.
             services

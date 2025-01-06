@@ -14,9 +14,11 @@
     <link rel="preload" href="~/js/site.js" as="script" />
     <link rel="preload" href="~/css/belowthefold.scss" as="style" />
     <noscript><link rel="stylesheet" href="~/css/belowthefold.scss" /></noscript>
-    @RenderSection(Constants.Preload, required: false)
-    <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
 
+    @RenderSection(Constants.Preload, required: false)
+
+    <link rel="stylesheet" href="~/css/abovethefold.scss" inline />
+    
     <meta property="og:type" content="article" />
     <meta property="og:title" content="@ViewData[Constants.Title]" />
     <meta property="og:description" content="@ViewData[Constants.Description]" />
