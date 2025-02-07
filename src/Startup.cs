@@ -24,7 +24,7 @@ namespace Miniblog.Core
 
     using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
     using MetaWeblogService = Services.MetaWeblogService;
-    using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
+    using WmmAspNetCoreLogger = WebMarkupMin.AspNetCoreLatest.AspNetCoreLogger;
 
     public class Startup
     {
@@ -134,6 +134,7 @@ namespace Miniblog.Core
                     });
 
             // HTML minification (https://github.com/Taritsyn/WebMarkupMin)
+            services.AddSingleton<IWmmLogger, WmmAspNetCoreLogger>(); // Used by HTML minifier
             services
                 .AddWebMarkupMin(
                     options =>
@@ -147,7 +148,6 @@ namespace Miniblog.Core
                         options.MinificationSettings.RemoveOptionalEndTags = false;
                         options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                     });
-            services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
             // Bundling, minification and Sass transpiration (https://github.com/ligershark/WebOptimizer)
             services.AddJsEngineSwitcher(options =>
