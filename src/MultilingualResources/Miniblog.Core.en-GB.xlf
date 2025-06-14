@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-GB" original="SRC/PROPERTIES/RESOURCES.RESX">
+    <body>
+      <group id="SRC/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="BadRequestTheRequestCannotBeFulfilledDueToBadSyntax" translate="yes" xml:space="preserve">
+          <source>Bad request: The request cannot be fulfilled due to bad syntax</source>
+          <target state="new">Bad request: The request cannot be fulfilled due to bad syntax</target>
+        </trans-unit>
+        <trans-unit id="Error" translate="yes" xml:space="preserve">
+          <source>Error</source>
+          <target state="new">Error</target>
+        </trans-unit>
+        <trans-unit id="Forbidden" translate="yes" xml:space="preserve">
+          <source>Forbidden</source>
+          <target state="new">Forbidden</target>
+        </trans-unit>
+        <trans-unit id="InternalServerErrorServerWasUnableToFinishProcessingTheRequest" translate="yes" xml:space="preserve">
+          <source>Internal Server Error - server was unable to finish processing the request</source>
+          <target state="new">Internal Server Error - server was unable to finish processing the request</target>
+        </trans-unit>
+        <trans-unit id="Login" translate="yes" xml:space="preserve">
+          <source>Login</source>
+          <target state="new">Login</target>
+        </trans-unit>
+        <trans-unit id="MiniblogCore" translate="yes" xml:space="preserve">
+          <source>Miniblog.Core</source>
+          <target state="new">Miniblog.Core</target>
+        </trans-unit>
+        <trans-unit id="NewPost" translate="yes" xml:space="preserve">
+          <source>New post</source>
+          <target state="new">New post</target>
+        </trans-unit>
+        <trans-unit id="Offline" translate="yes" xml:space="preserve">
+          <source>Offline</source>
+          <target state="new">Offline</target>
+        </trans-unit>
+        <trans-unit id="PageNotFound" translate="yes" xml:space="preserve">
+          <source>Page not found</source>
+          <target state="new">Page not found</target>
+        </trans-unit>
+        <trans-unit id="PoweredBy" translate="yes" xml:space="preserve">
+          <source>Powered by</source>
+          <target state="new">Powered by</target>
+        </trans-unit>
+        <trans-unit id="SignIn" translate="yes" xml:space="preserve">
+          <source>Sign in</source>
+          <target state="new">Sign in</target>
+        </trans-unit>
+        <trans-unit id="SignInAsAdministrator" translate="yes" xml:space="preserve">
+          <source>Sign in as administrator</source>
+          <target state="new">Sign in as administrator</target>
+        </trans-unit>
+        <trans-unit id="SignInToTheWebsite" translate="yes" xml:space="preserve">
+          <source>Sign in to the website</source>
+          <target state="new">Sign in to the website</target>
+        </trans-unit>
+        <trans-unit id="SignOut" translate="yes" xml:space="preserve">
+          <source>Sign out</source>
+          <target state="new">Sign out</target>
+        </trans-unit>
+        <trans-unit id="SignOutAsAdministrator" translate="yes" xml:space="preserve">
+          <source>Sign out as administrator</source>
+          <target state="new">Sign out as administrator</target>
+        </trans-unit>
+        <trans-unit id="SomeFeaturesOfThisWebsiteDoNotWorkAsExpectedWhenJavaScriptIsDisabled" translate="yes" xml:space="preserve">
+          <source>Some features of this website do not work as expected when JavaScript is disabled</source>
+          <target state="new">Some features of this website do not work as expected when JavaScript is disabled</target>
+        </trans-unit>
+        <trans-unit id="ThatsOddSomethingWeDidntExpectHappened" translate="yes" xml:space="preserve">
+          <source>That’s odd... Something we didn't expect happened</source>
+          <target state="new">That’s odd... Something we didn't expect happened</target>
+        </trans-unit>
+        <trans-unit id="ThePageYouRequestedCanNotBeShownBecauseYouAreOffline" translate="yes" xml:space="preserve">
+          <source>The page you requested can not be shown because you are offline.</source>
+          <target state="new">The page you requested can not be shown because you are offline.</target>
+        </trans-unit>
+        <trans-unit id="TheServerTimedOutWaitingForTheRequest" translate="yes" xml:space="preserve">
+          <source>The server timed out waiting for the request</source>
+          <target state="new">The server timed out waiting for the request</target>
+        </trans-unit>
+        <trans-unit id="Unauthorized" translate="yes" xml:space="preserve">
+          <source>Unauthorized</source>
+          <target state="new">Unauthorized</target>
+        </trans-unit>
+        <trans-unit id="UsernameOrPasswordIsInvalid" translate="yes" xml:space="preserve">
+          <source>Username or password is invalid.</source>
+          <target state="new">Username or password is invalid.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

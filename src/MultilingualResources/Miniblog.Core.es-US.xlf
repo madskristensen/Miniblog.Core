@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="es-US" original="SRC/PROPERTIES/RESOURCES.RESX">
+    <body>
+      <group id="SRC/PROPERTIES/RESOURCES.RESX" datatype="resx">
+        <trans-unit id="BadRequestTheRequestCannotBeFulfilledDueToBadSyntax" translate="yes" xml:space="preserve">
+          <source>Bad request: The request cannot be fulfilled due to bad syntax</source>
+          <target state="new">Mala solicitud: la solicitud no se puede cumplir debido a la sintaxis incorrecta</target>
+        </trans-unit>
+        <trans-unit id="Error" translate="yes" xml:space="preserve">
+          <source>Error</source>
+          <target state="new">Error</target>
+        </trans-unit>
+        <trans-unit id="Forbidden" translate="yes" xml:space="preserve">
+          <source>Forbidden</source>
+          <target state="new">Prohibido</target>
+        </trans-unit>
+        <trans-unit id="InternalServerErrorServerWasUnableToFinishProcessingTheRequest" translate="yes" xml:space="preserve">
+          <source>Internal Server Error - server was unable to finish processing the request</source>
+          <target state="new">Error interno del servidor: el servidor no pudo finalizar el procesamiento de la solicitud</target>
+        </trans-unit>
+        <trans-unit id="Login" translate="yes" xml:space="preserve">
+          <source>Login</source>
+          <target state="new">Acceso</target>
+        </trans-unit>
+        <trans-unit id="MiniblogCore" translate="yes" xml:space="preserve">
+          <source>Miniblog.Core</source>
+          <target state="new">Miniblog.core</target>
+        </trans-unit>
+        <trans-unit id="NewPost" translate="yes" xml:space="preserve">
+          <source>New post</source>
+          <target state="new">Nuevo post</target>
+        </trans-unit>
+        <trans-unit id="Offline" translate="yes" xml:space="preserve">
+          <source>Offline</source>
+          <target state="new">Desconectado</target>
+        </trans-unit>
+        <trans-unit id="PageNotFound" translate="yes" xml:space="preserve">
+          <source>Page not found</source>
+          <target state="new">Página no encontrada</target>
+        </trans-unit>
+        <trans-unit id="PoweredBy" translate="yes" xml:space="preserve">
+          <source>Powered by</source>
+          <target state="new">Impulsado por</target>
+        </trans-unit>
+        <trans-unit id="SignIn" translate="yes" xml:space="preserve">
+          <source>Sign in</source>
+          <target state="new">Iniciar sesión</target>
+        </trans-unit>
+        <trans-unit id="SignInAsAdministrator" translate="yes" xml:space="preserve">
+          <source>Sign in as administrator</source>
+          <target state="new">Iniciar sesión como administrador</target>
+        </trans-unit>
+        <trans-unit id="SignInToTheWebsite" translate="yes" xml:space="preserve">
+          <source>Sign in to the website</source>
+          <target state="new">Inicie sesión en el sitio web</target>
+        </trans-unit>
+        <trans-unit id="SignOut" translate="yes" xml:space="preserve">
+          <source>Sign out</source>
+          <target state="new">desconectar</target>
+        </trans-unit>
+        <trans-unit id="SignOutAsAdministrator" translate="yes" xml:space="preserve">
+          <source>Sign out as administrator</source>
+          <target state="new">FIrañar como administrador</target>
+        </trans-unit>
+        <trans-unit id="SomeFeaturesOfThisWebsiteDoNotWorkAsExpectedWhenJavaScriptIsDisabled" translate="yes" xml:space="preserve">
+          <source>Some features of this website do not work as expected when JavaScript is disabled</source>
+          <target state="new">Algunas características de este sitio web no funcionan como se esperaba cuando JavaScript está deshabilitado</target>
+        </trans-unit>
+        <trans-unit id="ThatsOddSomethingWeDidntExpectHappened" translate="yes" xml:space="preserve">
+          <source>That’s odd... Something we didn't expect happened</source>
+          <target state="new">Eso es extraño ... algo que no esperamos sucedió</target>
+        </trans-unit>
+        <trans-unit id="ThePageYouRequestedCanNotBeShownBecauseYouAreOffline" translate="yes" xml:space="preserve">
+          <source>The page you requested can not be shown because you are offline.</source>
+          <target state="new">La página que solicitó no se puede mostrar porque está fuera de línea.</target>
+        </trans-unit>
+        <trans-unit id="TheServerTimedOutWaitingForTheRequest" translate="yes" xml:space="preserve">
+          <source>The server timed out waiting for the request</source>
+          <target state="new">El servidor cronometró la espera de la solicitud</target>
+        </trans-unit>
+        <trans-unit id="Unauthorized" translate="yes" xml:space="preserve">
+          <source>Unauthorized</source>
+          <target state="new">No autorizado</target>
+        </trans-unit>
+        <trans-unit id="UsernameOrPasswordIsInvalid" translate="yes" xml:space="preserve">
+          <source>Username or password is invalid.</source>
+          <target state="new">El nombre de usuario o la contraseña no son válidos.</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>
