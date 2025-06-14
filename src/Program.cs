@@ -2,11 +2,14 @@ using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using JavaScriptEngineSwitcher.V8;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Miniblog.Core;
 using Miniblog.Core.Services;
+
+using System.IO.Compression;
 
 using WebMarkupMin.AspNetCoreLatest;
 using WebMarkupMin.Core;
@@ -88,6 +91,18 @@ builder.Services.AddWebOptimizer(
             .InlineImages(1);
     });
 
+// Compress HTTP response
+builder.Services.AddResponseCompression(
+    options =>
+    {
+        options.Providers.Add<BrotliCompressionProvider>();
+        options.Providers.Add<GzipCompressionProvider>();
+        options.EnableForHttps = true;
+        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(["application/json"]);
+    });
+builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -99,6 +114,8 @@ else
     _ = app.UseExceptionHandler("/Shared/Error");
     _ = app.UseHsts();
 }
+
+app.UseResponseCompression();
 
 app.Use(
     (context, next) =>
