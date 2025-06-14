@@ -203,12 +203,11 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
 
         var existing = await blog.GetPostById(post.ID).ConfigureAwait(false) ?? post;
         var existingPostWithSameSlug = await blog.GetPostBySlug(existing.Slug).ConfigureAwait(true);
-
-        if (existingPostWithSameSlug != null && existingPostWithSameSlug.ID != post.ID)
+        if (existingPostWithSameSlug is not null && existingPostWithSameSlug.ID != post.ID)
         {
-
-            existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"));
+            existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"), 50);
         }
+
         string categories = this.Request.Form[Constants.categories]!;
         string tags = this.Request.Form[Constants.tags]!;
 

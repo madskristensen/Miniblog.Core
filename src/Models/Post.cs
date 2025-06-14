@@ -36,12 +36,18 @@ public partial class Post
     public string Title { get; set; } = string.Empty;
 
     [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "The slug should be lower case.")]
-    public static string CreateSlug(string title)
+    public static string CreateSlug(string title, int maxLength = 50)
     {
         title = title?.ToLowerInvariant().Replace(
             Constants.Space, Constants.Dash, StringComparison.OrdinalIgnoreCase) ?? string.Empty;
         title = RemoveDiacritics(title);
         title = RemoveReservedUrlCharacters(title);
+
+        // Truncate the title if it exceeds the maximum length
+        if (title.Length > maxLength)
+        {
+            title = title[..maxLength];
+        }
 
         return title.ToLowerInvariant();
     }
