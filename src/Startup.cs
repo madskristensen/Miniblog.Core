@@ -1,9 +1,13 @@
 ﻿namespace Miniblog.Core
 {
+    using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+    using JavaScriptEngineSwitcher.V8;
+
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Rewrite;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,16 +15,16 @@
 
     using Miniblog.Core.Services;
 
-    using WebEssentials.AspNetCore.OutputCaching;
+    using System;
 
-    using WebMarkupMin.AspNetCore2;
+    using WebMarkupMin.AspNetCoreLatest;
     using WebMarkupMin.Core;
 
     using WilderMinds.MetaWeblog;
 
     using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
-    using MetaWeblogService = Miniblog.Core.Services.MetaWeblogService;
-    using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
+    using MetaWeblogService = Services.MetaWeblogService;
+    using WmmAspNetCoreLogger = WebMarkupMin.AspNetCoreLatest.AspNetCoreLogger;
 
     public class Startup
     {
@@ -45,7 +49,6 @@
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -71,10 +74,14 @@
                 app.UseHttpsRedirection();
             }
 
+            if (this.Configuration.GetValue<bool>("forceWwwPrefix"))
+            {
+                app.UseRewriter(new RewriteOptions().AddRedirectToWwwPermanent());
+            }
+
             app.UseMetaWeblog("/metaweblog");
             app.UseAuthentication();
 
-            app.UseOutputCaching();
             app.UseWebMarkupMin();
 
             app.UseRouting();
@@ -107,15 +114,14 @@
                     OfflineRoute = "/shared/offline/"
                 });
 
-            // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
-            services.AddOutputCaching(
-                options =>
-                {
-                    options.Profiles["default"] = new OutputCacheProfile
-                    {
-                        Duration = 3600
-                    };
-                });
+            // Output caching
+            services.AddOutputCache(options =>
+            {
+                options.AddBasePolicy(builder => builder.Cache());
+                options.AddPolicy("default", policy => policy
+                    .Expire(TimeSpan.FromSeconds(3600)));
+            });
+
 
             // Cookie authentication.
             services
@@ -128,6 +134,7 @@
                     });
 
             // HTML minification (https://github.com/Taritsyn/WebMarkupMin)
+            services.AddSingleton<IWmmLogger, WmmAspNetCoreLogger>(); // Used by HTML minifier
             services
                 .AddWebMarkupMin(
                     options =>
@@ -141,9 +148,11 @@
                         options.MinificationSettings.RemoveOptionalEndTags = false;
                         options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
                     });
-            services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
-            // Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
+            // Bundling, minification and Sass transpiration (https://github.com/ligershark/WebOptimizer)
+            services.AddJsEngineSwitcher(options =>
+               options.DefaultEngineName = V8JsEngine.EngineName
+           ).AddV8();
             services.AddWebOptimizer(
                 pipeline =>
                 {

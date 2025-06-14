@@ -11,7 +11,7 @@ a.noline {
     padding-bottom: 2em;
 
     .label {
-        display: inline-block;
+        display: block;
         margin-right: .3em;
         font-weight: bold;
         min-width: 50px;
@@ -39,7 +39,11 @@ a.noline {
         font-size: .9em,;
         color: #888;
     }
-
+    span.desc {
+        color: #bebebe;
+        font-weight:300;
+        font-size: .8em;
+    }
     textarea {
         font: inherit;
         -moz-box-sizing: border-box;

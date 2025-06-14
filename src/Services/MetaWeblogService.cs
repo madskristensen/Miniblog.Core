@@ -66,6 +66,7 @@
             };
 
             post.categories.ToList().ForEach(newPost.Categories.Add);
+            post.mt_keywords.Split(',').ToList().ForEach(newPost.Tags.Add);
 
             if (post.dateCreated != DateTime.MinValue)
             {
@@ -123,6 +124,8 @@
             existing.IsPublished = publish;
             existing.Categories.Clear();
             post.categories.ToList().ForEach(existing.Categories.Add);
+            existing.Tags.Clear();
+            post.mt_keywords.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(existing.Tags.Add);
 
             if (post.dateCreated != DateTime.MinValue)
             {
@@ -176,6 +179,20 @@
                 .ToArrayAsync();
         }
 
+        public async Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
+        {
+            this.ValidateUser(username, password);
+
+            return await this.blog.GetTags()
+                .Select(
+                    tag =>
+                        new Tag
+                        {
+                            name = tag
+                        })
+                .ToArrayAsync();
+        }
+
         public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
         {
             this.ValidateUser(username, password);
@@ -187,7 +204,7 @@
         {
             this.ValidateUser(username, password);
 
-            var request = this.context.HttpContext.Request;
+            var request = this.context.HttpContext!.Request;
             var url = $"{request.Scheme}://{request.Host}";
 
             return Task.FromResult(
@@ -219,7 +236,7 @@
 
         private Post ToMetaWebLogPost(Models.Post post)
         {
-            var request = this.context.HttpContext.Request;
+            var request = this.context.HttpContext!.Request;
             var url = $"{request.Scheme}://{request.Host}";
 
             return new Post
@@ -231,7 +248,8 @@
                 dateCreated = post.PubDate,
                 mt_excerpt = post.Excerpt,
                 description = post.Content,
-                categories = post.Categories.ToArray()
+                categories = post.Categories.ToArray(),
+                mt_keywords = string.Join(',', post.Tags)
             };
         }
 
@@ -245,7 +263,7 @@
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
             identity.AddClaim(new Claim(ClaimTypes.Name, username));
 
-            this.context.HttpContext.User = new ClaimsPrincipal(identity);
+            this.context.HttpContext!.User = new ClaimsPrincipal(identity);
         }
     }
 }

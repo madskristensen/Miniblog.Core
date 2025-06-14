@@ -1,6 +1,8 @@
-# Blog engine for ASP.NET Core 3.1
+# Blog engine for ASP.NET Core 9
 
-A full-featured yet simple blog engine built on ASP.NET Core 3.1.
+A full-featured yet simple blog engine built on ASP.NET Core 9.
+
+Please be aware that [Mads is taking pull requests, but is not actively working on it](https://github.com/madskristensen/Miniblog.Core/issues/159#issuecomment-765629584).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lwjrlpvmhg50wwbs?svg=true)](https://ci.appveyor.com/project/madskristensen/miniblog-core)
 [![NuGet](https://img.shields.io/nuget/v/MadsKristensen.AspNetCore.Miniblog.svg)](https://nuget.org/packages/MadsKristensen.AspNetCore.Miniblog/)
@@ -22,7 +24,7 @@ In search for custom designed themes for MiniBlog.Core? [Click here](https://fra
 - User comments
 - Search engine optimized
 - All major browsers fully supported (IE 9+)
-- Social media integration (Facebook, Twitter, Google+)
+- Social media integration (Facebook, Twitter)
 - Lazy loads images for better performance
 - Easy YouTube video embedding
 - Looks great when printed

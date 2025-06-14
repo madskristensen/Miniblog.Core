@@ -84,6 +84,22 @@
                 .ToAsyncEnumerable();
         }
 
+        [SuppressMessage(
+            "Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Consumer preference.")]
+        public virtual IAsyncEnumerable<string> GetTags()
+        {
+            var isAdmin = this.IsAdmin();
+
+            return this.cache
+                .Where(p => p.IsPublished || isAdmin)
+                .SelectMany(post => post.Tags)
+                .Select(tag => tag.ToLowerInvariant())
+                .Distinct()
+                .ToAsyncEnumerable();
+        }
+
         public virtual Task<Post?> GetPostById(string id)
         {
             var isAdmin = this.IsAdmin();
@@ -143,6 +159,18 @@
             return posts.ToAsyncEnumerable();
         }
 
+        public IAsyncEnumerable<Post> GetPostsByTag(string tag)
+        {
+            var isAdmin = this.IsAdmin();
+
+            var posts = from p in this.cache
+                        where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
+                        where p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)
+                        select p;
+
+            return posts.ToAsyncEnumerable();
+        }
+
         [SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
@@ -162,7 +190,7 @@
             var fileNameWithSuffix = $"{name}_{suffix}{ext}";
 
             var absolute = Path.Combine(this.folder, FILES, fileNameWithSuffix);
-            var dir = Path.GetDirectoryName(absolute);
+            var dir = Path.GetDirectoryName(absolute)!;
 
             Directory.CreateDirectory(dir);
             using (var writer = new FileStream(absolute, FileMode.CreateNew))
@@ -193,19 +221,26 @@
                                 new XElement("content", post.Content),
                                 new XElement("ispublished", post.IsPublished),
                                 new XElement("categories", string.Empty),
+                                new XElement("tags", string.Empty),
                                 new XElement("comments", string.Empty)
                             ));
 
             var categories = doc.XPathSelectElement("post/categories");
             foreach (var category in post.Categories)
             {
-                categories.Add(new XElement("category", category));
+                categories!.Add(new XElement("category", category));
+            }
+
+            var tags = doc.XPathSelectElement("post/tags");
+            foreach (var tag in post.Tags)
+            {
+                tags!.Add(new XElement("tag", tag));
             }
 
             var comments = doc.XPathSelectElement("post/comments");
             foreach (var comment in post.Comments)
             {
-                comments.Add(
+                comments!.Add(
                     new XElement("comment",
                         new XElement("author", comment.Author),
                         new XElement("email", comment.Email),
@@ -228,7 +263,7 @@
             }
         }
 
-        protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
+        protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity!.IsAuthenticated == true;
 
         protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 
@@ -261,6 +296,18 @@
 
             post.Categories.Clear();
             categories.Elements("category").Select(node => node.Value).ToList().ForEach(post.Categories.Add);
+        }
+
+        private static void LoadTags(Post post, XElement doc)
+        {
+            var tags = doc.Element("tags");
+            if (tags is null)
+            {
+                return;
+            }
+
+            post.Tags.Clear();
+            tags.Elements("tag").Select(node => node.Value).ToList().ForEach(post.Tags.Add);
         }
 
         private static void LoadComments(Post post, XElement doc)
@@ -340,6 +387,7 @@
                 };
 
                 LoadCategories(post, doc);
+                LoadTags(post, doc);
                 LoadComments(post, doc);
                 this.cache.Add(post);
             }

@@ -12,6 +12,8 @@
     {
         public IList<string> Categories { get; } = new List<string>();
 
+        public IList<string> Tags { get; } = new List<string>();
+
         public IList<Comment> Comments { get; } = new List<Comment>();
 
         [Required]
@@ -29,6 +31,7 @@
 
         public DateTime PubDate { get; set; } = DateTime.UtcNow;
 
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string Slug { get; set; } = string.Empty;
 
         [Required]

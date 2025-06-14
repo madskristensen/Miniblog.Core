@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.OutputCaching;
     using Microsoft.Extensions.Options;
 
     using Miniblog.Core.Models;
@@ -52,7 +53,7 @@
                 throw new ArgumentNullException(nameof(comment));
             }
 
-            comment.IsAdmin = this.User.Identity.IsAuthenticated;
+            comment.IsAdmin = this.User.Identity!.IsAuthenticated;
             comment.Content = comment.Content.Trim();
             comment.Author = comment.Author.Trim();
             comment.Email = comment.Email.Trim();
@@ -69,7 +70,7 @@
         }
 
         [Route("/blog/category/{category}/{page:int?}")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public async Task<IActionResult> Category(string category, int page = 0)
         {
             // get posts for the selected category.
@@ -87,6 +88,27 @@
             this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
             this.ViewData[Constants.next] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
             return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
+        }
+
+        [Route("/blog/tag/{tag}/{page:int?}")]
+        [OutputCache(PolicyName = "default")]
+        public async Task<IActionResult> Tag(string tag, int page = 0)
+        {
+            // get posts for the selected tag.
+            var posts = this.blog.GetPostsByTag(tag);
+
+            // apply paging filter.
+            var filteredPosts = posts.Skip(this.settings.Value.PostsPerPage * page).Take(this.settings.Value.PostsPerPage);
+
+            // set the view option
+            this.ViewData["ViewOption"] = this.settings.Value.ListView;
+
+            this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+            this.ViewData[Constants.Title] = $"{this.manifest.Name} {tag}";
+            this.ViewData[Constants.Description] = $"Articles posted in the {tag} tag";
+            this.ViewData[Constants.prev] = $"/blog/tag/{tag}/{page + 1}/";
+            this.ViewData[Constants.next] = $"/blog/tag/{tag}/{(page <= 1 ? null : page - 1 + "/")}";
+            return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
         }
 
         [Route("/blog/comment/{postId}/{commentId}")]
@@ -135,6 +157,10 @@
             categories.Sort();
             this.ViewData[Constants.AllCats] = categories;
 
+            var tags = await this.blog.GetTags().ToListAsync();
+            tags.Sort();
+            this.ViewData[Constants.AllTags] = tags;
+
             if (string.IsNullOrEmpty(id))
             {
                 return this.View(new Post());
@@ -146,8 +172,8 @@
         }
 
         [Route("/{page:int?}")]
-        [OutputCache(Profile = "default")]
-        public async Task<IActionResult> Index([FromRoute]int page = 0)
+        [OutputCache(PolicyName = "default")]
+        public async Task<IActionResult> Index([FromRoute] int page = 0)
         {
             // get published posts.
             var posts = this.blog.GetPosts();
@@ -168,7 +194,7 @@
         }
 
         [Route("/blog/{slug?}")]
-        [OutputCache(Profile = "default")]
+        [OutputCache(PolicyName = "default")]
         public async Task<IActionResult> Post(string slug)
         {
             var post = await this.blog.GetPostBySlug(slug).ConfigureAwait(true);
@@ -197,13 +223,26 @@
             }
 
             var existing = await this.blog.GetPostById(post.ID).ConfigureAwait(false) ?? post;
-            string categories = this.Request.Form[Constants.categories];
+            var existingPostWithSameSlug = await this.blog.GetPostBySlug(existing.Slug).ConfigureAwait(true);
+
+            if (existingPostWithSameSlug != null && existingPostWithSameSlug.ID != post.ID)
+            {
+
+                existing.Slug = Models.Post.CreateSlug(post.Title + DateTime.UtcNow.ToString("yyyyMMddHHmm"));
+            }
+            string categories = this.Request.Form[Constants.categories]!;
+            string tags = this.Request.Form[Constants.tags]!;
 
             existing.Categories.Clear();
             categories.Split(",", StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => c.Trim().ToLowerInvariant())
                 .ToList()
                 .ForEach(existing.Categories.Add);
+            existing.Tags.Clear();
+            tags.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.Trim().ToLowerInvariant())
+                .ToList()
+                .ForEach(existing.Tags.Add);
             existing.Title = post.Title.Trim();
             existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
             existing.IsPublished = post.IsPublished;
@@ -239,8 +278,8 @@
                 var doc = new XmlDocument();
                 doc.LoadXml($"<root>{match.Value}</root>");
 
-                var img = doc.FirstChild.FirstChild;
-                var srcNode = img.Attributes["src"];
+                var img = doc.FirstChild!.FirstChild;
+                var srcNode = img!.Attributes!["src"];
                 var fileNameNode = img.Attributes["data-filename"];
 
                 // The HTML editor creates base64 DataURIs which we'll have to convert to image

@@ -38,6 +38,24 @@ namespace Miniblog.Core.Services
             return categories;
         }
 
+        [SuppressMessage(
+            "Globalization",
+            "CA1308:Normalize strings to uppercase",
+            Justification = "Consumer preference.")]
+        public virtual IAsyncEnumerable<string> GetTags()
+        {
+            var isAdmin = this.IsAdmin();
+
+            var tags = this.Cache
+                .Where(p => p.IsPublished || isAdmin)
+                .SelectMany(post => post.Tags)
+                .Select(tag => tag.ToLowerInvariant())
+                .Distinct()
+                .ToAsyncEnumerable();
+
+            return tags;
+        }
+
         public virtual Task<Post?> GetPostById(string id)
         {
             var isAdmin = this.IsAdmin();
@@ -92,11 +110,23 @@ namespace Miniblog.Core.Services
             return posts.ToAsyncEnumerable();
         }
 
+        public virtual IAsyncEnumerable<Post> GetPostsByTag(string tag)
+        {
+            var isAdmin = this.IsAdmin();
+
+            var posts = from p in this.Cache
+                        where p.IsVisible() || isAdmin
+                        where p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)
+                        select p;
+
+            return posts.ToAsyncEnumerable();
+        }
+
         public abstract Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null);
 
         public abstract Task SavePost(Post post);
 
-        protected bool IsAdmin() => this.ContextAccessor.HttpContext?.User?.Identity.IsAuthenticated ?? false;
+        protected bool IsAdmin() => this.ContextAccessor.HttpContext?.User?.Identity!.IsAuthenticated ?? false;
 
         protected void SortCache() => this.Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
     }
