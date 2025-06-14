@@ -12,6 +12,7 @@ public static class Constants
     public static readonly string Head = "Head";
     public static readonly string next = "next";
     public static readonly string page = "page";
+    public static readonly string PostsPerPage = "PostsPerPage";
     public static readonly string Preload = "Preload";
     public static readonly string prev = "prev";
     public static readonly string ReturnUrl = "ReturnUrl";
@@ -20,6 +21,7 @@ public static class Constants
     public static readonly string Space = " ";
     public static readonly string tags = "tags";
     public static readonly string Title = "Title";
+    public static readonly string TotalPages = "TotalPages";
     public static readonly string TotalPostCount = "TotalPostCount";
     public static readonly string ViewOption = "ViewOption";
 

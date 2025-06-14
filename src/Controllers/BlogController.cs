@@ -41,8 +41,8 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
         comment.Author = comment.Author.Trim();
         comment.Email = comment.Email.Trim();
 
-        // the website form key should have been removed by javascript unless the comment was
-        // posted by a spam robot
+        // the website form key should have been removed by javascript unless the comment was posted
+        // by a spam robot
         if (!this.Request.Form.ContainsKey("website"))
         {
             post.Comments.Add(comment);
@@ -59,39 +59,30 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
         // get posts for the selected category.
         var posts = blog.GetPostsByCategory(category);
 
+        var totalPostCount = await posts.CountAsync().ConfigureAwait(true);
+
         // apply paging filter.
-        var filteredPosts = posts.Skip(settings.Value.PostsPerPage * page).Take(settings.Value.PostsPerPage);
+        var postsPerPage = settings.Value.PostsPerPage;
+        if (postsPerPage <= 0)
+        {
+            postsPerPage = 4; // Default value if not set or invalid
+        }
+
+        var totalPages = (totalPostCount / postsPerPage) - (totalPostCount % postsPerPage == 0 ? 1 : 0);
+
+        var pagedPosts = posts.Skip(postsPerPage * page).Take(postsPerPage);
 
         // set the view option
-        this.ViewData["ViewOption"] = settings.Value.ListView;
-
-        this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+        this.ViewData[Constants.ViewOption] = settings.Value.ListView;
+        this.ViewData[Constants.PostsPerPage] = postsPerPage;
+        this.ViewData[Constants.TotalPages] = totalPages;
+        this.ViewData[Constants.TotalPostCount] = totalPostCount;
         this.ViewData[Constants.Title] = $"{manifest.Name} {category}";
         this.ViewData[Constants.Description] = $"Articles posted in the {category} category";
         this.ViewData[Constants.prev] = $"/blog/category/{category}/{page + 1}/";
         this.ViewData[Constants.next] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
-        return this.View("~/Views/Blog/Index.cshtml", filteredPosts.ToEnumerable());
-    }
 
-    [Route("/blog/tag/{tag}/{page:int?}")]
-    [OutputCache(PolicyName = "default")]
-    public async Task<IActionResult> Tag(string tag, int page = 0)
-    {
-        // get posts for the selected tag.
-        var posts = blog.GetPostsByTag(tag);
-
-        // apply paging filter.
-        var filteredPosts = posts.Skip(settings.Value.PostsPerPage * page).Take(settings.Value.PostsPerPage);
-
-        // set the view option
-        this.ViewData["ViewOption"] = settings.Value.ListView;
-
-        this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
-        this.ViewData[Constants.Title] = $"{manifest.Name} {tag}";
-        this.ViewData[Constants.Description] = $"Articles posted in the {tag} tag";
-        this.ViewData[Constants.prev] = $"/blog/tag/{tag}/{page + 1}/";
-        this.ViewData[Constants.next] = $"/blog/tag/{tag}/{(page <= 1 ? null : page - 1 + "/")}";
-        return this.View("~/Views/Blog/Index.cshtml", filteredPosts.AsAsyncEnumerable());
+        return this.View("~/Views/Blog/Index.cshtml", pagedPosts);
     }
 
     [Route("/blog/comment/{postId}/{commentId}")]
@@ -99,14 +90,12 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
     public async Task<IActionResult> DeleteComment(string postId, string commentId)
     {
         var post = await blog.GetPostById(postId).ConfigureAwait(false);
-
         if (post is null)
         {
             return this.NotFound();
         }
 
         var comment = post.Comments.FirstOrDefault(c => c.ID.Equals(commentId, StringComparison.OrdinalIgnoreCase));
-
         if (comment is null)
         {
             return this.NotFound();
@@ -161,19 +150,30 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
         // get published posts.
         var posts = blog.GetPosts();
 
+        var totalPostCount = await posts.CountAsync().ConfigureAwait(true);
+
         // apply paging filter.
-        var filteredPosts = posts.Skip(settings.Value.PostsPerPage * page).Take(settings.Value.PostsPerPage);
+        var postsPerPage = settings.Value.PostsPerPage;
+        if (postsPerPage <= 0)
+        {
+            postsPerPage = 4; // Default value if not set or invalid
+        }
+
+        var pagedPosts = posts.Skip(postsPerPage * page).Take(postsPerPage);
+
+        var totalPages = (totalPostCount / postsPerPage) - (totalPostCount % postsPerPage == 0 ? 1 : 0);
 
         // set the view option
         this.ViewData[Constants.ViewOption] = settings.Value.ListView;
-
-        this.ViewData[Constants.TotalPostCount] = await posts.CountAsync().ConfigureAwait(true);
+        this.ViewData[Constants.PostsPerPage] = postsPerPage;
+        this.ViewData[Constants.TotalPages] = totalPages;
+        this.ViewData[Constants.TotalPostCount] = totalPostCount;
         this.ViewData[Constants.Title] = manifest.Name;
         this.ViewData[Constants.Description] = manifest.Description;
         this.ViewData[Constants.prev] = $"/{page + 1}/";
         this.ViewData[Constants.next] = $"/{(page <= 1 ? null : $"{page - 1}/")}";
 
-        return this.View("~/Views/Blog/Index.cshtml", filteredPosts);
+        return this.View("~/Views/Blog/Index.cshtml", pagedPosts);
     }
 
     [Route("/blog/{slug?}")]
@@ -185,14 +185,51 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
         return post is null ? this.NotFound() : this.View(post);
     }
 
-    /// <remarks>This is for redirecting potential existing URLs from the old Miniblog URL format.</remarks>
+    /// <summary>
+    /// Redirects the old Miniblog URL format to the new blog URL format.
+    /// </summary>
+    /// <param name="slug">The slug.</param>
+    /// <returns>The result.</returns>
     [Route("/post/{slug}")]
     [HttpGet]
     public IActionResult Redirects(string slug) => this.LocalRedirectPermanent($"/blog/{slug}");
 
+    [Route("/blog/tag/{tag}/{page:int?}")]
+    [OutputCache(PolicyName = "default")]
+    public async Task<IActionResult> Tag(string tag, int page = 0)
+    {
+        // get posts for the selected tag.
+        var posts = blog.GetPostsByTag(tag);
+
+        var totalPostCount = await posts.CountAsync().ConfigureAwait(true);
+
+        // apply paging filter.
+        var postsPerPage = settings.Value.PostsPerPage;
+        if (postsPerPage <= 0)
+        {
+            postsPerPage = 4; // Default value if not set or invalid
+        }
+
+        var totalPages = (totalPostCount / postsPerPage) - (totalPostCount % postsPerPage == 0 ? 1 : 0);
+
+        var pagedPosts = posts.Skip(postsPerPage * page).Take(postsPerPage);
+
+        // set the view option
+        this.ViewData[Constants.ViewOption] = settings.Value.ListView;
+        this.ViewData[Constants.PostsPerPage] = postsPerPage;
+        this.ViewData[Constants.TotalPages] = totalPages;
+        this.ViewData[Constants.TotalPostCount] = totalPostCount;
+        this.ViewData[Constants.Title] = $"{manifest.Name} {tag}";
+        this.ViewData[Constants.Description] = $"Articles posted in the {tag} tag";
+        this.ViewData[Constants.prev] = $"/blog/tag/{tag}/{page + 1}/";
+        this.ViewData[Constants.next] = $"/blog/tag/{tag}/{(page <= 1 ? null : $"{page - 1}/")}";
+
+        return this.View("~/Views/Blog/Index.cshtml", pagedPosts);
+    }
+
     [Route("/blog/{slug?}")]
     [HttpPost, Authorize, AutoValidateAntiforgeryToken]
-    public async Task<IActionResult> UpdatePost(Post post)
+    public async Task<IActionResult> UpdatePost(string? slug, Post post)
     {
         if (!this.ModelState.IsValid)
         {
@@ -212,17 +249,23 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
         string tags = this.Request.Form[Constants.tags]!;
 
         existing.Categories.Clear();
-        categories.Split(",", StringSplitOptions.RemoveEmptyEntries)
-            .Select(c => c.Trim().ToLowerInvariant())
-            .ToList()
-            .ForEach(existing.Categories.Add);
+        foreach (var category in categories
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(c => c.Trim().ToLowerInvariant()))
+        {
+            existing.Categories.Add(category);
+        }
+
         existing.Tags.Clear();
-        tags.Split(",", StringSplitOptions.RemoveEmptyEntries)
-            .Select(t => t.Trim().ToLowerInvariant())
-            .ToList()
-            .ForEach(existing.Tags.Add);
+        foreach (var tag in tags
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(t => t.Trim().ToLowerInvariant()))
+        {
+            existing.Tags.Add(tag);
+        }
+
         existing.Title = post.Title.Trim();
-        existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
+        existing.Slug = string.IsNullOrWhiteSpace(post.Slug) ? Models.Post.CreateSlug(post.Title) : post.Slug.Trim();
         existing.IsPublished = post.IsPublished;
         existing.Content = post.Content.Trim();
         existing.Excerpt = post.Excerpt.Trim();
@@ -233,6 +276,12 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
 
         return this.Redirect(post.GetEncodedLink());
     }
+
+    [GeneratedRegex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex Base64Regex();
+
+    [GeneratedRegex("<img[^>]+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex ImgRegex();
 
     private async Task SaveFilesToDisk(Post post)
     {
@@ -260,14 +309,13 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
             var srcNode = img!.Attributes!["src"];
             var fileNameNode = img.Attributes["data-filename"];
 
-            // The HTML editor creates base64 DataURIs which we'll have to convert to image
-            // files on disk
+            // The HTML editor creates base64 DataURIs which we'll have to convert to image files on disk
             if (srcNode is null || fileNameNode is null)
             {
                 continue;
             }
 
-            var extension = System.IO.Path.GetExtension(fileNameNode.Value);
+            var extension = Path.GetExtension(fileNameNode.Value);
 
             // Only accept image files
             if (!allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
@@ -286,9 +334,4 @@ public partial class BlogController(IBlogService blog, IOptionsSnapshot<BlogSett
             }
         }
     }
-
-    [GeneratedRegex("<img[^>]+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
-    private static partial Regex ImgRegex();
-    [GeneratedRegex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase, "en-US")]
-    private static partial Regex Base64Regex();
 }
