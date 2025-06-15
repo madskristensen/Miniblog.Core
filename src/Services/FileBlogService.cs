@@ -17,35 +17,31 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-public class FileBlogService : IBlogService
-{
-    private const string FILES = "files";
-
-    private const string POSTS = "Posts";
-
-    private readonly List<Post> cache = [];
-
-    private readonly IHttpContextAccessor contextAccessor;
-
-    private readonly string folder;
-
-    [SuppressMessage(
+[method: SuppressMessage(
             "Usage",
             "SecurityIntelliSenseCS:MS Security rules violation",
             Justification = "Path not derived from user input.")]
-    public FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor)
-    {
-        ArgumentNullException.ThrowIfNull(env);
+public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor) : IBlogService
+{
+    private const string FILES = "files";
+    private const string POSTS = "Posts";
 
-        this.folder = Path.Combine(env.WebRootPath, POSTS);
-        this.contextAccessor = contextAccessor;
+    private readonly List<Post> cache = [];
+    private readonly IWebHostEnvironment env = env ?? throw new ArgumentNullException(nameof(env));
 
-        this.InitializeAsync().GetAwaiter().GetResult();
-    }
+    private string? folder;
+    private bool initialized = false;
 
-    public Task DeletePost(Post post)
+    private string Folder => this.folder ??= Path.Combine(this.env.WebRootPath, POSTS);
+
+    public async Task DeletePost(Post post)
     {
         ArgumentNullException.ThrowIfNull(post);
+
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
 
         var filePath = this.GetFilePath(post);
 
@@ -58,28 +54,38 @@ public class FileBlogService : IBlogService
         {
             _ = this.cache.Remove(post);
         }
-
-        return Task.CompletedTask;
     }
 
     [SuppressMessage(
         "Globalization",
         "CA1308:Normalize strings to uppercase",
         Justification = "Consumer preference.")]
-    public virtual IAsyncEnumerable<string> GetCategories()
+    public virtual async IAsyncEnumerable<string> GetCategories()
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        return this.cache
+        foreach (var category in this.cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Categories)
             .Select(cat => cat.ToLowerInvariant())
-            .Distinct()
-            .ToAsyncEnumerable();
+            .Distinct())
+        {
+            yield return category;
+        }
     }
 
     public virtual async Task<Post?> GetPostById(string id)
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
         var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
 
@@ -91,6 +97,11 @@ public class FileBlogService : IBlogService
 
     public virtual async Task<Post?> GetPostBySlug(string slug)
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
         var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
@@ -101,68 +112,94 @@ public class FileBlogService : IBlogService
     }
 
     /// <remarks>Overload for getPosts method to retrieve all posts.</remarks>
-    public virtual IAsyncEnumerable<Post> GetPosts()
+    public virtual async IAsyncEnumerable<Post> GetPosts()
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        var posts = this.cache
-            .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
-            .ToAsyncEnumerable();
-
-        return posts;
+        foreach (var post in this.cache.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)))
+        {
+            yield return post;
+        }
     }
 
-    public virtual IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
+    public virtual async IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        var posts = this.cache
+        foreach (var post in this.cache
             .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
             .Skip(skip)
-            .Take(count)
-            .ToAsyncEnumerable();
-
-        return posts;
+            .Take(count))
+        {
+            yield return post;
+        }
     }
 
-    public virtual IAsyncEnumerable<Post> GetPostsByCategory(string category)
+    public virtual async IAsyncEnumerable<Post> GetPostsByCategory(string category)
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        var posts = from p in this.cache
-                    where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
-                    where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
-                    select p;
-
-        return posts.ToAsyncEnumerable();
+        foreach (var post in this.cache
+            .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+            .Where(p => p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)))
+        {
+            yield return post;
+        }
     }
 
-    public IAsyncEnumerable<Post> GetPostsByTag(string tag)
+    public async IAsyncEnumerable<Post> GetPostsByTag(string tag)
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        var posts = from p in this.cache
-                    where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
-                    where p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)
-                    select p;
-
-        return posts.ToAsyncEnumerable();
+        foreach (var post in this.cache
+                    .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+                    .Where(p => p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
+        {
+            yield return post;
+        }
     }
 
     [SuppressMessage(
         "Globalization",
         "CA1308:Normalize strings to uppercase",
         Justification = "Consumer preference.")]
-    public virtual IAsyncEnumerable<string> GetTags()
+    public virtual async IAsyncEnumerable<string> GetTags()
     {
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         var isAdmin = this.IsAdmin();
 
-        return this.cache
+        foreach (var tag in this.cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Tags)
             .Select(tag => tag.ToLowerInvariant())
-            .Distinct()
-            .ToAsyncEnumerable();
+            .Distinct())
+        {
+            yield return tag;
+        }
     }
 
     [SuppressMessage(
@@ -173,6 +210,11 @@ public class FileBlogService : IBlogService
     {
         ArgumentNullException.ThrowIfNull(bytes);
 
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
+
         suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
 
         var ext = Path.GetExtension(fileName);
@@ -180,7 +222,7 @@ public class FileBlogService : IBlogService
 
         var fileNameWithSuffix = $"{name}_{suffix}{ext}";
 
-        var absolute = Path.Combine(this.folder, FILES, fileNameWithSuffix);
+        var absolute = Path.Combine(this.Folder, FILES, fileNameWithSuffix);
         var dir = Path.GetDirectoryName(absolute)!;
 
         _ = Directory.CreateDirectory(dir);
@@ -193,6 +235,11 @@ public class FileBlogService : IBlogService
     public async Task SavePost(Post post)
     {
         ArgumentNullException.ThrowIfNull(post);
+
+        if (!this.initialized)
+        {
+            await this.InitializeAsync();
+        }
 
         var filePath = this.GetFilePath(post);
         post.LastModified = DateTime.UtcNow;
@@ -247,7 +294,7 @@ public class FileBlogService : IBlogService
         }
     }
 
-    protected bool IsAdmin() => this.contextAccessor.HttpContext?.User?.Identity!.IsAuthenticated == true;
+    protected bool IsAdmin() => contextAccessor.HttpContext?.User?.Identity!.IsAuthenticated == true;
 
     protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 
@@ -335,12 +382,13 @@ public class FileBlogService : IBlogService
         "Usage",
         "SecurityIntelliSenseCS:MS Security rules violation",
         Justification = "Path not derived from user input.")]
-    private string GetFilePath(Post post) => Path.Combine(this.folder, $"{post.ID}.xml");
+    private string GetFilePath(Post post) => Path.Combine(this.Folder, $"{post.ID}.xml");
 
     private async Task InitializeAsync()
     {
         await this.LoadPosts();
         this.SortCache();
+        this.initialized = true;
     }
 
     [SuppressMessage(
@@ -349,12 +397,12 @@ public class FileBlogService : IBlogService
         Justification = "The slug should be lower case.")]
     private async Task LoadPosts()
     {
-        if (!Directory.Exists(this.folder))
+        if (!Directory.Exists(this.Folder))
         {
-            _ = Directory.CreateDirectory(this.folder);
+            _ = Directory.CreateDirectory(this.Folder);
         }
 
-        var filePaths = Directory.EnumerateFiles(this.folder, "*.xml", SearchOption.TopDirectoryOnly);
+        var filePaths = Directory.EnumerateFiles(this.Folder, "*.xml", SearchOption.TopDirectoryOnly);
         var degreeOfParallelism = Environment.ProcessorCount;
 
         var posts = filePaths
