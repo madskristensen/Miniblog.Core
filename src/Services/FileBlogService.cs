@@ -78,23 +78,23 @@ public class FileBlogService : IBlogService
             .ToAsyncEnumerable();
     }
 
-    public virtual Task<Post?> GetPostById(string id)
+    public virtual async Task<Post?> GetPostById(string id)
     {
         var isAdmin = this.IsAdmin();
         var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
 
-        return Task.FromResult(
+        return await Task.FromResult(
             post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
             ? null
             : post);
     }
 
-    public virtual Task<Post?> GetPostBySlug(string slug)
+    public virtual async Task<Post?> GetPostBySlug(string slug)
     {
         var isAdmin = this.IsAdmin();
         var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
-        return Task.FromResult(
+        return await Task.FromResult(
             post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
             ? null
             : post);
