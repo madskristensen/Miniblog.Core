@@ -40,7 +40,7 @@ public class FileBlogService : IBlogService
         this.folder = Path.Combine(env.WebRootPath, POSTS);
         this.contextAccessor = contextAccessor;
 
-        this.Initialize();
+        this.InitializeAsync().GetAwaiter().GetResult();
     }
 
     public Task DeletePost(Post post)
@@ -337,9 +337,9 @@ public class FileBlogService : IBlogService
         Justification = "Path not derived from user input.")]
     private string GetFilePath(Post post) => Path.Combine(this.folder, $"{post.ID}.xml");
 
-    private void Initialize()
+    private async Task InitializeAsync()
     {
-        _ = this.LoadPosts();
+        await this.LoadPosts();
         this.SortCache();
     }
 
