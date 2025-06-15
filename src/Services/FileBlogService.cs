@@ -184,10 +184,8 @@ public class FileBlogService : IBlogService
         var dir = Path.GetDirectoryName(absolute)!;
 
         _ = Directory.CreateDirectory(dir);
-        using (var writer = new FileStream(absolute, FileMode.CreateNew))
-        {
-            await writer.WriteAsync(bytes).ConfigureAwait(false);
-        }
+        using var writer = new FileStream(absolute, FileMode.CreateNew);
+        await writer.WriteAsync(bytes).ConfigureAwait(false);
 
         return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
     }
@@ -213,22 +211,22 @@ public class FileBlogService : IBlogService
                             new XElement("comments", string.Empty)
                         ));
 
-        var categories = doc.XPathSelectElement("post/categories");
+        var categories = doc.XPathSelectElement("post/categories")!;
         foreach (var category in post.Categories)
         {
-            categories!.Add(new XElement("category", category));
+            categories.Add(new XElement("category", category));
         }
 
-        var tags = doc.XPathSelectElement("post/tags");
+        var tags = doc.XPathSelectElement("post/tags")!;
         foreach (var tag in post.Tags)
         {
-            tags!.Add(new XElement("tag", tag));
+            tags.Add(new XElement("tag", tag));
         }
 
-        var comments = doc.XPathSelectElement("post/comments");
+        var comments = doc.XPathSelectElement("post/comments")!;
         foreach (var comment in post.Comments)
         {
-            comments!.Add(
+            comments.Add(
                 new XElement("comment",
                     new XElement("author", comment.Author),
                     new XElement("email", comment.Email),
@@ -239,10 +237,8 @@ public class FileBlogService : IBlogService
                 ));
         }
 
-        using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
-        {
-            await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
-        }
+        using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+        await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
 
         if (!this.cache.Contains(post))
         {
@@ -257,7 +253,7 @@ public class FileBlogService : IBlogService
 
     private static string CleanFromInvalidChars(string input)
     {
-        // ToDo: what we are doing here if we switch the blog from windows to unix system or vice
+        // TODO: what we are doing here if we switch the blog from windows to unix system or vice
         // versa? we should remove all invalid chars for both systems
 
         var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
@@ -283,7 +279,10 @@ public class FileBlogService : IBlogService
         }
 
         post.Categories.Clear();
-        categories.Elements("category").Select(node => node.Value).ToList().ForEach(post.Categories.Add);
+        foreach (var category in categories.Elements("category").Select(node => node.Value))
+        {
+            post.Categories.Add(category);
+        }
     }
 
     private static void LoadComments(Post post, XElement doc)
@@ -320,7 +319,10 @@ public class FileBlogService : IBlogService
         }
 
         post.Tags.Clear();
-        tags.Elements("tag").Select(node => node.Value).ToList().ForEach(post.Tags.Add);
+        foreach (var tag in tags.Elements("tag").Select(node => node.Value))
+        {
+            post.Tags.Add(tag);
+        }
     }
 
     private static string ReadAttribute(XElement element, XName name, string defaultValue = "") =>
@@ -337,7 +339,7 @@ public class FileBlogService : IBlogService
 
     private void Initialize()
     {
-        this.LoadPosts();
+        _ = this.LoadPosts();
         this.SortCache();
     }
 
@@ -345,38 +347,50 @@ public class FileBlogService : IBlogService
         "Globalization",
         "CA1308:Normalize strings to uppercase",
         Justification = "The slug should be lower case.")]
-    private void LoadPosts()
+    private async Task LoadPosts()
     {
         if (!Directory.Exists(this.folder))
         {
             _ = Directory.CreateDirectory(this.folder);
         }
 
-        // Can this be done in parallel to speed it up?
-        foreach (var file in Directory.EnumerateFiles(this.folder, "*.xml", SearchOption.TopDirectoryOnly))
+        var filePaths = Directory.EnumerateFiles(this.folder, "*.xml", SearchOption.TopDirectoryOnly);
+        var degreeOfParallelism = Environment.ProcessorCount;
+
+        var posts = filePaths
+            .AsParallel()
+            .WithDegreeOfParallelism(degreeOfParallelism)
+            .ToAsyncEnumerable()
+            .SelectAwait(
+                async filePath =>
+                {
+                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var doc = await XElement.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
+                    var id = Path.GetFileNameWithoutExtension(filePath);
+                    Post post = new()
+                    {
+                        ID = Path.GetFileNameWithoutExtension(filePath),
+                        Title = ReadValue(doc, "title"),
+                        Excerpt = ReadValue(doc, "excerpt"),
+                        Content = ReadValue(doc, "content"),
+                        Slug = ReadValue(doc, "slug").ToLowerInvariant(),
+                        PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
+                        LastModified = DateTime.Parse(
+                            ReadValue(
+                                doc,
+                                "lastModified",
+                                DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+                            CultureInfo.InvariantCulture),
+                        IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
+                    };
+                    LoadCategories(post, doc);
+                    LoadTags(post, doc);
+                    LoadComments(post, doc);
+                    return post;
+                });
+
+        await foreach (var post in posts)
         {
-            var doc = XElement.Load(file);
-
-            var post = new Post
-            {
-                ID = Path.GetFileNameWithoutExtension(file),
-                Title = ReadValue(doc, "title"),
-                Excerpt = ReadValue(doc, "excerpt"),
-                Content = ReadValue(doc, "content"),
-                Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
-                LastModified = DateTime.Parse(
-                    ReadValue(
-                        doc,
-                        "lastModified",
-                        DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                    CultureInfo.InvariantCulture),
-                IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
-            };
-
-            LoadCategories(post, doc);
-            LoadTags(post, doc);
-            LoadComments(post, doc);
             this.cache.Add(post);
         }
     }
