@@ -1,32 +1,31 @@
-namespace Miniblog.Core.Services
+namespace Miniblog.Core.Services;
+
+using Miniblog.Core.Models;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public interface IBlogService
 {
-    using Miniblog.Core.Models;
+    public Task DeletePost(Post post);
 
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    public IAsyncEnumerable<string> GetCategories();
 
-    public interface IBlogService
-    {
-        Task DeletePost(Post post);
+    public IAsyncEnumerable<string> GetTags();
 
-        IAsyncEnumerable<string> GetCategories();
+    public Task<Post?> GetPostById(string id);
 
-        IAsyncEnumerable<string> GetTags();
+    public Task<Post?> GetPostBySlug(string slug);
 
-        Task<Post?> GetPostById(string id);
+    public IAsyncEnumerable<Post> GetPosts();
 
-        Task<Post?> GetPostBySlug(string slug);
+    public IAsyncEnumerable<Post> GetPosts(int count, int skip = 0);
 
-        IAsyncEnumerable<Post> GetPosts();
+    public IAsyncEnumerable<Post> GetPostsByCategory(string category);
 
-        IAsyncEnumerable<Post> GetPosts(int count, int skip = 0);
+    public IAsyncEnumerable<Post> GetPostsByTag(string tag);
 
-        IAsyncEnumerable<Post> GetPostsByCategory(string category);
+    public Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null);
 
-        IAsyncEnumerable<Post> GetPostsByTag(string tag);
-
-        Task<string> SaveFile(byte[] bytes, string fileName, string? suffix = null);
-
-        Task SavePost(Post post);
-    }
+    public Task SavePost(Post post);
 }
