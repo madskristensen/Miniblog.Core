@@ -405,37 +405,37 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         var filePaths = Directory.EnumerateFiles(this.Folder, "*.xml", SearchOption.TopDirectoryOnly);
         var degreeOfParallelism = Environment.ProcessorCount;
 
+        async ValueTask<Post> select(string filePath, CancellationToken cancellationToken)
+        {
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var doc = await XElement.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
+            var id = Path.GetFileNameWithoutExtension(filePath);
+            Post post = new()
+            {
+                ID = Path.GetFileNameWithoutExtension(filePath),
+                Title = ReadValue(doc, "title"),
+                Excerpt = ReadValue(doc, "excerpt"),
+                Content = ReadValue(doc, "content"),
+                Slug = ReadValue(doc, "slug").ToLowerInvariant(),
+                PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
+                LastModified = DateTime.Parse(
+                    ReadValue(
+                        doc,
+                        "lastModified",
+                        DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+                    CultureInfo.InvariantCulture),
+                IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
+            };
+            LoadCategories(post, doc);
+            LoadTags(post, doc);
+            LoadComments(post, doc);
+            return post;
+        };
         var posts = filePaths
             .AsParallel()
             .WithDegreeOfParallelism(degreeOfParallelism)
             .ToAsyncEnumerable()
-            .SelectAwait(
-                async filePath =>
-                {
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var doc = await XElement.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
-                    var id = Path.GetFileNameWithoutExtension(filePath);
-                    Post post = new()
-                    {
-                        ID = Path.GetFileNameWithoutExtension(filePath),
-                        Title = ReadValue(doc, "title"),
-                        Excerpt = ReadValue(doc, "excerpt"),
-                        Content = ReadValue(doc, "content"),
-                        Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                        PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
-                        LastModified = DateTime.Parse(
-                            ReadValue(
-                                doc,
-                                "lastModified",
-                                DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                            CultureInfo.InvariantCulture),
-                        IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
-                    };
-                    LoadCategories(post, doc);
-                    LoadTags(post, doc);
-                    LoadComments(post, doc);
-                    return post;
-                });
+            .Select(select);
 
         await foreach (var post in posts)
         {

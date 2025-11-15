@@ -86,7 +86,7 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
         var writer = await this.GetWriter(
             type,
             xmlWriter,
-            await posts.MaxAsync(p => p.PubDate)).ConfigureAwait(false);
+            (await posts.MaxByAsync(p => p.PubDate).ConfigureAwait(false))?.PubDate ?? DateTime.UtcNow);
 
         await foreach (var post in posts)
         {
