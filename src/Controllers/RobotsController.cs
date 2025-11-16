@@ -1,4 +1,6 @@
-namespace Miniblog.Core.Controllers;
+using System.Globalization;
+using System.Text;
+using System.Xml;
 
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +12,9 @@ using Microsoft.SyndicationFeed.Rss;
 
 using Miniblog.Core.Services;
 
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
 using WebEssentials.AspNetCore.Pwa;
+
+namespace Miniblog.Core.Controllers;
 
 public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest) : Controller
 {
@@ -25,13 +22,14 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
     [OutputCache(PolicyName = "default")]
     public string RobotsTxt()
     {
-        var sb = new StringBuilder();
-        _ = sb.AppendLine("User-agent: *")
+        StringBuilder sb = new();
+        _ = sb
+            .AppendLine("User-agent: *")
             .AppendLine("Disallow:")
             .Append("sitemap: ")
-            .Append(this.Request.Scheme)
+            .Append(Request.Scheme)
             .Append("://")
-            .Append(this.Request.Host)
+            .Append(Request.Host)
             .AppendLine("/sitemap.xml");
 
         return sb.ToString();
@@ -40,14 +38,14 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
     [Route("/rsd.xml")]
     public void RsdXml()
     {
-        this.EnableHttpBodySyncIO();
+        EnableHttpBodySyncIO();
 
-        var host = $"{this.Request.Scheme}://{this.Request.Host}";
+        string host = $"{Request.Scheme}://{Request.Host}";
 
-        this.Response.ContentType = "application/xml";
-        this.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+        Response.ContentType = "application/xml";
+        Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
 
-        using var xml = XmlWriter.Create(this.Response.Body, new XmlWriterSettings { Indent = true });
+        using XmlWriter xml = XmlWriter.Create(Response.Body, new XmlWriterSettings { Indent = true });
         xml.WriteStartDocument();
         xml.WriteStartElement("rsd");
         xml.WriteAttributeString("version", "1.0");
@@ -74,23 +72,23 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
     [Route("/feed/{type}")]
     public async Task Rss(string type)
     {
-        this.EnableHttpBodySyncIO();
+        EnableHttpBodySyncIO();
 
-        this.Response.ContentType = "application/xml";
-        var host = $"{this.Request.Scheme}://{this.Request.Host}";
+        Response.ContentType = "application/xml";
+        string host = $"{Request.Scheme}://{Request.Host}";
 
-        using var xmlWriter = XmlWriter.Create(
-            this.Response.Body,
+        using XmlWriter xmlWriter = XmlWriter.Create(
+            Response.Body,
             new XmlWriterSettings() { Async = true, Indent = true, Encoding = new UTF8Encoding(false) });
         var posts = blog.GetPosts(10);
-        var writer = await this.GetWriter(
+        var writer = await GetWriter(
             type,
             xmlWriter,
             (await posts.MaxByAsync(p => p.PubDate).ConfigureAwait(false))?.PubDate ?? DateTime.UtcNow);
 
         await foreach (var post in posts)
         {
-            var item = new AtomEntry
+            AtomEntry item = new()
             {
                 Title = post.Title,
                 Description = post.Content,
@@ -100,11 +98,12 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
                 ContentType = "html",
             };
 
-            foreach (var category in post.Categories)
+            foreach (string category in post.Categories)
             {
                 item.AddCategory(new SyndicationCategory(category));
             }
-            foreach (var tag in post.Tags)
+
+            foreach (string tag in post.Tags)
             {
                 item.AddCategory(new SyndicationCategory(tag));
             }
@@ -119,13 +118,13 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
     [Route("/sitemap.xml")]
     public async Task SitemapXml()
     {
-        this.EnableHttpBodySyncIO();
+        EnableHttpBodySyncIO();
 
-        var host = $"{this.Request.Scheme}://{this.Request.Host}";
+        string host = $"{Request.Scheme}://{Request.Host}";
 
-        this.Response.ContentType = "application/xml";
+        Response.ContentType = "application/xml";
 
-        using var xml = XmlWriter.Create(this.Response.Body, new XmlWriterSettings { Indent = true });
+        using XmlWriter xml = XmlWriter.Create(Response.Body, new XmlWriterSettings { Indent = true });
         xml.WriteStartDocument();
         xml.WriteStartElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
@@ -144,13 +143,19 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
         xml.WriteEndElement();
     }
 
+    private void EnableHttpBodySyncIO()
+    {
+        var body = HttpContext.Features.Get<IHttpBodyControlFeature>();
+        body!.AllowSynchronousIO = true;
+    }
+
     private async Task<ISyndicationFeedWriter> GetWriter(string? type, XmlWriter xmlWriter, DateTime updated)
     {
-        var host = $"{this.Request.Scheme}://{this.Request.Host}/";
+        string host = $"{Request.Scheme}://{Request.Host}/";
 
         if (type?.Equals("rss", StringComparison.OrdinalIgnoreCase) ?? false)
         {
-            var rss = new RssFeedWriter(xmlWriter);
+            RssFeedWriter rss = new(xmlWriter);
             await rss.WriteTitle(manifest.Name).ConfigureAwait(false);
             await rss.WriteDescription(manifest.Description).ConfigureAwait(false);
             await rss.WriteGenerator("Miniblog.Core").ConfigureAwait(false);
@@ -158,18 +163,12 @@ public class RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> 
             return rss;
         }
 
-        var atom = new AtomFeedWriter(xmlWriter);
+        AtomFeedWriter atom = new(xmlWriter);
         await atom.WriteTitle(manifest.Name).ConfigureAwait(false);
         await atom.WriteId(host).ConfigureAwait(false);
         await atom.WriteSubtitle(manifest.Description).ConfigureAwait(false);
         await atom.WriteGenerator("Miniblog.Core", "https://github.com/madskristensen/Miniblog.Core", "1.0").ConfigureAwait(false);
         await atom.WriteValue("updated", updated.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)).ConfigureAwait(false);
         return atom;
-    }
-
-    private void EnableHttpBodySyncIO()
-    {
-        var body = this.HttpContext.Features.Get<IHttpBodyControlFeature>();
-        body!.AllowSynchronousIO = true;
     }
 }

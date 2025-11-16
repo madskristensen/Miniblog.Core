@@ -1,14 +1,6 @@
-namespace Miniblog.Core.Services;
-
-using Microsoft.AspNetCore.Http;
-
 using Miniblog.Core.Models;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
+namespace Miniblog.Core.Services;
 
 public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccessor) : IBlogService
 {
@@ -24,9 +16,9 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
         Justification = "Consumer preference.")]
     public virtual IAsyncEnumerable<string> GetCategories()
     {
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        var categories = this.Cache
+        var categories = Cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Categories)
             .Select(cat => cat.ToLowerInvariant())
@@ -38,8 +30,8 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
 
     public virtual Task<Post?> GetPostById(string id)
     {
-        var isAdmin = this.IsAdmin();
-        var post = this.Cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
+        bool isAdmin = IsAdmin();
+        var post = Cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         return Task.FromResult(
             post is null || !post.IsVisible() || !isAdmin
@@ -49,8 +41,8 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
 
     public virtual Task<Post?> GetPostBySlug(string slug)
     {
-        var isAdmin = this.IsAdmin();
-        var post = this.Cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+        bool isAdmin = IsAdmin();
+        var post = Cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
         return Task.FromResult(
             post is null || !post.IsVisible() || !isAdmin
@@ -61,15 +53,15 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
     /// <remarks>Overload for getPosts method to retrieve all posts.</remarks>
     public virtual IAsyncEnumerable<Post> GetPosts()
     {
-        var isAdmin = this.IsAdmin();
-        return this.Cache.Where(p => p.IsVisible() || isAdmin).ToAsyncEnumerable();
+        bool isAdmin = IsAdmin();
+        return Cache.Where(p => p.IsVisible() || isAdmin).ToAsyncEnumerable();
     }
 
     public virtual IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
     {
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        var posts = this.Cache
+        var posts = Cache
             .Where(p => p.IsVisible() || isAdmin)
             .Skip(skip)
             .Take(count)
@@ -80,9 +72,9 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
 
     public virtual IAsyncEnumerable<Post> GetPostsByCategory(string category)
     {
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        var posts = from p in this.Cache
+        var posts = from p in Cache
                     where p.IsVisible() || isAdmin
                     where p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)
                     select p;
@@ -92,9 +84,9 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
 
     public virtual IAsyncEnumerable<Post> GetPostsByTag(string tag)
     {
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        var posts = from p in this.Cache
+        var posts = from p in Cache
                     where p.IsVisible() || isAdmin
                     where p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)
                     select p;
@@ -108,9 +100,9 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
         Justification = "Consumer preference.")]
     public virtual IAsyncEnumerable<string> GetTags()
     {
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        var tags = this.Cache
+        var tags = Cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Tags)
             .Select(tag => tag.ToLowerInvariant())
@@ -124,7 +116,7 @@ public abstract class InMemoryBlogServiceBase(IHttpContextAccessor contextAccess
 
     public abstract Task SavePost(Post post);
 
-    protected bool IsAdmin() => this.ContextAccessor.HttpContext?.User?.Identity!.IsAuthenticated ?? false;
+    protected bool IsAdmin() => ContextAccessor.HttpContext?.User?.Identity!.IsAuthenticated ?? false;
 
-    protected void SortCache() => this.Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+    protected void SortCache() => Cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 }

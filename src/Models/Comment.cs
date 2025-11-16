@@ -1,11 +1,9 @@
-namespace Miniblog.Core.Models;
-
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+
+namespace Miniblog.Core.Models;
 
 public class Comment
 {
@@ -37,13 +35,13 @@ public class Comment
         Justification = "We aren't using it for encryption so we don't care.")]
     public string GetGravatar()
     {
-        using var md5 = MD5.Create();
-        var inputBytes = Encoding.UTF8.GetBytes(this.Email.Trim().ToLowerInvariant());
-        var hashBytes = md5.ComputeHash(inputBytes);
+        using MD5 md5 = MD5.Create();
+        byte[] inputBytes = Encoding.UTF8.GetBytes(Email.Trim().ToLowerInvariant());
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
 
         // Convert the byte array to hexadecimal string
-        var sb = new StringBuilder();
-        for (var i = 0; i < hashBytes.Length; i++)
+        StringBuilder sb = new();
+        for (int i = 0; i < hashBytes.Length; i++)
         {
             _ = sb.Append(hashBytes[i].ToString("X2", CultureInfo.InvariantCulture));
         }
@@ -51,5 +49,5 @@ public class Comment
         return $"https://www.gravatar.com/avatar/{sb.ToString().ToLowerInvariant()}?s=60&d=blank";
     }
 
-    public string RenderContent() => this.Content;
+    public string RenderContent() => Content;
 }
