@@ -1,15 +1,10 @@
-namespace Miniblog.Core.Services;
+using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 using WilderMinds.MetaWeblog;
+
+namespace Miniblog.Core.Services;
 
 public class MetaWeblogService(
     IBlogService blog,
@@ -20,25 +15,25 @@ public class MetaWeblogService(
 {
     public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         throw new NotImplementedException();
     }
 
     public Task<string> AddPageAsync(string blogid, string username, string password, Page page, bool publish)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         throw new NotImplementedException();
     }
 
     public async Task<string> AddPostAsync(string blogid, string username, string password, Post post, bool publish)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         ArgumentNullException.ThrowIfNull(post);
 
-        var newPost = new Models.Post
+        Models.Post newPost = new()
         {
             Title = post.title,
             Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
@@ -62,14 +57,14 @@ public class MetaWeblogService(
 
     public Task<bool> DeletePageAsync(string blogid, string username, string password, string pageid)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         throw new NotImplementedException();
     }
 
     public async Task<bool> DeletePostAsync(string key, string postid, string username, string password, bool publish)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         var post = await blog.GetPostById(postid).ConfigureAwait(false);
         if (post is null)
@@ -83,14 +78,14 @@ public class MetaWeblogService(
 
     public Task<bool> EditPageAsync(string blogid, string pageid, string username, string password, Page page, bool publish)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         throw new NotImplementedException();
     }
 
     public async Task<bool> EditPostAsync(string postid, string username, string password, Post post, bool publish)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         var existing = await blog.GetPostById(postid).ConfigureAwait(false);
 
@@ -124,7 +119,7 @@ public class MetaWeblogService(
 
     public async Task<CategoryInfo[]> GetCategoriesAsync(string blogid, string username, string password)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         return await blog.GetCategories()
             .Select(
@@ -145,25 +140,25 @@ public class MetaWeblogService(
 
     public async Task<Post?> GetPostAsync(string postid, string username, string password)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         var post = await blog.GetPostById(postid).ConfigureAwait(false);
 
-        return post is null ? null : this.ToMetaWebLogPost(post);
+        return post is null ? null : ToMetaWebLogPost(post);
     }
 
     public async Task<Post[]> GetRecentPostsAsync(string blogid, string username, string password, int numberOfPosts)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         return await blog.GetPosts(numberOfPosts)
-            .Select(this.ToMetaWebLogPost)
+            .Select(ToMetaWebLogPost)
             .ToArrayAsync();
     }
 
     public async Task<Tag[]> GetTagsAsync(string blogid, string username, string password)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         return await blog.GetTags()
             .Select(
@@ -177,17 +172,17 @@ public class MetaWeblogService(
 
     public Task<UserInfo> GetUserInfoAsync(string key, string username, string password)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         throw new NotImplementedException();
     }
 
     public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         var request = context.HttpContext!.Request;
-        var url = $"{request.Scheme}://{request.Host}";
+        string url = $"{request.Scheme}://{request.Host}";
 
         return Task.FromResult(
             new[]
@@ -203,12 +198,12 @@ public class MetaWeblogService(
 
     public async Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)
     {
-        this.ValidateUser(username, password);
+        ValidateUser(username, password);
 
         ArgumentNullException.ThrowIfNull(mediaObject);
 
-        var bytes = Convert.FromBase64String(mediaObject.bits);
-        var path = await blog.SaveFile(bytes, mediaObject.name).ConfigureAwait(false);
+        byte[] bytes = Convert.FromBase64String(mediaObject.bits);
+        string path = await blog.SaveFile(bytes, mediaObject.name).ConfigureAwait(false);
 
         return new MediaObjectInfo { url = path };
     }
@@ -216,7 +211,7 @@ public class MetaWeblogService(
     private Post ToMetaWebLogPost(Models.Post post)
     {
         var request = context.HttpContext!.Request;
-        var url = $"{request.Scheme}://{request.Host}";
+        string url = $"{request.Scheme}://{request.Host}";
 
         return new Post
         {
@@ -227,7 +222,7 @@ public class MetaWeblogService(
             dateCreated = post.PubDate,
             mt_excerpt = post.Excerpt,
             description = post.Content,
-            categories = post.Categories.ToArray(),
+            categories = [.. post.Categories],
             mt_keywords = string.Join(',', post.Tags)
         };
     }
@@ -239,7 +234,7 @@ public class MetaWeblogService(
             throw new MetaWeblogException(Properties.Resources.Unauthorized);
         }
 
-        var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+        ClaimsIdentity identity = new(CookieAuthenticationDefaults.AuthenticationScheme);
         identity.AddClaim(new Claim(ClaimTypes.Name, username));
 
         context.HttpContext!.User = new ClaimsPrincipal(identity);

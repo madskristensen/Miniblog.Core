@@ -1,3 +1,5 @@
+using System.IO.Compression;
+
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using JavaScriptEngineSwitcher.V8;
 
@@ -9,8 +11,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Miniblog.Core;
 using Miniblog.Core.Services;
 
-using System.IO.Compression;
-
 using WebMarkupMin.AspNetCoreLatest;
 using WebMarkupMin.Core;
 
@@ -20,7 +20,7 @@ using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
 using MetaWeblogService = Miniblog.Core.Services.MetaWeblogService;
 using WmmAspNetCoreLogger = WebMarkupMin.AspNetCoreLatest.AspNetCoreLogger;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
@@ -103,7 +103,7 @@ builder.Services.AddResponseCompression(
 builder.Services.Configure<BrotliCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
