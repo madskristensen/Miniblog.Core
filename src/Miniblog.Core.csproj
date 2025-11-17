@@ -29,7 +29,7 @@
 		<PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
 		<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.85" />
 		<PackageReference Include="WebEssentials.AspNetCore.StaticFilesWithCache" Version="1.0.3" />
-		<PackageReference Include="WebMarkupMin.AspNetCoreLatest" Version="2.19.0" />
+		<PackageReference Include="WebMarkupMin.AspNetCoreLatest" Version="2.20.0" />
 		<PackageReference Include="WilderMinds.MetaWeblog" Version="5.1.3" />
 	</ItemGroup>
 
