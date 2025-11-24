@@ -482,3 +482,6 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/aspnetcore,visualstudio,visualstudiocode
+
+ResXManager.config.xml
+.contextkeeper/

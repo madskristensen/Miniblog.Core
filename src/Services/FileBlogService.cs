@@ -1,58 +1,46 @@
-namespace Miniblog.Core.Services;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-
-using Miniblog.Core.Models;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
+using Miniblog.Core.Models;
+
+namespace Miniblog.Core.Services;
+
 [method: SuppressMessage(
-            "Usage",
-            "SecurityIntelliSenseCS:MS Security rules violation",
-            Justification = "Path not derived from user input.")]
+    "Usage",
+    "SecurityIntelliSenseCS:MS Security rules violation",
+    Justification = "Path not derived from user input.")]
 public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor contextAccessor) : IBlogService
 {
     private const string FILES = "files";
     private const string POSTS = "Posts";
 
-    private readonly List<Post> cache = [];
-    private readonly IWebHostEnvironment env = env ?? throw new ArgumentNullException(nameof(env));
+    private readonly List<Post> _cache = [];
+    private readonly IWebHostEnvironment _env = env ?? throw new ArgumentNullException(nameof(env));
+    private bool _initialized = false;
 
-    private string? folder;
-    private bool initialized = false;
-
-    private string Folder => this.folder ??= Path.Combine(this.env.WebRootPath, POSTS);
+    private string Folder => field ??= Path.Combine(_env.WebRootPath, POSTS);
 
     public async Task DeletePost(Post post)
     {
         ArgumentNullException.ThrowIfNull(post);
 
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var filePath = this.GetFilePath(post);
+        string filePath = GetFilePath(post);
 
         if (File.Exists(filePath))
         {
             File.Delete(filePath);
         }
 
-        if (this.cache.Contains(post))
+        if (_cache.Contains(post))
         {
-            _ = this.cache.Remove(post);
+            _ = _cache.Remove(post);
         }
     }
 
@@ -62,14 +50,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         Justification = "Consumer preference.")]
     public virtual async IAsyncEnumerable<string> GetCategories()
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var category in this.cache
+        foreach (string? category in _cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Categories)
             .Select(cat => cat.ToLowerInvariant())
@@ -81,13 +69,13 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
     public virtual async Task<Post?> GetPostById(string id)
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
-        var post = this.cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
+        bool isAdmin = IsAdmin();
+        var post = _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         return await Task.FromResult(
             post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
@@ -97,13 +85,13 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
     public virtual async Task<Post?> GetPostBySlug(string slug)
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
-        var post = this.cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+        bool isAdmin = IsAdmin();
+        var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 
         return await Task.FromResult(
             post is null || post.PubDate > DateTime.UtcNow || (!post.IsPublished && !isAdmin)
@@ -114,14 +102,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
     /// <remarks>Overload for getPosts method to retrieve all posts.</remarks>
     public virtual async IAsyncEnumerable<Post> GetPosts()
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var post in this.cache.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)))
+        foreach (var post in _cache.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)))
         {
             yield return post;
         }
@@ -129,14 +117,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
     public virtual async IAsyncEnumerable<Post> GetPosts(int count, int skip = 0)
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var post in this.cache
+        foreach (var post in _cache
             .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
             .Skip(skip)
             .Take(count))
@@ -147,14 +135,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
     public virtual async IAsyncEnumerable<Post> GetPostsByCategory(string category)
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var post in this.cache
+        foreach (var post in _cache
             .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
             .Where(p => p.Categories.Contains(category, StringComparer.OrdinalIgnoreCase)))
         {
@@ -164,14 +152,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
     public async IAsyncEnumerable<Post> GetPostsByTag(string tag)
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var post in this.cache
+        foreach (var post in _cache
                     .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
                     .Where(p => p.Tags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
         {
@@ -185,14 +173,14 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         Justification = "Consumer preference.")]
     public virtual async IAsyncEnumerable<string> GetTags()
     {
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var isAdmin = this.IsAdmin();
+        bool isAdmin = IsAdmin();
 
-        foreach (var tag in this.cache
+        foreach (string? tag in _cache
             .Where(p => p.IsPublished || isAdmin)
             .SelectMany(post => post.Tags)
             .Select(tag => tag.ToLowerInvariant())
@@ -210,23 +198,23 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
     {
         ArgumentNullException.ThrowIfNull(bytes);
 
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
         suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString(CultureInfo.InvariantCulture));
 
-        var ext = Path.GetExtension(fileName);
-        var name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
+        string ext = Path.GetExtension(fileName);
+        string name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
 
-        var fileNameWithSuffix = $"{name}_{suffix}{ext}";
+        string fileNameWithSuffix = $"{name}_{suffix}{ext}";
 
-        var absolute = Path.Combine(this.Folder, FILES, fileNameWithSuffix);
-        var dir = Path.GetDirectoryName(absolute)!;
+        string absolute = Path.Combine(Folder, FILES, fileNameWithSuffix);
+        string dir = Path.GetDirectoryName(absolute)!;
 
         _ = Directory.CreateDirectory(dir);
-        using var writer = new FileStream(absolute, FileMode.CreateNew);
+        using FileStream writer = new(absolute, FileMode.CreateNew);
         await writer.WriteAsync(bytes).ConfigureAwait(false);
 
         return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
@@ -236,15 +224,15 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
     {
         ArgumentNullException.ThrowIfNull(post);
 
-        if (!this.initialized)
+        if (!_initialized)
         {
-            await this.InitializeAsync();
+            await InitializeAsync();
         }
 
-        var filePath = this.GetFilePath(post);
+        string filePath = GetFilePath(post);
         post.LastModified = DateTime.UtcNow;
 
-        var doc = new XDocument(
+        XDocument doc = new(
                         new XElement("post",
                             new XElement("title", post.Title),
                             new XElement("slug", post.Slug),
@@ -259,13 +247,13 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
                         ));
 
         var categories = doc.XPathSelectElement("post/categories")!;
-        foreach (var category in post.Categories)
+        foreach (string category in post.Categories)
         {
             categories.Add(new XElement("category", category));
         }
 
         var tags = doc.XPathSelectElement("post/tags")!;
-        foreach (var tag in post.Tags)
+        foreach (string tag in post.Tags)
         {
             tags.Add(new XElement("tag", tag));
         }
@@ -284,37 +272,37 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
                 ));
         }
 
-        using var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+        using FileStream fs = new(filePath, FileMode.Create, FileAccess.ReadWrite);
         await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
 
-        if (!this.cache.Contains(post))
+        if (!_cache.Contains(post))
         {
-            this.cache.Add(post);
-            this.SortCache();
+            _cache.Add(post);
+            SortCache();
         }
     }
 
     protected bool IsAdmin() => contextAccessor.HttpContext?.User?.Identity!.IsAuthenticated == true;
 
-    protected void SortCache() => this.cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+    protected void SortCache() => _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
 
     private static string CleanFromInvalidChars(string input)
     {
         // TODO: what we are doing here if we switch the blog from windows to unix system or vice
         // versa? we should remove all invalid chars for both systems
 
-        var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
-        var r = new Regex($"[{regexSearch}]");
+        string regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+        Regex r = new($"[{regexSearch}]");
         return r.Replace(input, string.Empty);
     }
 
     private static string FormatDateTime(DateTime dateTime)
     {
-        const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
+        const string utc = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
 
         return dateTime.Kind == DateTimeKind.Utc
-            ? dateTime.ToString(UTC, CultureInfo.InvariantCulture)
-            : dateTime.ToUniversalTime().ToString(UTC, CultureInfo.InvariantCulture);
+            ? dateTime.ToString(utc, CultureInfo.InvariantCulture)
+            : dateTime.ToUniversalTime().ToString(utc, CultureInfo.InvariantCulture);
     }
 
     private static void LoadCategories(Post post, XElement doc)
@@ -326,7 +314,7 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         }
 
         post.Categories.Clear();
-        foreach (var category in categories.Elements("category").Select(node => node.Value))
+        foreach (string? category in categories.Elements("category").Select(node => node.Value))
         {
             post.Categories.Add(category);
         }
@@ -343,7 +331,7 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
 
         foreach (var node in comments.Elements("comment"))
         {
-            var comment = new Comment
+            Comment comment = new()
             {
                 ID = ReadAttribute(node, "id"),
                 Author = ReadValue(node, "author"),
@@ -366,7 +354,7 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         }
 
         post.Tags.Clear();
-        foreach (var tag in tags.Elements("tag").Select(node => node.Value))
+        foreach (string? tag in tags.Elements("tag").Select(node => node.Value))
         {
             post.Tags.Add(tag);
         }
@@ -382,13 +370,13 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         "Usage",
         "SecurityIntelliSenseCS:MS Security rules violation",
         Justification = "Path not derived from user input.")]
-    private string GetFilePath(Post post) => Path.Combine(this.Folder, $"{post.ID}.xml");
+    private string GetFilePath(Post post) => Path.Combine(Folder, $"{post.ID}.xml");
 
     private async Task InitializeAsync()
     {
-        await this.LoadPosts();
-        this.SortCache();
-        this.initialized = true;
+        await LoadPosts();
+        SortCache();
+        _initialized = true;
     }
 
     [SuppressMessage(
@@ -397,49 +385,51 @@ public class FileBlogService(IWebHostEnvironment env, IHttpContextAccessor conte
         Justification = "The slug should be lower case.")]
     private async Task LoadPosts()
     {
-        if (!Directory.Exists(this.Folder))
+        if (!Directory.Exists(Folder))
         {
-            _ = Directory.CreateDirectory(this.Folder);
+            _ = Directory.CreateDirectory(Folder);
         }
 
-        var filePaths = Directory.EnumerateFiles(this.Folder, "*.xml", SearchOption.TopDirectoryOnly);
-        var degreeOfParallelism = Environment.ProcessorCount;
+        var filePaths = Directory.EnumerateFiles(Folder, "*.xml", SearchOption.TopDirectoryOnly);
+        int degreeOfParallelism = Environment.ProcessorCount;
 
+        static async ValueTask<Post> LoadPostFromFile(string filePath, CancellationToken cancellationToken)
+        {
+            FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var doc = await XElement.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
+            string id = Path.GetFileNameWithoutExtension(filePath);
+            Post post = new()
+            {
+                ID = Path.GetFileNameWithoutExtension(filePath),
+                Title = ReadValue(doc, "title"),
+                Excerpt = ReadValue(doc, "excerpt"),
+                Content = ReadValue(doc, "content"),
+                Slug = ReadValue(doc, "slug").ToLowerInvariant(),
+                PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
+                LastModified = DateTime.Parse(
+                    ReadValue(
+                        doc,
+                        "lastModified",
+                        DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
+                    CultureInfo.InvariantCulture),
+                IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
+            };
+            LoadCategories(post, doc);
+            LoadTags(post, doc);
+            LoadComments(post, doc);
+            return post;
+        }
+
+        ;
         var posts = filePaths
             .AsParallel()
             .WithDegreeOfParallelism(degreeOfParallelism)
             .ToAsyncEnumerable()
-            .SelectAwait(
-                async filePath =>
-                {
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var doc = await XElement.LoadAsync(fileStream, LoadOptions.None, CancellationToken.None);
-                    var id = Path.GetFileNameWithoutExtension(filePath);
-                    Post post = new()
-                    {
-                        ID = Path.GetFileNameWithoutExtension(filePath),
-                        Title = ReadValue(doc, "title"),
-                        Excerpt = ReadValue(doc, "excerpt"),
-                        Content = ReadValue(doc, "content"),
-                        Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-                        PubDate = DateTime.Parse(ReadValue(doc, "pubDate"), CultureInfo.InvariantCulture),
-                        LastModified = DateTime.Parse(
-                            ReadValue(
-                                doc,
-                                "lastModified",
-                                DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                            CultureInfo.InvariantCulture),
-                        IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
-                    };
-                    LoadCategories(post, doc);
-                    LoadTags(post, doc);
-                    LoadComments(post, doc);
-                    return post;
-                });
+            .Select(LoadPostFromFile);
 
         await foreach (var post in posts)
         {
-            this.cache.Add(post);
+            _cache.Add(post);
         }
     }
 }
